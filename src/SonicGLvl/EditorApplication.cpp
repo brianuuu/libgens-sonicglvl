@@ -374,11 +374,9 @@ void EditorApplication::rememberSelection(bool mode) {
 }
 
 void EditorApplication::makeHistorySelection(bool mode) {
-	if (current_property_index < (int)current_properties_types.size()) return;
-
 	HistoryActionWrapper *wrapper = new HistoryActionWrapper();
 	int index = 0;
-	bool is_list = current_properties_types[current_property_index] == LibGens::OBJECT_ELEMENT_VECTOR_LIST;
+	bool is_list = (current_property_index >= 0 && current_property_index < (int)current_properties_types.size()) && current_properties_types[current_property_index] == LibGens::OBJECT_ELEMENT_VECTOR_LIST;
 	for (list<EditorNode *>::iterator it=selected_nodes.begin(); it!=selected_nodes.end(); it++) {
 		if (!mode) {
 			HistoryActionMoveNode *action = new HistoryActionMoveNode((*it), (*it)->getLastPosition(), (*it)->getPosition());
