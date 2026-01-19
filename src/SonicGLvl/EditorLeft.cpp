@@ -523,29 +523,31 @@ void EditorApplication::deleteLayer() {
 }
 
 void EditorApplication::newLayer() {
-	if (current_level->getLevel()->getSet("rename_me")) 
-	{
-		MessageBox(NULL, "Rename the object set called \"rename_me\" first before creating a new object set.", "SonicGLvl", MB_OK | MB_ICONINFORMATION);
-	}
-	else 
-	{
-		LibGens::ObjectSet* set = new LibGens::ObjectSet();
-		string folder = current_level->getLevel()->getFolder();
-		set->setName("rename_me");
-		if (current_level->getGameMode() == LIBGENS_LEVEL_GAME_UNLEASHED) 
-		{
-			set->setFilename(folder + set->getName() + LIBGENS_OBJECT_SET_EXTENSION);
-		}
-		else {
-			set->setFilename(folder + LIBGENS_OBJECT_SET_NAME + set->getName() + LIBGENS_OBJECT_SET_EXTENSION);
-		}
+	int newNumber = 0;
+	string newName = "new_layer";
 
-		current_level->getLevel()->addSet(set);
-		updateLayerControlGUI();
-
-		// update current layer list
-		SendDlgItemMessage(hLeftDlg, IDC_LAYER_CURRENT, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)set->getName().c_str());
+	while (current_level->getLevel()->getSet(newName))
+	{
+		newNumber++;
+		newName = "new_layer" + to_string(newNumber);
 	}
+
+	LibGens::ObjectSet* set = new LibGens::ObjectSet();
+	string folder = current_level->getLevel()->getFolder();
+	set->setName(newName);
+	if (current_level->getGameMode() == LIBGENS_LEVEL_GAME_UNLEASHED) 
+	{
+		set->setFilename(folder + set->getName() + LIBGENS_OBJECT_SET_EXTENSION);
+	}
+	else {
+		set->setFilename(folder + LIBGENS_OBJECT_SET_NAME + set->getName() + LIBGENS_OBJECT_SET_EXTENSION);
+	}
+
+	current_level->getLevel()->addSet(set);
+	updateLayerControlGUI();
+
+	// update current layer list
+	SendDlgItemMessage(hLeftDlg, IDC_LAYER_CURRENT, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)set->getName().c_str());
 }
 
 INT_PTR CALLBACK LeftBarCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
