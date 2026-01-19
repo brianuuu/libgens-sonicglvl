@@ -546,6 +546,10 @@ void EditorApplication::newLayer() {
 	current_level->getLevel()->addSet(set);
 	updateLayerControlGUI();
 
+	// force scroll to bottom
+	HWND hLayersList = GetDlgItem(hLeftDlg, IDL_LAYER_LIST);
+	ListView_EnsureVisible(hLayersList, ListView_GetItemCount(hLayersList) - 1, false);
+
 	// update current layer list
 	SendDlgItemMessage(hLeftDlg, IDC_LAYER_CURRENT, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)set->getName().c_str());
 }
