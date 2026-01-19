@@ -107,7 +107,12 @@ void BaseApplication::go(void) {
 }
 
 bool BaseApplication::renderOneFrame() {
-	return root->renderOneFrame();
+    if (IsIconic(hwnd))
+    {
+        return true;
+    }
+
+    return root->renderOneFrame();
 }
 
 bool BaseApplication::setup(void) {
