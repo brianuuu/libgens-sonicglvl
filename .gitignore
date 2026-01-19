@@ -197,3 +197,6 @@ FakesAssemblies/
 
 # Qt files
 qrc_*.cpp
+*.exp
+*.lib
+/database
