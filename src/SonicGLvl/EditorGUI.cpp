@@ -73,6 +73,7 @@ void EditorApplication::pasteSelection() {
 
 		pElem=hDoc.FirstChildElement().Element();
 		if (!pElem) {
+			CloseClipboard();
 			return;
 		}
 

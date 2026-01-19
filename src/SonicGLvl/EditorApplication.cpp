@@ -874,6 +874,7 @@ bool EditorApplication::keyPressed(const OIS::KeyEvent &arg) {
 			if(arg.key == OIS::KC_V) {
 				clearSelection();
 				pasteSelection();
+				updateSelection();
 			}
 
 			if(arg.key == OIS::KC_P) {
