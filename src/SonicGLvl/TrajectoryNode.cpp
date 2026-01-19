@@ -46,7 +46,7 @@ void TrajectoryNode::restart(EditorNode* node, TrajectoryMode mode_p)
 	ObjectNode* object_node = editor_application->getObjectNodeFromEditorNode(node);
 	LibGens::Object* object = object_node->getObject();
 	LibGens::ObjectElementFloat* out_of_control_property = static_cast<LibGens::ObjectElementFloat*>(object->getElement("OutOfControl"));
-	max_time = max(10.0f, out_of_control_property->value);
+	max_time = max(10.0f, out_of_control_property ? out_of_control_property->value : 0.0f);
 
 	total_time = 0.0f;
 	gravity_time = 0.0f;
