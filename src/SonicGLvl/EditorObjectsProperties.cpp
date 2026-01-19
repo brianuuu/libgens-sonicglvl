@@ -120,12 +120,6 @@ void EditorApplication::updateObjectsPropertiesGUI() {
 		}
 	}
 
-	if (same_list) {
-		return;
-	}
-
-	current_object_list_properties = selected_objects;
-
 	// Update text
 	updateHelpWithObjectGUI(NULL);
 
@@ -172,6 +166,12 @@ void EditorApplication::updateObjectsPropertiesGUI() {
 	string id_layer_text = "ID: " + id_text + "     Layer: " + (layer_text.empty() ? "---" : layer_text);
 	SetDlgItemText(hRightDlg, IDT_RIGHT_OBJECT_ID_LAYER, id_layer_text.c_str());
 	SetDlgItemText(hRightDlg, IDG_RIGHT_OBJECT_NAME, group_text.c_str());
+
+	if (same_list) {
+		return;
+	}
+
+	current_object_list_properties = selected_objects;
 
 	// Scan for Common Properties in the list of selected objects
 	current_properties_names.clear();
