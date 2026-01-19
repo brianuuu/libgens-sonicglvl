@@ -386,6 +386,11 @@ void EditorApplication::updateLayerControlGUI() {
 	HWND hLayersNew = GetDlgItem(hLeftDlg, IDB_LAYER_NEW);
 	HWND hLayersDelete = GetDlgItem(hLeftDlg, IDB_LAYER_DELETE);
 
+	SCROLLINFO info;
+	info.cbSize = sizeof(SCROLLINFO);
+	info.fMask = SIF_POS;
+	bool hasInfo = GetScrollInfo(hLayersList, SB_VERT, &info);
+
 	if (ListView_GetItemCount(hLayersList) != 0)
 	{
 		ListView_DeleteAllItems(hLayersList);
@@ -425,6 +430,15 @@ void EditorApplication::updateLayerControlGUI() {
 		set_visibility[*it] = visible;
 
 		i++;
+	}
+
+	if (hasInfo)
+	{
+		RECT rect;
+		if (ListView_GetItemRect(hLayersList, 0, &rect, LVIR_BOUNDS))
+		{
+			ListView_Scroll(hLayersList, 0, (rect.bottom - rect.top) * info.nPos);
+		}
 	}
 
 	EnableWindow(hLayersList, true);
