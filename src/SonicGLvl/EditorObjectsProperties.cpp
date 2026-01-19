@@ -128,19 +128,6 @@ void EditorApplication::updateObjectsPropertiesGUI() {
 	int id = -1;
 	if (multiple_object_types || multiple_multiset_types) {
 		group_text = "Multiple Objects";
-
-		for (auto object : selected_objects) {
-			LibGens::ObjectSet* set = object->getParentSet();
-			if (set) {
-				if (layer_text.empty()) {
-					layer_text = set->getName();
-				}
-				else if (layer_text != set->getName()) {
-					layer_text = "(multiple)";
-					break;
-				}
-			}
-		}
 	}
 	else if (object_name.size()) {
 		group_text = object_name;
@@ -160,6 +147,19 @@ void EditorApplication::updateObjectsPropertiesGUI() {
 	}
 	else {
 		group_text = "(No selection)";
+	}
+
+	for (auto object : selected_objects) {
+		LibGens::ObjectSet* set = object->getParentSet();
+		if (set) {
+			if (layer_text.empty()) {
+				layer_text = set->getName();
+			}
+			else if (layer_text != set->getName()) {
+				layer_text = "(multiple)";
+				break;
+			}
+		}
 	}
 
 	string id_text = id >= 0 ? ToString(id) : "---";
