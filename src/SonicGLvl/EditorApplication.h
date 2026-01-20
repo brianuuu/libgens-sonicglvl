@@ -268,7 +268,7 @@ class EditorApplication : public BaseApplication {
 		vector<LibGens::Vector3> temp_property_vector_list;
 		vector<unsigned int> temp_property_id_list;
 		int current_property_index;
-		LibGens::Object *current_single_property_object;
+		LibGens::Object *current_single_property_object; // TODO: remove
 
 		HistoryActionWrapper *history_edit_property_wrapper;
 		int ignore_mouse_clicks_frames;
@@ -494,7 +494,7 @@ class EditorApplication : public BaseApplication {
 
 		void createObjectsPropertiesGUI();
 		void updateObjectsPropertiesGUI();
-		void updateObjectsPropertiesValuesGUI(LibGens::Object *object);
+		void updateObjectsPropertiesValuesGUI(list<LibGens::Object*> const& objects);
 		void updateObjectPropertyIndex(int selection_index);
 		void editObjectPropertyIndex(int selection_index);
 		void updateHelpWithObjectGUI(LibGens::Object *object);

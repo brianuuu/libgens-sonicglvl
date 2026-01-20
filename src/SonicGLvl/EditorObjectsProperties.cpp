@@ -43,9 +43,7 @@ void EditorApplication::updateObjectsPropertiesGUI() {
 	bool multiple_multiset_types = false;
 	HWND hPropertiesList = GetDlgItem(hRightDlg, IDL_RIGHT_PROPERTIES_LIST);
 
-	if (current_single_property_object) {
-		updateObjectsPropertiesValuesGUI(current_single_property_object);
-	}
+	updateObjectsPropertiesValuesGUI(current_object_list_properties);
 
 	// Retrieve Object pointers from Object Nodes
 	for (list<EditorNode *>::iterator it=selected_nodes.begin(); it!=selected_nodes.end(); it++) {
@@ -290,27 +288,33 @@ void EditorApplication::updateObjectsPropertiesGUI() {
 	current_single_property_object = NULL;
 	current_property_index = -1;
 
-	// If only one object was selected, update the Values column
 	if (selected_objects.size() == 1) {
 		LibGens::Object *first_object = (*selected_objects.begin());
 		current_single_property_object = first_object;
-		updateObjectsPropertiesValuesGUI(first_object);
 	}
+
+	updateObjectsPropertiesValuesGUI(selected_objects);
 }
 
 
-void EditorApplication::updateObjectsPropertiesValuesGUI(LibGens::Object *object) {
-	if (!object) {
+void EditorApplication::updateObjectsPropertiesValuesGUI(list<LibGens::Object*> const& objects) {
+	if (objects.empty()) {
 		return;
 	}
 
 	HWND hPropertiesList = GetDlgItem(hRightDlg, IDL_RIGHT_PROPERTIES_LIST);
 	
 	for (size_t i=0; i<current_properties_names.size(); i++) {
-		string element_name = current_properties_names[i];
-		LibGens::ObjectElement *element = object->getElement(element_name);
+		string shared_value = "";
+		for (auto it = objects.begin(); it != objects.end(); it++) {
+			
+			LibGens::Object* object = *it;
+			if (!object) continue;
 
-		if (element) {
+			string element_name = current_properties_names[i];
+			LibGens::ObjectElement* element = object->getElement(element_name);
+			if (!element) continue;
+
 			LibGens::ObjectElementType element_type = element->getType();
 			string value="";
 
@@ -369,8 +373,18 @@ void EditorApplication::updateObjectsPropertiesValuesGUI(LibGens::Object *object
 					break;
 			};
 
-			ListView_SetItemText(hPropertiesList, i, 1, (char *) value.c_str());
+			if (shared_value.empty())
+			{
+				shared_value = value;
+			}
+			else if (shared_value != value)
+			{
+				shared_value = "(mutiple values)";
+				break;
+			}
 		}
+
+		ListView_SetItemText(hPropertiesList, i, 1, (char*)shared_value.c_str());
 	}
 }
 
@@ -734,9 +748,7 @@ void EditorApplication::updateEditPropertyBool(bool v) {
 		}
 	}
 
-	if (current_single_property_object) {
-		updateObjectsPropertiesValuesGUI(current_single_property_object);
-	}
+	updateObjectsPropertiesValuesGUI(current_object_list_properties);
 }
 
 
@@ -768,9 +780,7 @@ void EditorApplication::updateEditPropertyInteger(unsigned int v) {
 		}
 	}
 
-	if (current_single_property_object) {
-		updateObjectsPropertiesValuesGUI(current_single_property_object);
-	}
+	updateObjectsPropertiesValuesGUI(current_object_list_properties);
 }
 
 
@@ -792,9 +802,7 @@ void EditorApplication::updateEditPropertyFloat(float v) {
 		}
 	}
 
-	if (current_single_property_object) {
-		updateObjectsPropertiesValuesGUI(current_single_property_object);
-	}
+	updateObjectsPropertiesValuesGUI(current_object_list_properties);
 }
 
 
@@ -817,9 +825,7 @@ void EditorApplication::updateEditPropertyString(string v) {
 		}
 	}
 
-	if (current_single_property_object) {
-		updateObjectsPropertiesValuesGUI(current_single_property_object);
-	}
+	updateObjectsPropertiesValuesGUI(current_object_list_properties);
 }
 
 void EditorApplication::updateEditPropertyID(size_t v)
@@ -842,9 +848,7 @@ void EditorApplication::updateEditPropertyID(size_t v)
 		}
 	}
 
-	if (current_single_property_object) {
-		updateObjectsPropertiesValuesGUI(current_single_property_object);
-	}
+	updateObjectsPropertiesValuesGUI(current_object_list_properties);
 }
 
 void EditorApplication::updateEditPropertyIDList(vector<size_t> v)
@@ -867,9 +871,7 @@ void EditorApplication::updateEditPropertyIDList(vector<size_t> v)
 		}
 	}
 
-	if (current_single_property_object) {
-		updateObjectsPropertiesValuesGUI(current_single_property_object);
-	}
+	updateObjectsPropertiesValuesGUI(current_object_list_properties);
 }
 
 
@@ -891,9 +893,7 @@ void EditorApplication::updateEditPropertyVector(LibGens::Vector3 v) {
 		}
 	}
 
-	if (current_single_property_object) {
-		updateObjectsPropertiesValuesGUI(current_single_property_object);
-	}
+	updateObjectsPropertiesValuesGUI(current_object_list_properties);
 
 	if (property_vector_nodes.size()) {
 		property_vector_nodes[0]->setPosition(Ogre::Vector3(v.x, v.y, v.z));
@@ -921,9 +921,7 @@ void EditorApplication::updateEditPropertyVectorList(vector<LibGens::Vector3> v)
 		}
 	}
 
-	if (current_single_property_object) {
-		updateObjectsPropertiesValuesGUI(current_single_property_object);
-	}
+	updateObjectsPropertiesValuesGUI(current_object_list_properties);
 
 	if (property_vector_nodes.size()) {
 		for (int i = 0; i < property_vector_nodes.size(); ++i)
@@ -1149,6 +1147,8 @@ void EditorApplication::confirmEditProperty() {
 		// prepare next edit
 		history_edit_property_wrapper = new HistoryActionWrapper();
 	}
+
+	updateObjectsPropertiesValuesGUI(current_object_list_properties);
 }
 
 void EditorApplication::revertEditProperty() {
@@ -1156,9 +1156,7 @@ void EditorApplication::revertEditProperty() {
 		history_edit_property_wrapper->undo();
 		delete history_edit_property_wrapper;
 
-		if (current_single_property_object) {
-			updateObjectsPropertiesValuesGUI(current_single_property_object);
-		}
+		updateObjectsPropertiesValuesGUI(current_object_list_properties);
 
 		history_edit_property_wrapper = NULL;
 	}
