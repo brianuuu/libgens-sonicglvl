@@ -560,6 +560,7 @@ FONT 8, "Ms Shell Dlg"
     LTEXT           "Description lines of current selection. Object's Description will be used if selected on stage or palette. Property description will be used if a property is selected.", IDT_RIGHT_HELP_DESCRIPTION, 6, 374, 173, 37, SS_LEFT, WS_EX_LEFT
     GROUPBOX        "Help", IDG_RIGHT_HELP_GROUP, 2, 363, 180, 52, 0, WS_EX_LEFT
     CTEXT           "ID: ---     Layer: ---", IDT_RIGHT_OBJECT_ID_LAYER, 0, 9, 185, 9, SS_CENTER | SS_CENTERIMAGE, WS_EX_LEFT
+    GROUPBOX        "Edit Property", IDG_RIGHT_EDIT_GROUP, 2, 284, 180, 69, 0, WS_EX_LEFT
 }
 
 

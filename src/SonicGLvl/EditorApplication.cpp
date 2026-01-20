@@ -796,11 +796,14 @@ void EditorApplication::windowResized(Ogre::RenderWindow* rw) {
 	fnResize(hLeftDlg, IDG_PALETTE_GROUP, 0, 2, 0, 181, 0, palette_list_height);
 	fnResize(hLeftDlg, IDL_PALETTE_LIST, 0, 6, 41, 174, 0, palette_list_height -  74);
 
+	int edit_y_coordinate = screen_height - 295;
+	fnResize(hRightDlg, IDG_RIGHT_EDIT_GROUP, edit_y_coordinate, 2, 0, 181, 125);
+
 	int help_y_coordinate = screen_height - 90;
 	fnResize(hRightDlg, IDG_RIGHT_HELP_GROUP, help_y_coordinate, 2, 0, 181, 52);
 	fnResize(hRightDlg, IDT_RIGHT_HELP_DESCRIPTION, help_y_coordinate, 7, 11, 173, 37);
 
-	int object_properties_height = help_y_coordinate - 95;
+	int object_properties_height = help_y_coordinate - 300;
 	fnResize(hRightDlg, IDG_RIGHT_PROPERTIES_GROUP, 0, 2, 56, 181, 0, object_properties_height);
 	fnResize(hRightDlg, IDL_RIGHT_PROPERTIES_LIST, 0, 6, 67, 174, 0, object_properties_height - 25);
 	

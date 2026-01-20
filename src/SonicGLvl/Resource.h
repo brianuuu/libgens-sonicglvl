@@ -169,6 +169,7 @@
 #define IMD_GAME_SHADERS                        40016
 #define IDB_MATERIAL_NEW_TEXTURE_UNIT           40017
 #define IDB_MULTISETPARAM_FROM_OBJECT           40017
+#define IDG_RIGHT_EDIT_GROUP                    40017
 #define IDS_BOTTOM_GHOST_SEEK                   40017
 #define IMD_FRAMEBUFFER                         40017
 #define IDB_BOTTOM_GHOST_BACK                   40018
