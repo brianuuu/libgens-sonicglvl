@@ -398,20 +398,55 @@ void EditorApplication::createObjectsPropertiesGUI() {
 
 
 void EditorApplication::updateObjectPropertyIndex(int selection_index) {
-	if (selection_index < 0) {
+	closeEditPropertyGUI();
+	
+	if (selection_index < 0 || selection_index >= current_properties_names.size() || current_object_list_properties.empty()) {
 		updateHelpWithPropertyGUI(NULL);
 		return;
 	}
 
-	if ((size_t)selection_index < current_properties_names.size()) {
-		if (current_object_list_properties.size()) {
-			LibGens::Object *first_object = (*current_object_list_properties.begin());
+	LibGens::Object *first_object = (*current_object_list_properties.begin());
+	if (first_object) {
+		LibGens::ObjectElement *element = first_object->getElement(current_properties_names[selection_index]);
+		updateHelpWithPropertyGUI(element);
+	}
 
-			if (first_object) {
-				LibGens::ObjectElement *element = first_object->getElement(current_properties_names[selection_index]);
-				updateHelpWithPropertyGUI(element);
+	current_property_index = selection_index;
+	if (hEditPropertyDlg) {
+		return;
+	}
+
+	HWND hEditGroup = GetDlgItem(hRightDlg, IDG_RIGHT_EDIT_GROUP);
+	switch (current_properties_types.at(selection_index))
+	{
+	case LibGens::OBJECT_ELEMENT_BOOL:
+	{
+		hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_BOOL_NEW), hEditGroup, EditBoolCallback);
+		
+		SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_BOOL_VALUE, CB_RESETCONTENT, (WPARAM)0, (LPARAM)0);
+		SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_BOOL_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)"false");
+		SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_BOOL_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)"true");
+		
+		// Set Default
+		if (current_single_property_object) {
+			string element_name = current_properties_names[current_property_index];
+			LibGens::ObjectElement* element = current_single_property_object->getElement(element_name);
+
+			if (element) {
+				LibGens::ObjectElementBool* element_bool = static_cast<LibGens::ObjectElementBool*>(element);
+				bool default_value = element_bool->value;
+				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_BOOL_VALUE, CB_SETCURSEL, (WPARAM)(default_value ? 1 : 0), (LPARAM)0);
 			}
 		}
+
+		break;
+	}
+	}
+
+	if (hEditPropertyDlg) {
+		history_edit_property_wrapper = new HistoryActionWrapper();
+		MoveWindow(hEditPropertyDlg, 4, 14, 260, 180, true);
+		SetFocus(hwnd);
 	}
 }
 
@@ -1110,7 +1145,9 @@ void EditorApplication::confirmEditProperty() {
 
 	if (history_edit_property_wrapper) {
 		pushHistory(history_edit_property_wrapper);
-		history_edit_property_wrapper = NULL;
+
+		// prepare next edit
+		history_edit_property_wrapper = new HistoryActionWrapper();
 	}
 }
 
@@ -1144,12 +1181,19 @@ void EditorApplication::updateHelpWithPropertyGUI(LibGens::ObjectElement *elemen
 void EditorApplication::clearEditPropertyGUI() {
 	hEditPropertyDlg = NULL;
 
+	if (history_edit_property_wrapper) {
+		delete history_edit_property_wrapper;
+		history_edit_property_wrapper = NULL;
+	}
+
 	for (vector<VectorNode *>::iterator it=property_vector_nodes.begin(); it!=property_vector_nodes.end(); it++) {
 		delete (*it);
 	}
 	property_vector_nodes.clear();
 	temp_property_vector_list.clear();
 	temp_property_id_list.clear();
+
+	if (hRightDlg) InvalidateRect(hRightDlg, NULL, true);
 }
 
 void EditorApplication::closeEditPropertyGUI() {
@@ -1209,20 +1253,9 @@ INT_PTR CALLBACK EditBoolCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPa
 				int item_index = SendMessage((HWND) lParam, (UINT) CB_GETCURSEL, (WPARAM) 0, (LPARAM) 0);
 				if (LOWORD(wParam) == IDC_EDIT_BOOL_VALUE) {
 					editor_application->updateEditPropertyBool((item_index == 1));
+					editor_application->confirmEditProperty();
 					break;
 				}
-			}
-
-			switch(LOWORD(wParam)) {
-				case IDOK:
-					SendMessage(hDlg, WM_CLOSE, 0, 0);
-					editor_application->confirmEditProperty();
-					return true;
-
-				case IDCANCEL:
-					SendMessage(hDlg, WM_CLOSE, 0, 0);
-					editor_application->revertEditProperty();
-					return true;
 			}
 			break;
 

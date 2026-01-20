@@ -22,6 +22,7 @@
 #define IDD_LOOK_AT_POINT                       141
 #define IDD_RIGHT_DIALOG                        143
 #define IDD_MOVE_LAYER_DIALOG                   145
+#define IDD_EDIT_BOOL_NEW                       147
 #define IDC_EDIT_FLOAT_VALUE                    40000
 #define IDC_MOVE_LAYER_TARGETS                  40000
 #define IDC_PALETTE_CATEGORY                    40000
