@@ -379,7 +379,7 @@ void EditorApplication::updateObjectsPropertiesValuesGUI(list<LibGens::Object*> 
 			}
 			else if (shared_value != value)
 			{
-				shared_value = "(mutiple values)";
+				shared_value = "(multiple values)";
 				break;
 			}
 		}
