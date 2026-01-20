@@ -139,7 +139,7 @@ void HistoryActionEditObjectElementBool::undo() {
 		object_node_manager->reloadObjectNode(object);
 	}
 
-	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
+	editor_application->updateObjectPropertyIndex(selection_index);
 }
 
 void HistoryActionEditObjectElementBool::redo() {
@@ -152,7 +152,7 @@ void HistoryActionEditObjectElementBool::redo() {
 		object_node_manager->reloadObjectNode(object);
 	}
 
-	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
+	editor_application->updateObjectPropertyIndex(selection_index);
 }
 
 
@@ -167,7 +167,7 @@ void HistoryActionEditObjectElementInteger::undo() {
 		object_node_manager->reloadObjectNode(object);
 	}
 
-	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
+	editor_application->updateObjectPropertyIndex(selection_index);
 }
 
 void HistoryActionEditObjectElementInteger::redo() {
@@ -180,7 +180,7 @@ void HistoryActionEditObjectElementInteger::redo() {
 		object_node_manager->reloadObjectNode(object);
 	}
 
-	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
+	editor_application->updateObjectPropertyIndex(selection_index);
 }
 
 // Edit Float
@@ -194,7 +194,7 @@ void HistoryActionEditObjectElementFloat::undo() {
 		object_node_manager->reloadObjectNode(object);
 	}
 
-	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
+	editor_application->updateObjectPropertyIndex(selection_index);
 }
 
 void HistoryActionEditObjectElementFloat::redo() {
@@ -207,7 +207,7 @@ void HistoryActionEditObjectElementFloat::redo() {
 		object_node_manager->reloadObjectNode(object);
 	}
 
-	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
+	editor_application->updateObjectPropertyIndex(selection_index);
 }
 
 
@@ -222,7 +222,7 @@ void HistoryActionEditObjectElementString::undo() {
 		object_node_manager->reloadObjectNode(object);
 	}
 
-	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
+	editor_application->updateObjectPropertyIndex(selection_index);
 }
 
 void HistoryActionEditObjectElementString::redo() {
@@ -235,7 +235,7 @@ void HistoryActionEditObjectElementString::redo() {
 		object_node_manager->reloadObjectNode(object);
 	}
 
-	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
+	editor_application->updateObjectPropertyIndex(selection_index);
 }
 
 // Edit ID
@@ -249,7 +249,7 @@ void HistoryActionEditObjectElementID::undo() {
 		object_node_manager->reloadObjectNode(object);
 	}
 
-	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
+	editor_application->updateObjectPropertyIndex(selection_index);
 }
 
 void HistoryActionEditObjectElementID::redo() {
@@ -262,7 +262,7 @@ void HistoryActionEditObjectElementID::redo() {
 		object_node_manager->reloadObjectNode(object);
 	}
 
-	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
+	editor_application->updateObjectPropertyIndex(selection_index);
 }
 
 // Edit ID List
@@ -276,7 +276,7 @@ void HistoryActionEditObjectElementIDList::undo() {
 		object_node_manager->reloadObjectNode(object);
 	}
 
-	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
+	editor_application->updateObjectPropertyIndex(selection_index);
 }
 
 void HistoryActionEditObjectElementIDList::redo() {
@@ -289,7 +289,7 @@ void HistoryActionEditObjectElementIDList::redo() {
 		object_node_manager->reloadObjectNode(object);
 	}
 
-	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
+	editor_application->updateObjectPropertyIndex(selection_index);
 }
 
 // Edit Vector
@@ -303,7 +303,7 @@ void HistoryActionEditObjectElementVector::undo() {
 		object_node_manager->reloadObjectNode(object);
 	}
 
-	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
+	editor_application->updateObjectPropertyIndex(selection_index);
 }
 
 void HistoryActionEditObjectElementVector::redo() {
@@ -316,7 +316,7 @@ void HistoryActionEditObjectElementVector::redo() {
 		object_node_manager->reloadObjectNode(object);
 	}
 
-	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
+	editor_application->updateObjectPropertyIndex(selection_index);
 }
 
 // Edit Vector List
@@ -330,7 +330,7 @@ void HistoryActionEditObjectElementVectorList::undo() {
 		object_node_manager->reloadObjectNode(object);
 	}
 
-	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
+	editor_application->updateObjectPropertyIndex(selection_index);
 }
 
 void HistoryActionEditObjectElementVectorList::redo() {
@@ -343,5 +343,5 @@ void HistoryActionEditObjectElementVectorList::redo() {
 		object_node_manager->reloadObjectNode(object);
 	}
 
-	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
+	editor_application->updateObjectPropertyIndex(selection_index);
 }
