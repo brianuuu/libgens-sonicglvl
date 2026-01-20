@@ -138,6 +138,8 @@ void HistoryActionEditObjectElementBool::undo() {
 	if (object_node_manager) {
 		object_node_manager->reloadObjectNode(object);
 	}
+
+	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
 }
 
 void HistoryActionEditObjectElementBool::redo() {
@@ -149,6 +151,8 @@ void HistoryActionEditObjectElementBool::redo() {
 	if (object_node_manager) {
 		object_node_manager->reloadObjectNode(object);
 	}
+
+	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
 }
 
 
@@ -162,6 +166,8 @@ void HistoryActionEditObjectElementInteger::undo() {
 	if (object_node_manager) {
 		object_node_manager->reloadObjectNode(object);
 	}
+
+	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
 }
 
 void HistoryActionEditObjectElementInteger::redo() {
@@ -173,6 +179,8 @@ void HistoryActionEditObjectElementInteger::redo() {
 	if (object_node_manager) {
 		object_node_manager->reloadObjectNode(object);
 	}
+
+	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
 }
 
 // Edit Float
@@ -185,6 +193,8 @@ void HistoryActionEditObjectElementFloat::undo() {
 	if (object_node_manager) {
 		object_node_manager->reloadObjectNode(object);
 	}
+
+	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
 }
 
 void HistoryActionEditObjectElementFloat::redo() {
@@ -196,6 +206,8 @@ void HistoryActionEditObjectElementFloat::redo() {
 	if (object_node_manager) {
 		object_node_manager->reloadObjectNode(object);
 	}
+
+	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
 }
 
 
@@ -209,6 +221,8 @@ void HistoryActionEditObjectElementString::undo() {
 	if (object_node_manager) {
 		object_node_manager->reloadObjectNode(object);
 	}
+
+	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
 }
 
 void HistoryActionEditObjectElementString::redo() {
@@ -220,6 +234,8 @@ void HistoryActionEditObjectElementString::redo() {
 	if (object_node_manager) {
 		object_node_manager->reloadObjectNode(object);
 	}
+
+	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
 }
 
 // Edit ID
@@ -232,6 +248,8 @@ void HistoryActionEditObjectElementID::undo() {
 	if (object_node_manager) {
 		object_node_manager->reloadObjectNode(object);
 	}
+
+	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
 }
 
 void HistoryActionEditObjectElementID::redo() {
@@ -243,6 +261,8 @@ void HistoryActionEditObjectElementID::redo() {
 	if (object_node_manager) {
 		object_node_manager->reloadObjectNode(object);
 	}
+
+	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
 }
 
 // Edit ID List
@@ -255,6 +275,8 @@ void HistoryActionEditObjectElementIDList::undo() {
 	if (object_node_manager) {
 		object_node_manager->reloadObjectNode(object);
 	}
+
+	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
 }
 
 void HistoryActionEditObjectElementIDList::redo() {
@@ -266,6 +288,8 @@ void HistoryActionEditObjectElementIDList::redo() {
 	if (object_node_manager) {
 		object_node_manager->reloadObjectNode(object);
 	}
+
+	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
 }
 
 // Edit Vector
@@ -278,6 +302,8 @@ void HistoryActionEditObjectElementVector::undo() {
 	if (object_node_manager) {
 		object_node_manager->reloadObjectNode(object);
 	}
+
+	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
 }
 
 void HistoryActionEditObjectElementVector::redo() {
@@ -289,6 +315,8 @@ void HistoryActionEditObjectElementVector::redo() {
 	if (object_node_manager) {
 		object_node_manager->reloadObjectNode(object);
 	}
+
+	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
 }
 
 // Edit Vector List
@@ -301,6 +329,8 @@ void HistoryActionEditObjectElementVectorList::undo() {
 	if (object_node_manager) {
 		object_node_manager->reloadObjectNode(object);
 	}
+
+	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
 }
 
 void HistoryActionEditObjectElementVectorList::redo() {
@@ -312,4 +342,6 @@ void HistoryActionEditObjectElementVectorList::redo() {
 	if (object_node_manager) {
 		object_node_manager->reloadObjectNode(object);
 	}
+
+	editor_application->updateObjectPropertyIndex(editor_application->getCurrentPropertyIndex());
 }
