@@ -470,6 +470,37 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 		}
 		break;
 	}
+	case LibGens::OBJECT_ELEMENT_INTEGER:
+	{
+		hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_FLOAT_NEW), hEditGroup, EditIntCallback);
+		
+		unsigned int value = 0;
+		for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
+			LibGens::Object* object = *it;
+			if (!object) continue;
+
+			LibGens::ObjectElement* element = object->getElement(element_name);
+			if (!element) continue;
+
+			LibGens::ObjectElementInteger* element_int = static_cast<LibGens::ObjectElementInteger*>(element);
+			if (!hasValue)
+			{
+				hasValue = true;
+				value = element_int->value;
+			}
+			else if (value != element_int->value)
+			{
+				hasValue = false;
+				break;
+			}
+		}
+
+		if (hasValue)
+		{
+			SetDlgItemText(hEditPropertyDlg, IDC_EDIT_FLOAT_VALUE, ToString(value).c_str());
+		}
+		break;
+	}
 	case LibGens::OBJECT_ELEMENT_FLOAT:
 	{
 		hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_FLOAT_NEW), hEditGroup, EditFloatCallback);
@@ -482,13 +513,13 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 			LibGens::ObjectElement* element = object->getElement(element_name);
 			if (!element) continue;
 
-			LibGens::ObjectElementFloat* element_bool = static_cast<LibGens::ObjectElementFloat*>(element);
+			LibGens::ObjectElementFloat* element_float = static_cast<LibGens::ObjectElementFloat*>(element);
 			if (!hasValue)
 			{
 				hasValue = true;
-				value = element_bool->value;
+				value = element_float->value;
 			}
-			else if (value != element_bool->value)
+			else if (value != element_float->value)
 			{
 				hasValue = false;
 				break;
@@ -1332,6 +1363,7 @@ INT_PTR CALLBACK EditIntCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPar
 
 				FromString<unsigned int>(value, ToString(value_str), std::dec);
 				editor_application->updateEditPropertyInteger(value);
+				editor_application->confirmEditProperty();
 				break;
 			}
 
@@ -1339,21 +1371,9 @@ INT_PTR CALLBACK EditIntCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPar
 				unsigned int value = 0.0f;
 				value = GetDlgItemInteger(hDlg, IDC_EDIT_FLOAT_VALUE);
 				editor_application->updateEditPropertyInteger(value);
+				editor_application->confirmEditProperty();
 				break;
 			}
-
-			switch(LOWORD(wParam)) {
-				case IDOK:
-					SendMessage(hDlg, WM_CLOSE, 0, 0);
-					editor_application->confirmEditProperty();
-					return true;
-
-				case IDCANCEL:
-					SendMessage(hDlg, WM_CLOSE, 0, 0);
-					editor_application->revertEditProperty();
-					return true;
-			}
-
 			break;
 
 		case WM_NOTIFY:

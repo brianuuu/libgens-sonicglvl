@@ -168,7 +168,7 @@ STYLE DS_3DLOOK | DS_ABSALIGN | DS_CENTER | DS_SHELLFONT | WS_VISIBLE | WS_CHILD
 FONT 8, "Ms Shell Dlg"
 {
     COMBOBOX        IDC_EDIT_FLOAT_VALUE, 5, 10, 165, 12, WS_VSCROLL | CBS_DROPDOWN | CBS_HASSTRINGS, WS_EX_LEFT
-    LTEXT           "Set Value (number)", 0, 62, 0, 61, 9, SS_LEFT, WS_EX_LEFT
+    LTEXT           "Set Value (number)", 0, 57, 0, 61, 9, SS_LEFT, WS_EX_LEFT
 }
 
 
