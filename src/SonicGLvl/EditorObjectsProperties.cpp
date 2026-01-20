@@ -414,22 +414,24 @@ void EditorApplication::createObjectsPropertiesGUI() {
 void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 	closeEditPropertyGUI();
 	
+	current_property_index = selection_index;
 	if (selection_index < 0 || selection_index >= current_properties_names.size() || current_object_list_properties.empty()) {
 		updateHelpWithPropertyGUI(NULL);
 		return;
 	}
 
+	string const& element_name = current_properties_names.at(current_property_index);
 	LibGens::Object *first_object = (*current_object_list_properties.begin());
 	if (first_object) {
-		LibGens::ObjectElement *element = first_object->getElement(current_properties_names[selection_index]);
+		LibGens::ObjectElement *element = first_object->getElement(element_name);
 		updateHelpWithPropertyGUI(element);
 	}
 
-	current_property_index = selection_index;
 	if (hEditPropertyDlg) {
 		return;
 	}
 
+	bool hasValue = false;
 	HWND hEditGroup = GetDlgItem(hRightDlg, IDG_RIGHT_EDIT_GROUP);
 	switch (current_properties_types.at(selection_index))
 	{
@@ -441,18 +443,31 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 		SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_BOOL_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)"false");
 		SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_BOOL_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)"true");
 		
-		// Set Default
-		if (current_single_property_object) {
-			string element_name = current_properties_names[current_property_index];
-			LibGens::ObjectElement* element = current_single_property_object->getElement(element_name);
+		bool value = false;
+		for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
+			LibGens::Object* object = *it;
+			if (!object) continue;
 
-			if (element) {
-				LibGens::ObjectElementBool* element_bool = static_cast<LibGens::ObjectElementBool*>(element);
-				bool default_value = element_bool->value;
-				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_BOOL_VALUE, CB_SETCURSEL, (WPARAM)(default_value ? 1 : 0), (LPARAM)0);
+			LibGens::ObjectElement* element = object->getElement(element_name);
+			if (!element) continue;
+
+			LibGens::ObjectElementBool* element_bool = static_cast<LibGens::ObjectElementBool*>(element);
+			if (!hasValue)
+			{
+				hasValue = true;
+				value = element_bool->value;
+			}
+			else if (value != element_bool->value)
+			{
+				hasValue = false;
+				break;
 			}
 		}
 
+		if (hasValue)
+		{
+			SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_BOOL_VALUE, CB_SETCURSEL, (WPARAM)(value ? 1 : 0), (LPARAM)0);
+		}
 		break;
 	}
 	}
