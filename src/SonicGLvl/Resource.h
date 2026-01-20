@@ -94,6 +94,7 @@
 #define IMD_REDO                                40005
 #define IDB_EDIT_ID_LIST_GO_TO_TARGET           40006
 #define IDB_EDIT_VECTOR_LIST_FOCUS              40006
+#define IDB_LAYER_SHOW_ALL                      40006
 #define IDC_EDIT_VECTOR_EDITING                 40006
 #define IDC_FIND_FILTERED                       40006
 #define IDE_MULTISETPARAM_SPACING               40006
@@ -102,6 +103,7 @@
 #define IDS_RIGHT_SELECTION_POS_X               40006
 #define IMD_CUT                                 40006
 #define IDB_EDIT_VECTOR_FOCUS                   40007
+#define IDB_LAYER_HIDE_ALL                      40007
 #define IDB_MATERIAL_NEW_MATERIAL               40007
 #define IDC_MULTISETPARAM_SNAP_PATH_EDGES       40007
 #define IDE_EDIT_VECTOR_LIST_X                  40007

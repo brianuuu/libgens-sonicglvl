@@ -433,6 +433,7 @@ class EditorApplication : public BaseApplication {
 		void renameLayer(int index, string name);
 		void deleteLayer();
 		void newLayer();
+		void toggleAllLayers(bool v);
 
 		void openMoveToLayerGUI();
 		void populateMoveToLayerTargets(HWND hDlg);

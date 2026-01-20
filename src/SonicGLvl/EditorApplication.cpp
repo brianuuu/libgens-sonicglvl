@@ -784,11 +784,13 @@ void EditorApplication::windowResized(Ogre::RenderWindow* rw) {
 
 	int layer_control_y_coordinate = left_window_height / 2;
 	fnResize(hLeftDlg, IDG_LAYER_GROUP, layer_control_y_coordinate, 2, 0, 181, 0, left_window_height / 2 - 4);
-	fnResize(hLeftDlg, IDT_LAYER_CURRENT, layer_control_y_coordinate, 7, 12, 64, 14);
+	fnResize(hLeftDlg, IDT_LAYER_CURRENT, layer_control_y_coordinate + 2, 7, 12, 64, 14);
 	fnResize(hLeftDlg, IDC_LAYER_CURRENT, layer_control_y_coordinate, 60, 11, 119, 14);
-	fnResize(hLeftDlg, IDL_LAYER_LIST, layer_control_y_coordinate, 7, 27, 173, 0, left_window_height / 2 - 80);
-	fnResize(hLeftDlg, IDB_LAYER_NEW, left_window_height - 245, 7, 131, 85, 14);
-	fnResize(hLeftDlg, IDB_LAYER_DELETE, left_window_height - 245, 95, 131, 85, 14);
+	fnResize(hLeftDlg, IDL_LAYER_LIST, layer_control_y_coordinate, 7, 27, 173, 0, left_window_height / 2 - 107);
+	fnResize(hLeftDlg, IDB_LAYER_NEW, left_window_height - 272, 7, 131, 85, 14);
+	fnResize(hLeftDlg, IDB_LAYER_DELETE, left_window_height - 272, 95, 131, 85, 14);
+	fnResize(hLeftDlg, IDB_LAYER_SHOW_ALL, left_window_height - 246, 7, 131, 85, 14);
+	fnResize(hLeftDlg, IDB_LAYER_HIDE_ALL, left_window_height - 246, 95, 131, 85, 14);
 
 	int palette_list_height = left_window_height / 2 - 5;
 	fnResize(hLeftDlg, IDG_PALETTE_GROUP, 0, 2, 0, 181, 0, palette_list_height);

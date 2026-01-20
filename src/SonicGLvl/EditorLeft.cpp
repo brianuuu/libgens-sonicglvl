@@ -358,6 +358,8 @@ void EditorApplication::createLayerControlGUI() {
 	HWND hLayersList = GetDlgItem(hLeftDlg, IDL_LAYER_LIST);
 	HWND hLayersNew = GetDlgItem(hLeftDlg, IDB_LAYER_NEW);
 	HWND hLayersDelete = GetDlgItem(hLeftDlg, IDB_LAYER_DELETE);
+	HWND hLayersShow = GetDlgItem(hLeftDlg, IDB_LAYER_SHOW_ALL);
+	HWND hLayersHide = GetDlgItem(hLeftDlg, IDB_LAYER_HIDE_ALL);
 
 	LVCOLUMN Col;
 	Col.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
@@ -377,6 +379,8 @@ void EditorApplication::createLayerControlGUI() {
 	EnableWindow(hLayersList, false);
 	EnableWindow(hLayersNew, false);
 	EnableWindow(hLayersDelete, false);
+	EnableWindow(hLayersShow, false);
+	EnableWindow(hLayersHide, false);
 }
 
 void EditorApplication::updateLayerControlGUI() {
@@ -385,6 +389,8 @@ void EditorApplication::updateLayerControlGUI() {
 	HWND hLayersList = GetDlgItem(hLeftDlg, IDL_LAYER_LIST);
 	HWND hLayersNew = GetDlgItem(hLeftDlg, IDB_LAYER_NEW);
 	HWND hLayersDelete = GetDlgItem(hLeftDlg, IDB_LAYER_DELETE);
+	HWND hLayersShow = GetDlgItem(hLeftDlg, IDB_LAYER_SHOW_ALL);
+	HWND hLayersHide = GetDlgItem(hLeftDlg, IDB_LAYER_HIDE_ALL);
 
 	SCROLLINFO info;
 	info.cbSize = sizeof(SCROLLINFO);
@@ -444,6 +450,8 @@ void EditorApplication::updateLayerControlGUI() {
 	EnableWindow(hLayersList, true);
 	EnableWindow(hLayersNew, true);
 	EnableWindow(hLayersDelete, false);
+	EnableWindow(hLayersShow, true);
+	EnableWindow(hLayersHide, true);
 }
 
 void EditorApplication::setLayerVisibility(int index, bool v) {
@@ -568,6 +576,13 @@ void EditorApplication::newLayer() {
 	SendDlgItemMessage(hLeftDlg, IDC_LAYER_CURRENT, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)set->getName().c_str());
 }
 
+void EditorApplication::toggleAllLayers(bool v) {
+	for (int i = 0; i < set_visibility.size(); i++) {
+		setLayerVisibility(i, v);
+	}
+	updateLayerControlGUI();
+}
+
 INT_PTR CALLBACK LeftBarCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam) {
 	int list_view_index = ListView_GetNextItem(GetDlgItem(hDlg, IDL_PALETTE_LIST), -1, LVIS_SELECTED | LVIS_FOCUSED);
 	editor_application->updateObjectsPaletteSelection(list_view_index);
@@ -679,6 +694,16 @@ INT_PTR CALLBACK LeftBarCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPar
 		case IDB_LAYER_NEW:
 		{
 			editor_application->newLayer();
+			return true;
+		}
+		case IDB_LAYER_SHOW_ALL:
+		{
+			editor_application->toggleAllLayers(true);
+			return true;
+		}
+		case IDB_LAYER_HIDE_ALL:
+		{
+			editor_application->toggleAllLayers(false);
 			return true;
 		}
 		}
