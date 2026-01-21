@@ -215,205 +215,193 @@ namespace LibGens {
 	}
 
 	ObjectElement *Object::cloneElement(ObjectElement *element) {
+		ObjectElement* element_base = NULL;
 		switch (element->getType()) {
 			case OBJECT_ELEMENT_UNDEFINED :
 				{
-					ObjectElement *element_sub = new ObjectElement();
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
-					return element_sub;
+					element_base = new ObjectElement();
+					break;
 				}
 
 			case OBJECT_ELEMENT_BOOL :
 				{
 					ObjectElementBool *element_sub = new ObjectElementBool();
 					ObjectElementBool *element_src = (ObjectElementBool *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_INTEGER :
 				{
 					ObjectElementInteger *element_sub = new ObjectElementInteger();
 					ObjectElementInteger *element_src = (ObjectElementInteger *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_FLOAT :
 				{
 					ObjectElementFloat *element_sub = new ObjectElementFloat();
 					ObjectElementFloat *element_src = (ObjectElementFloat *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_STRING :
 				{
 					ObjectElementString *element_sub = new ObjectElementString();
 					ObjectElementString *element_src = (ObjectElementString *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_ID :
 				{
 					ObjectElementID *element_sub = new ObjectElementID();
 					ObjectElementID *element_src = (ObjectElementID *) element;
-					element_sub->setName(element->getName());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_ID_LIST :
 				{
 					ObjectElementIDList *element_sub = new ObjectElementIDList();
 					ObjectElementIDList *element_src = (ObjectElementIDList *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_VECTOR :
 				{
 					ObjectElementVector *element_sub = new ObjectElementVector();
 					ObjectElementVector *element_src = (ObjectElementVector *) element;
-					element_sub->setName(element->getName());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_VECTOR_LIST :
 				{
 					ObjectElementVectorList *element_sub = new ObjectElementVectorList();
 					ObjectElementVectorList *element_src = (ObjectElementVectorList *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_SINT8 :
 				{
 					ObjectElementSint8 *element_sub = new ObjectElementSint8();
 					ObjectElementSint8 *element_src = (ObjectElementSint8 *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_UINT8 :
 				{
 					ObjectElementUint8 *element_sub = new ObjectElementUint8();
 					ObjectElementUint8 *element_src = (ObjectElementUint8 *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_SINT16 :
 				{
 					ObjectElementSint16 *element_sub = new ObjectElementSint16();
 					ObjectElementSint16 *element_src = (ObjectElementSint16 *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_UINT16 :
 				{
 					ObjectElementUint16 *element_sub = new ObjectElementUint16();
 					ObjectElementUint16 *element_src = (ObjectElementUint16 *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_SINT32 :
 				{
 					ObjectElementSint32 *element_sub = new ObjectElementSint32();
 					ObjectElementSint32 *element_src = (ObjectElementSint32 *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_UINT32 :
 				{
 					ObjectElementUint32 *element_sub = new ObjectElementUint32();
 					ObjectElementUint32 *element_src = (ObjectElementUint32 *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_ENUM :
 				{
 					ObjectElementEnum *element_sub = new ObjectElementEnum();
 					ObjectElementEnum *element_src = (ObjectElementEnum *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_TARGET :
 				{
 					ObjectElementTarget *element_sub = new ObjectElementTarget();
 					ObjectElementTarget *element_src = (ObjectElementTarget *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_POSITION :
 				{
 					ObjectElementPosition *element_sub = new ObjectElementPosition();
 					ObjectElementPosition *element_src = (ObjectElementPosition *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_VECTOR3 :
 				{
 					ObjectElementVector3 *element_sub = new ObjectElementVector3();
 					ObjectElementVector3 *element_src = (ObjectElementVector3 *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 
 			case OBJECT_ELEMENT_UINT32ARRAY :
 				{
 					ObjectElementUint32Array *element_sub = new ObjectElementUint32Array();
 					ObjectElementUint32Array *element_src = (ObjectElementUint32Array *) element;
-					element_sub->setName(element->getName());
-					element_sub->setDescription(element->getDescription());
 					element_sub->value = element_src->value;
-					return element_sub;
+					element_base = element_sub;
+					break;
 				}
 		}
 
-		return NULL;
+		if (element_base)
+		{
+			element_base->setName(element->getName());
+			element_base->setDescription(element->getDescription());
+		}
+
+		return element_base;
 	}
 
 	ObjectExtra *Object::cloneExtra(ObjectExtra *extra) {
@@ -579,131 +567,82 @@ namespace LibGens {
 			extras.push_back(extra);
 		}
 		else {
+			ObjectElement* elementBase = NULL;
 			if (type == LIBGENS_OBJECT_ELEMENT_UNDEFINED_TEMPLATE) {
-				ObjectElement *element = new ObjectElement();
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = new ObjectElement();
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_BOOL_TEMPLATE) {
 				ObjectElementBool *element = new ObjectElementBool();
 				string value="";
 				root->QueryValueAttribute(LIBGENS_OBJECT_ELEMENT_ATTRIBUTE_DEFAULT, &value);
 				element->value = (value == LIBGENS_OBJECT_ELEMENT_BOOL_TRUE);
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = element;
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_INTEGER_TEMPLATE) {
 				ObjectElementInteger *element = new ObjectElementInteger();
 				root->QueryUnsignedAttribute(LIBGENS_OBJECT_ELEMENT_ATTRIBUTE_DEFAULT, &element->value);
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = element;
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_FLOAT_TEMPLATE) {
 				ObjectElementFloat *element = new ObjectElementFloat();
 				root->QueryFloatAttribute(LIBGENS_OBJECT_ELEMENT_ATTRIBUTE_DEFAULT, &element->value);
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = element;
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_STRING_TEMPLATE) {
 				ObjectElementString *element = new ObjectElementString();
 				root->QueryValueAttribute(LIBGENS_OBJECT_ELEMENT_ATTRIBUTE_DEFAULT, &element->value);
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = element;
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_ID_TEMPLATE) {
-				ObjectElementID *element = new ObjectElementID();
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = new ObjectElementID();
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_ID_LIST_TEMPLATE) {
-				ObjectElementIDList *element = new ObjectElementIDList();
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = new ObjectElementIDList();
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_VECTOR_TEMPLATE) {
-				ObjectElementVector *element = new ObjectElementVector();
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = new ObjectElementVector();
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_VECTOR_LIST_TEMPLATE) {
-				ObjectElementVectorList *element = new ObjectElementVectorList();
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = new ObjectElementVectorList();
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_SINT8_TEMPLATE) {
-				ObjectElementSint8 *element = new ObjectElementSint8();
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = new ObjectElementSint8();
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_UINT8_TEMPLATE) {
-				ObjectElementUint8 *element = new ObjectElementUint8();
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = new ObjectElementUint8();
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_SINT16_TEMPLATE) {
-				ObjectElementSint16 *element = new ObjectElementSint16();
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = new ObjectElementSint16();
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_UINT16_TEMPLATE) {
-				ObjectElementUint16 *element = new ObjectElementUint16();
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = new ObjectElementUint16();
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_SINT32_TEMPLATE) {
-				ObjectElementSint32 *element = new ObjectElementSint32();
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = new ObjectElementSint32();
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_UINT32_TEMPLATE) {
-				ObjectElementUint32 *element = new ObjectElementUint32();
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = new ObjectElementUint32();
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_ENUM_TEMPLATE) {
-				ObjectElementEnum *element = new ObjectElementEnum();
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = new ObjectElementEnum();
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_POSITION_TEMPLATE) {
-				ObjectElementPosition *element = new ObjectElementPosition();
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = new ObjectElementPosition();
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_TARGET_TEMPLATE) {
-				ObjectElementTarget *element = new ObjectElementTarget();
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = new ObjectElementTarget();
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_VECTOR3_TEMPLATE) {
-				ObjectElementVector3 *element = new ObjectElementVector3();
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = new ObjectElementVector3();
 			}
 			else if (type == LIBGENS_OBJECT_ELEMENT_UINT32ARRAY_TEMPLATE) {
-				ObjectElementUint32Array *element = new ObjectElementUint32Array();
-				element->setName(element_name);
-				element->setDescription(description);
-				elements.push_back(element);
+				elementBase = new ObjectElementUint32Array();
+			}
+
+			if (elementBase) {
+				elementBase->setName(element_name);
+				elementBase->setDescription(description);
+				elements.push_back(elementBase);
 			}
 		}
 	}
