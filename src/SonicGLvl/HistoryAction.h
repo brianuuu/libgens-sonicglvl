@@ -61,6 +61,10 @@ class HistoryActionWrapper : public HistoryAction {
 			type = HISTORY_ACTION_WRAPPER;
 		}
 
+		bool empty() {
+			return actions.empty();
+		}
+
 		void push(HistoryAction *action) {
 			actions.push_back(action);
 		}
