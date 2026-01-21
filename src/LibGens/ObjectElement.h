@@ -49,6 +49,7 @@ namespace LibGens {
 			ObjectElementType type;
 			string name;
 			string description;
+			vector<string> presets;
 		public:
 			ObjectElement() {
 				type = OBJECT_ELEMENT_UNDEFINED;
@@ -70,6 +71,14 @@ namespace LibGens {
 
 			string getDescription() {
 				return description;
+			}
+
+			void setPresets(vector<string> const& other) {
+				presets = other;
+			}
+
+			vector<string> const& getPresets() {
+				return presets;
 			}
 
 			ObjectElementType getType() {

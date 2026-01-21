@@ -49,6 +49,7 @@
 #define IDL_PALETTE_LIST                        40001
 #define IDR_MATERIAL_MATERIAL_MODE              40001
 #define IDS_EDIT_VECTOR_LIST_Y                  40001
+#define IDT_EDIT_PRESET_COUNT                   40001
 #define IMD_SAVE_LEVEL_DATA                     40001
 #define IDB_EDIT_ID_LIST_CREATE                 40002
 #define IDB_IMPORT_PHYSICS                      40002

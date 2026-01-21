@@ -399,6 +399,7 @@ namespace LibGens {
 		{
 			element_base->setName(element->getName());
 			element_base->setDescription(element->getDescription());
+			element_base->setPresets(element->getPresets());
 		}
 
 		return element_base;
@@ -642,6 +643,18 @@ namespace LibGens {
 			if (elementBase) {
 				elementBase->setName(element_name);
 				elementBase->setDescription(description);
+
+				// read presets, not all property uses it
+				vector<string> presets;
+				string preset = "";
+				int i = 0;
+				while (root->QueryValueAttribute(LIBGENS_OBJECT_ELEMENT_ATTRIBUTE_PRESET + to_string(i), &preset) == TIXML_SUCCESS)
+				{
+					presets.push_back(preset);
+					i++;
+				}
+				if (presets.size()) elementBase->setPresets(presets);
+
 				elements.push_back(elementBase);
 			}
 		}

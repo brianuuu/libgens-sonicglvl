@@ -487,6 +487,15 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 			{
 				hasValue = true;
 				value = element_int->value;
+
+				// load presets
+				vector<string> const& presets = element->getPresets();
+				for (string const& preset : presets) {
+					SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_FLOAT_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)preset.c_str());
+				}
+				if (presets.size()) {
+					SetDlgItemText(hEditPropertyDlg, IDT_EDIT_PRESET_COUNT, ("This property has " + to_string(presets.size()) + " presets").c_str());
+				}
 			}
 			else if (value != element_int->value)
 			{
@@ -518,6 +527,15 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 			{
 				hasValue = true;
 				value = element_float->value;
+
+				// load presets
+				vector<string> const& presets = element->getPresets();
+				for (string const& preset : presets) {
+					SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_FLOAT_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)preset.c_str());
+				}
+				if (presets.size()) {
+					SetDlgItemText(hEditPropertyDlg, IDT_EDIT_PRESET_COUNT, ("This property has " + to_string(presets.size()) + " presets").c_str());
+				}
 			}
 			else if (value != element_float->value)
 			{

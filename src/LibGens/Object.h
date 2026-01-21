@@ -70,6 +70,7 @@
 #define LIBGENS_OBJECT_ELEMENT_ATTRIBUTE_NAME         "name"
 #define LIBGENS_OBJECT_ELEMENT_ATTRIBUTE_DEFAULT      "default"
 #define LIBGENS_OBJECT_ELEMENT_ATTRIBUTE_DESCRIPTION  "description"
+#define LIBGENS_OBJECT_ELEMENT_ATTRIBUTE_PRESET	      "preset"
 #define LIBGENS_OBJECT_ELEMENT_BOOL_TRUE              "true"
 #define LIBGENS_OBJECT_ELEMENT_BOOL_FALSE             "false"
 #define LIBGENS_OBJECT_ELEMENT_EXTRA                  "Extra"
