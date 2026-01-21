@@ -54,6 +54,7 @@ namespace LibGens {
 			ObjectPhysics *getObjectPhysics(string name);
 			void readySortedEntries();
 			bool getNextEntryName(std::string &output);
+			int getEntrySize();
 	};
 };
 

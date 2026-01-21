@@ -23,7 +23,8 @@
 #define IDD_RIGHT_DIALOG                        143
 #define IDD_MOVE_LAYER_DIALOG                   145
 #define IDD_EDIT_BOOL_NEW                       147
-#define IDD_EDIT_FLOAT_NEW                      149
+#define IDD_EDIT_NUMBER_NEW                     150
+#define IDD_EDIT_STRING_NEW                     152
 #define IDC_EDIT_FLOAT_VALUE                    40000
 #define IDC_MOVE_LAYER_TARGETS                  40000
 #define IDC_PALETTE_CATEGORY                    40000
@@ -39,7 +40,6 @@
 #define IDT_RIGHT_HELP_DESCRIPTION              40000
 #define IMD_OPEN_LEVEL                          40000
 #define IDB_DELETE_PHYSICS                      40001
-#define IDC_EDIT_STRING_VALUE                   40001
 #define IDE_EDIT_VECTOR_Y                       40001
 #define IDE_FIND_PROPERTY_VALUE                 40001
 #define IDE_LOOK_AT_Y                           40001
@@ -54,6 +54,8 @@
 #define IDB_EDIT_ID_LIST_CREATE                 40002
 #define IDB_IMPORT_PHYSICS                      40002
 #define IDC_EDIT_ID_VALUE                       40002
+#define IDC_EDIT_NUMBER_VALUE                   40002
+#define IDC_EDIT_STRING_VALUE                   40002
 #define IDC_LAYER_CURRENT                       40002
 #define IDE_EDIT_VECTOR_Z                       40002
 #define IDE_FIND_VALUE_VALUE                    40002

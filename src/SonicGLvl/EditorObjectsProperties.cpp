@@ -472,7 +472,7 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 	}
 	case LibGens::OBJECT_ELEMENT_INTEGER:
 	{
-		hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_FLOAT_NEW), hEditGroup, EditIntCallback);
+		hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_NUMBER_NEW), hEditGroup, EditIntCallback);
 		
 		unsigned int value = 0;
 		for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
@@ -491,7 +491,7 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 				// load presets
 				vector<string> const& presets = element->getPresets();
 				for (string const& preset : presets) {
-					SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_FLOAT_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)preset.c_str());
+					SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)preset.c_str());
 				}
 				if (presets.size()) {
 					SetDlgItemText(hEditPropertyDlg, IDT_EDIT_PRESET_COUNT, ("This property has " + to_string(presets.size()) + " presets").c_str());
@@ -506,13 +506,13 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 
 		if (hasValue)
 		{
-			SetDlgItemText(hEditPropertyDlg, IDC_EDIT_FLOAT_VALUE, ToString(value).c_str());
+			SetDlgItemText(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE, ToString(value).c_str());
 		}
 		break;
 	}
 	case LibGens::OBJECT_ELEMENT_FLOAT:
 	{
-		hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_FLOAT_NEW), hEditGroup, EditFloatCallback);
+		hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_NUMBER_NEW), hEditGroup, EditFloatCallback);
 		
 		float value = 0.0f;
 		for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
@@ -531,7 +531,7 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 				// load presets
 				vector<string> const& presets = element->getPresets();
 				for (string const& preset : presets) {
-					SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_FLOAT_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)preset.c_str());
+					SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)preset.c_str());
 				}
 				if (presets.size()) {
 					SetDlgItemText(hEditPropertyDlg, IDT_EDIT_PRESET_COUNT, ("This property has " + to_string(presets.size()) + " presets").c_str());
@@ -546,7 +546,61 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 
 		if (hasValue)
 		{
-			SetDlgItemText(hEditPropertyDlg, IDC_EDIT_FLOAT_VALUE, ToString(value).c_str());
+			SetDlgItemText(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE, ToString(value).c_str());
+		}
+		break;
+	}
+	case LibGens::OBJECT_ELEMENT_STRING:
+	{
+		hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_STRING_NEW), hEditGroup, EditStringCallback);
+		
+		string value = "";
+		for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
+			LibGens::Object* object = *it;
+			if (!object) continue;
+
+			LibGens::ObjectElement* element = object->getElement(element_name);
+			if (!element) continue;
+
+			LibGens::ObjectElementString* element_string = static_cast<LibGens::ObjectElementString*>(element);
+			if (!hasValue)
+			{
+				hasValue = true;
+				value = element_string->value;
+
+				// If ObjectPhysics & Type, pre-load all ObjectProduction entries into the ComboBox
+				if (object_production && object->getName() == OBJECT_NODE_OBJECT_PHYSICS && element_name == OBJECT_NODE_OBJECT_PHYSICS_ELEMENT_TYPE) {
+					object_production->readySortedEntries();
+					string entry_name = "";
+					while (object_production->getNextEntryName(entry_name)) {
+						SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_STRING_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)entry_name.c_str());
+					}
+					if (object_production->getEntrySize()) {
+						SetDlgItemText(hEditPropertyDlg, IDT_EDIT_PRESET_COUNT, ("This property has " + to_string(object_production->getEntrySize()) + " presets").c_str());
+					}
+				}
+				else
+				{
+					// load presets
+					vector<string> const& presets = element->getPresets();
+					for (string const& preset : presets) {
+						SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_STRING_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)preset.c_str());
+					}
+					if (presets.size()) {
+						SetDlgItemText(hEditPropertyDlg, IDT_EDIT_PRESET_COUNT, ("This property has " + to_string(presets.size()) + " presets").c_str());
+					}
+				}
+			}
+			else if (value != element_string->value)
+			{
+				hasValue = false;
+				break;
+			}
+		}
+
+		if (hasValue)
+		{
+			SetDlgItemText(hEditPropertyDlg, IDC_EDIT_STRING_VALUE, value.c_str());
 		}
 		break;
 	}
@@ -1376,8 +1430,8 @@ INT_PTR CALLBACK EditIntCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPar
 				char value_str[1024] = "";
 				unsigned int value = 0.0f;
 
-				int nIndex=SendDlgItemMessage(hDlg, IDC_EDIT_FLOAT_VALUE, (UINT) CB_GETCURSEL, (WPARAM) 0, (LPARAM) 0);
-				SendDlgItemMessage(hDlg, IDC_EDIT_FLOAT_VALUE, (UINT)CB_GETLBTEXT, (WPARAM)nIndex, (LPARAM)value_str);
+				int nIndex=SendDlgItemMessage(hDlg, IDC_EDIT_NUMBER_VALUE, (UINT) CB_GETCURSEL, (WPARAM) 0, (LPARAM) 0);
+				SendDlgItemMessage(hDlg, IDC_EDIT_NUMBER_VALUE, (UINT)CB_GETLBTEXT, (WPARAM)nIndex, (LPARAM)value_str);
 
 				FromString<unsigned int>(value, ToString(value_str), std::dec);
 				editor_application->updateEditPropertyInteger(value);
@@ -1387,7 +1441,7 @@ INT_PTR CALLBACK EditIntCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPar
 
 			if (HIWORD(wParam) == CBN_EDITCHANGE) {
 				unsigned int value = 0.0f;
-				value = GetDlgItemInteger(hDlg, IDC_EDIT_FLOAT_VALUE);
+				value = GetDlgItemInteger(hDlg, IDC_EDIT_NUMBER_VALUE);
 				editor_application->updateEditPropertyInteger(value);
 				editor_application->confirmEditProperty();
 				break;
@@ -1418,8 +1472,8 @@ INT_PTR CALLBACK EditFloatCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lP
 				char value_str[1024] = "";
 				float value = 0.0f;
 
-				int nIndex=SendDlgItemMessage(hDlg, IDC_EDIT_FLOAT_VALUE, (UINT) CB_GETCURSEL, (WPARAM) 0, (LPARAM) 0);
-				SendDlgItemMessage(hDlg, IDC_EDIT_FLOAT_VALUE, (UINT)CB_GETLBTEXT, (WPARAM)nIndex, (LPARAM)value_str);
+				int nIndex=SendDlgItemMessage(hDlg, IDC_EDIT_NUMBER_VALUE, (UINT) CB_GETCURSEL, (WPARAM) 0, (LPARAM) 0);
+				SendDlgItemMessage(hDlg, IDC_EDIT_NUMBER_VALUE, (UINT)CB_GETLBTEXT, (WPARAM)nIndex, (LPARAM)value_str);
 
 				FromString<float>(value, ToString(value_str), std::dec);
 				editor_application->updateEditPropertyFloat(value);
@@ -1429,7 +1483,7 @@ INT_PTR CALLBACK EditFloatCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lP
 
 			if (HIWORD(wParam) == CBN_EDITCHANGE) {
 				float value = 0.0f;
-				value = GetDlgItemFloat(hDlg, IDC_EDIT_FLOAT_VALUE);
+				value = GetDlgItemFloat(hDlg, IDC_EDIT_NUMBER_VALUE);
 				editor_application->updateEditPropertyFloat(value);
 				editor_application->confirmEditProperty();
 				break;
@@ -1461,6 +1515,7 @@ INT_PTR CALLBACK EditStringCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 				int nIndex=SendDlgItemMessage(hDlg, IDC_EDIT_STRING_VALUE, (UINT) CB_GETCURSEL, (WPARAM) 0, (LPARAM) 0);
 				SendDlgItemMessage(hDlg, IDC_EDIT_STRING_VALUE, (UINT)CB_GETLBTEXT, (WPARAM)nIndex, (LPARAM)value_str);
 				editor_application->updateEditPropertyString(ToString(value_str));
+				editor_application->confirmEditProperty();
 				break;
 			}
 
@@ -1468,21 +1523,9 @@ INT_PTR CALLBACK EditStringCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 				char value_str[1024] = "";
 				GetDlgItemText(hDlg, IDC_EDIT_STRING_VALUE, value_str, 1024);
 				editor_application->updateEditPropertyString(ToString(value_str));
+				editor_application->confirmEditProperty();
 				break;
 			}
-
-			switch(LOWORD(wParam)) {
-				case IDOK:
-					SendMessage(hDlg, WM_CLOSE, 0, 0);
-					editor_application->confirmEditProperty();
-					return true;
-
-				case IDCANCEL:
-					SendMessage(hDlg, WM_CLOSE, 0, 0);
-					editor_application->revertEditProperty();
-					return true;
-			}
-
 			break;
 
 		case WM_NOTIFY:

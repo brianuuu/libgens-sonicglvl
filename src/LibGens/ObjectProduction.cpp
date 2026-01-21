@@ -122,4 +122,8 @@ namespace LibGens {
 		sorted_entry_name_iterator++;
 		return true;
 	}
+
+	int ObjectProduction::getEntrySize() {
+		return sorted_entry_names.size();
+	}
 };
