@@ -345,20 +345,27 @@ void EditorApplication::updateObjectsPropertiesValuesGUI(list<LibGens::Object*> 
 					value = element_cast_string->value;
 					break;
 				case LibGens::OBJECT_ELEMENT_ID :
+				{
 					element_cast_id=static_cast<LibGens::ObjectElementID *>(element);
+					value = ToString(element_cast_id->value);
 
-					if (current_level) {
-						if (current_level->getLevel()) {
-							LibGens::Object *target_object = current_level->getLevel()->getObjectByID(element_cast_id->value);
-
-							if (target_object) {
-								value = target_object->getName();
-							}
-						}
+					LibGens::Object* obj = NULL;
+					EditorLevel* level = editor_application->getCurrentLevel();
+					if (level)
+					{
+						obj = level->getLevel()->getObjectByID(element_cast_id->value);
+					}
+					else
+					{
+						ObjectNode* obj_node = editor_application->getObjectNodeManager()->findObjectNodeByID(element_cast_id->value);
+						obj = obj_node ? obj_node->getObject() : NULL;
 					}
 
-					value += "(ID: " + ToString(element_cast_id->value) + ")";
+					if (obj) {
+						value += " (" + obj->getName() + ")";
+					}
 					break;
+				}
 				case LibGens::OBJECT_ELEMENT_ID_LIST :
 					element_cast_id_list=static_cast<LibGens::ObjectElementIDList *>(element);
 					value = "ID Count: " + ToString(element_cast_id_list->value.size());
