@@ -1039,9 +1039,9 @@ void EditorApplication::updateEditPropertyID(size_t v)
 		}
 	}
 
+	setTargetName(v);
 	if (changed)
 	{
-		setTargetName(v);
 		updateObjectsPropertiesValuesGUI(current_object_list_properties);
 		confirmEditProperty();
 	}
@@ -2029,28 +2029,35 @@ void EditorApplication::moveID(int index, bool up)
 
 void EditorApplication::setTargetName(size_t id, bool is_list)
 {
-	
-	// TODO:
-	return;
+	LibGens::Object* obj = NULL;
+	EditorLevel* level = editor_application->getCurrentLevel();
+	if (level)
+	{
+		obj = level->getLevel()->getObjectByID(id);
+	}
+	else
+	{
+		ObjectNode* obj_node = editor_application->getObjectNodeManager()->findObjectNodeByID(id);
+		obj = obj_node ? obj_node->getObject() : NULL;
+	}
 
-	/*LibGens::Object* obj = getCurrentLevel()->getLevel()->getObjectByID(id);
-	string object_name = "none";
+	string object_name = "(none)";
 	bool enabled = false;
-
+	// TODO: obj is deleted (force hide)
 	if (obj)
 	{
 		object_name = obj->getName();
 		enabled = true;
 	}
 
-	string result = "Points to: (" + object_name + ")";
+	string result = "Target: " + object_name;
 	HWND button;
 
 	if (!is_list)
 	{
-		SetDlgItemText(hEditPropertyDlg, IDT_EDIT_ID_POINT, result.c_str());
+		SetDlgItemText(hEditPropertyDlg, IDT_EDIT_ID_TARGET, result.c_str());
 
-		button = GetDlgItem(hEditPropertyDlg, IDB_EDIT_ID_GO_TO_TARGET);
+		button = GetDlgItem(hEditPropertyDlg, IDB_EDIT_ID_SWITCH);
 		EnableWindow(button, enabled);
 	}
 	else
@@ -2059,7 +2066,7 @@ void EditorApplication::setTargetName(size_t id, bool is_list)
 
 		button = GetDlgItem(hEditPropertyDlg, IDB_EDIT_ID_LIST_GO_TO_TARGET);
 		EnableWindow(button, enabled);
-	}*/
+	}
 }
 
 INT_PTR CALLBACK EditIdCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -2094,20 +2101,31 @@ INT_PTR CALLBACK EditIdCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 		case IDB_EDIT_ID_SWITCH:
 		{
 			size_t id = GetDlgItemInt(hDlg, IDE_EDIT_ID_VALUE, NULL, false);
-			// TODO: no current level
-			LibGens::Object* obj = editor_application->getCurrentLevel()->getLevel()->getObjectByID(id);
-			if (obj)
+			ObjectNode* obj_node = NULL;
+
+			EditorLevel* level = editor_application->getCurrentLevel();
+			if (level)
 			{
-				editor_application->clearSelection();
-				ObjectNode *obj_node = editor_application->getObjectNodeManager()->findObjectNode(obj);
-				if (obj_node)
+				LibGens::Object* obj = level->getLevel()->getObjectByID(id);
+				if (obj)
 				{
-					SendMessage(hDlg, WM_CLOSE, 0, 0);
-					editor_application->selectNode(obj_node);
-					editor_application->updateSelection();
-					return true;
+					obj_node = editor_application->getObjectNodeManager()->findObjectNode(obj);
 				}
 			}
+			else
+			{
+				obj_node = editor_application->getObjectNodeManager()->findObjectNodeByID(id);
+			}
+
+			if (obj_node)
+			{
+				SendMessage(hDlg, WM_CLOSE, 0, 0);
+				editor_application->clearSelection();
+				editor_application->selectNode(obj_node);
+				editor_application->updateSelection();
+				return true;
+			}
+			
 			break;
 		}
 		}

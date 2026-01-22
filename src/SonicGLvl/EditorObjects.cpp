@@ -87,6 +87,17 @@ ObjectNode* ObjectNodeManager::findObjectNode(LibGens::Object* object)
 	return NULL;
 }
 
+ObjectNode* ObjectNodeManager::findObjectNodeByID(size_t v)
+{
+	for (list<ObjectNode*>::iterator it = object_nodes.begin(); it != object_nodes.end(); ++it)
+	{
+		if ((*it)->getObject()->getID() == v)
+			return (*it);
+	}
+
+	return NULL;
+}
+
 
 void ObjectNodeManager::addTime(float time_s) {
 	for (list<ObjectNode *>::iterator it=object_nodes.begin(); it!=object_nodes.end(); it++) {

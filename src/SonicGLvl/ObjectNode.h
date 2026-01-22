@@ -239,6 +239,7 @@ class ObjectNodeManager {
 		}
 
 		ObjectNode* findObjectNode(LibGens::Object* object);
+		ObjectNode* findObjectNodeByID(size_t v);
 
 		void showAll();
 		void hideAll();

@@ -1184,7 +1184,6 @@ bool EditorApplication::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButto
 								int combo_box = is_list ? IDE_EDIT_ID_LIST_VALUE : IDE_EDIT_ID_VALUE;
 								SetDlgItemText(hEditPropertyDlg, combo_box, ToString<size_t>(id).c_str());
 
-								setTargetName(id, is_list);
 								openQueryTargetMode(false);
 							}
 
