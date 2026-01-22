@@ -930,6 +930,7 @@ void EditorApplication::updateEditPropertyBool(bool v) {
 	}
 
 	updateObjectsPropertiesValuesGUI(current_object_list_properties);
+	confirmEditProperty();
 }
 
 
@@ -962,6 +963,7 @@ void EditorApplication::updateEditPropertyInteger(unsigned int v) {
 	}
 
 	updateObjectsPropertiesValuesGUI(current_object_list_properties);
+	confirmEditProperty();
 }
 
 
@@ -984,6 +986,7 @@ void EditorApplication::updateEditPropertyFloat(float v) {
 	}
 
 	updateObjectsPropertiesValuesGUI(current_object_list_properties);
+	confirmEditProperty();
 }
 
 
@@ -1007,6 +1010,7 @@ void EditorApplication::updateEditPropertyString(string v) {
 	}
 
 	updateObjectsPropertiesValuesGUI(current_object_list_properties);
+	confirmEditProperty();
 }
 
 void EditorApplication::updateEditPropertyID(size_t v)
@@ -1432,7 +1436,6 @@ INT_PTR CALLBACK EditBoolCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPa
 				int item_index = SendMessage((HWND) lParam, (UINT) CB_GETCURSEL, (WPARAM) 0, (LPARAM) 0);
 				if (LOWORD(wParam) == IDC_EDIT_BOOL_VALUE) {
 					editor_application->updateEditPropertyBool((item_index == 1));
-					editor_application->confirmEditProperty();
 					break;
 				}
 			}
@@ -1467,7 +1470,6 @@ INT_PTR CALLBACK EditIntCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPar
 
 				FromString<unsigned int>(value, ToString(value_str), std::dec);
 				editor_application->updateEditPropertyInteger(value);
-				editor_application->confirmEditProperty();
 				break;
 			}
 
@@ -1475,7 +1477,6 @@ INT_PTR CALLBACK EditIntCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPar
 				unsigned int value = 0.0f;
 				value = GetDlgItemInteger(hDlg, IDC_EDIT_NUMBER_VALUE);
 				editor_application->updateEditPropertyInteger(value);
-				editor_application->confirmEditProperty();
 				break;
 			}
 			break;
@@ -1509,7 +1510,6 @@ INT_PTR CALLBACK EditFloatCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lP
 
 				FromString<float>(value, ToString(value_str), std::dec);
 				editor_application->updateEditPropertyFloat(value);
-				editor_application->confirmEditProperty();
 				break;
 			}
 
@@ -1517,7 +1517,6 @@ INT_PTR CALLBACK EditFloatCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lP
 				float value = 0.0f;
 				value = GetDlgItemFloat(hDlg, IDC_EDIT_NUMBER_VALUE);
 				editor_application->updateEditPropertyFloat(value);
-				editor_application->confirmEditProperty();
 				break;
 			}
 			break;
@@ -1547,7 +1546,6 @@ INT_PTR CALLBACK EditStringCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 				int nIndex=SendDlgItemMessage(hDlg, IDC_EDIT_STRING_VALUE, (UINT) CB_GETCURSEL, (WPARAM) 0, (LPARAM) 0);
 				SendDlgItemMessage(hDlg, IDC_EDIT_STRING_VALUE, (UINT)CB_GETLBTEXT, (WPARAM)nIndex, (LPARAM)value_str);
 				editor_application->updateEditPropertyString(ToString(value_str));
-				editor_application->confirmEditProperty();
 				break;
 			}
 
@@ -1555,7 +1553,6 @@ INT_PTR CALLBACK EditStringCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 				char value_str[1024] = "";
 				GetDlgItemText(hDlg, IDC_EDIT_STRING_VALUE, value_str, 1024);
 				editor_application->updateEditPropertyString(ToString(value_str));
-				editor_application->confirmEditProperty();
 				break;
 			}
 			break;
