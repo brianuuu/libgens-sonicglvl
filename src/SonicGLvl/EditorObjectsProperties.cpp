@@ -660,66 +660,6 @@ void EditorApplication::editObjectPropertyIndex(int selection_index) {
 
 		if (!hEditPropertyDlg) {
 			history_edit_property_wrapper = new HistoryActionWrapper();
-			/*
-			if (current_properties_types[current_property_index] == LibGens::OBJECT_ELEMENT_BOOL) {
-				// Create Dialog for Bool
-				hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_BOOL_DIALOG), hwnd, EditBoolCallback);
-
-				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_BOOL_VALUE, CB_RESETCONTENT, (WPARAM)0, (LPARAM)0);
-				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_BOOL_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)"false");
-				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_BOOL_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)"true");
-
-				COMBOBOXINFO hComboBoxInfo;
-				hComboBoxInfo.cbSize = sizeof(COMBOBOXINFO);
-
-				HWND hEditMainControl = GetDlgItem(hEditPropertyDlg, IDC_EDIT_BOOL_VALUE);
-				GetComboBoxInfo(hEditMainControl, &hComboBoxInfo);
-				SetFocus(hEditMainControl);
-				globalEditControlOldProc = (WNDPROC) SetWindowLong(hComboBoxInfo.hwndList, GWL_WNDPROC, (LONG) EditControlCallback);
-
-				// Set Default
-				if (current_single_property_object) {
-					string element_name = current_properties_names[current_property_index];
-					LibGens::ObjectElement *element = current_single_property_object->getElement(element_name);
-
-					if (element) {
-						LibGens::ObjectElementBool *element_bool = static_cast<LibGens::ObjectElementBool *>(element);
-						bool default_value = element_bool->value;
-						SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_BOOL_VALUE, CB_SETCURSEL, (WPARAM) (default_value ? 1 : 0), (LPARAM) 0);
-					}
-				}
-			}
-
-			
-			if (current_properties_types[current_property_index] == LibGens::OBJECT_ELEMENT_ID) {
-				// Create Dialog for ID
-				hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_ID_DIALOG), hwnd, EditIdCallback);
-
-				COMBOBOXINFO hComboBoxInfo;
-				hComboBoxInfo.cbSize = sizeof(COMBOBOXINFO);
-
-				HWND hEditMainControl = GetDlgItem(hEditPropertyDlg, IDC_EDIT_ID_VALUE);
-				GetComboBoxInfo(hEditMainControl, &hComboBoxInfo);
-				SetFocus(hEditMainControl);
-				globalEditControlOldProc = (WNDPROC) SetWindowLong(hComboBoxInfo.hwndItem, GWL_WNDPROC, (LONG) EditControlCallback);
-
-				// Set Default
-				if (current_single_property_object) {
-					string element_name = current_properties_names[current_property_index];
-					LibGens::ObjectElement *element = current_single_property_object->getElement(element_name);
-
-					if (element) {
-						LibGens::ObjectElementID *element_id = static_cast<LibGens::ObjectElementID *>(element);
-						unsigned int default_value = element_id->value;
-
-						// get the target object's name
-						editor_application->setTargetName(default_value);
-
-						SetDlgItemText(hEditPropertyDlg, IDC_EDIT_ID_VALUE, ToString(default_value).c_str());
-						SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_ID_VALUE, (UINT)CB_SETEDITSEL, (WPARAM)0, MAKELPARAM(0, -1));
-					}
-				}
-			}
 
 			if (current_properties_types[current_property_index] == LibGens::OBJECT_ELEMENT_ID_LIST) {
 				// Create dialog for ID list
@@ -745,106 +685,6 @@ void EditorApplication::editObjectPropertyIndex(int selection_index) {
 						}
 
 						updateEditPropertyIDList(temp_property_id_list);
-					}
-				}
-			}
-
-
-			if (current_properties_types[current_property_index] == LibGens::OBJECT_ELEMENT_INTEGER) {
-				// Create Dialog for Float
-				hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_FLOAT_DIALOG), hwnd, EditIntCallback);
-
-				COMBOBOXINFO hComboBoxInfo;
-				hComboBoxInfo.cbSize = sizeof(COMBOBOXINFO);
-
-				HWND hEditMainControl = GetDlgItem(hEditPropertyDlg, IDC_EDIT_FLOAT_VALUE);
-				GetComboBoxInfo(hEditMainControl, &hComboBoxInfo);
-				SetFocus(hEditMainControl);
-				globalEditControlOldProc = (WNDPROC) SetWindowLong(hComboBoxInfo.hwndItem, GWL_WNDPROC, (LONG) EditControlCallback);
-
-				// Set Default
-				if (current_single_property_object) {
-					string element_name = current_properties_names[current_property_index];
-					LibGens::ObjectElement *element = current_single_property_object->getElement(element_name);
-
-					if (element) {
-						LibGens::ObjectElementInteger *element_integer = static_cast<LibGens::ObjectElementInteger *>(element);
-						unsigned int default_value = element_integer->value;
-						SetDlgItemText(hEditPropertyDlg, IDC_EDIT_FLOAT_VALUE, ToString(default_value).c_str());
-						SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_FLOAT_VALUE, (UINT)CB_SETEDITSEL, (WPARAM)0, MAKELPARAM(0, -1));
-					}
-				}
-			}
-
-			
-			if (current_properties_types[current_property_index] == LibGens::OBJECT_ELEMENT_FLOAT) {
-				// Create Dialog for Float
-				hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_FLOAT_DIALOG), hwnd, EditFloatCallback);
-
-				COMBOBOXINFO hComboBoxInfo;
-				hComboBoxInfo.cbSize = sizeof(COMBOBOXINFO);
-
-				HWND hEditMainControl = GetDlgItem(hEditPropertyDlg, IDC_EDIT_FLOAT_VALUE);
-				GetComboBoxInfo(hEditMainControl, &hComboBoxInfo);
-				SetFocus(hEditMainControl);
-				globalEditControlOldProc = (WNDPROC) SetWindowLong(hComboBoxInfo.hwndItem, GWL_WNDPROC, (LONG) EditControlCallback);
-
-				// Set Default
-				if (current_single_property_object) {
-					string element_name = current_properties_names[current_property_index];
-					LibGens::ObjectElement *element = current_single_property_object->getElement(element_name);
-
-					if (element) {
-						LibGens::ObjectElementFloat *element_float = static_cast<LibGens::ObjectElementFloat *>(element);
-						float default_value = element_float->value;
-						SetDlgItemText(hEditPropertyDlg, IDC_EDIT_FLOAT_VALUE, ToString(default_value).c_str());
-						SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_FLOAT_VALUE, (UINT)CB_SETEDITSEL, (WPARAM)0, MAKELPARAM(0, -1));
-					}
-				}
-			}
-
-
-			if (current_properties_types[current_property_index] == LibGens::OBJECT_ELEMENT_STRING) {
-				// Create Dialog for String
-				hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_STRING_DIALOG), hwnd, EditStringCallback);
-
-				COMBOBOXINFO hComboBoxInfo;
-				hComboBoxInfo.cbSize = sizeof(COMBOBOXINFO);
-
-				HWND hEditMainControl = GetDlgItem(hEditPropertyDlg, IDC_EDIT_STRING_VALUE);
-				GetComboBoxInfo(hEditMainControl, &hComboBoxInfo);
-				SetFocus(hEditMainControl);
-				globalEditControlOldProc = (WNDPROC) SetWindowLong(hComboBoxInfo.hwndItem, GWL_WNDPROC, (LONG) EditControlCallback);
-
-				// Set Default
-				if (current_single_property_object) {
-					string element_name = current_properties_names[current_property_index];
-					LibGens::ObjectElement *element = current_single_property_object->getElement(element_name);
-
-					if (element) {
-						LibGens::ObjectElementString *element_string = static_cast<LibGens::ObjectElementString *>(element);
-						string default_value = element_string->value;
-						SetDlgItemText(hEditPropertyDlg, IDC_EDIT_STRING_VALUE, default_value.c_str());
-						SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_STRING_VALUE, (UINT)CB_SETEDITSEL, (WPARAM)0, MAKELPARAM(0, -1));
-					}
-				}
-
-				// If ObjectPhysics & Type, pre-load all ObjectProduction entries into the ComboBox
-				if (current_object_list_properties.size() && object_production) {
-					LibGens::Object *first_object = (*current_object_list_properties.begin());
-					
-					if (first_object) {
-						string object_name = first_object->getName();
-						string element_name = current_properties_names[current_property_index];
-
-						if ((object_name == OBJECT_NODE_OBJECT_PHYSICS) && (element_name == OBJECT_NODE_OBJECT_PHYSICS_ELEMENT_TYPE)) {
-							object_production->readySortedEntries();
-
-							string entry_name="";
-							while (object_production->getNextEntryName(entry_name)) {
-								SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_STRING_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)entry_name.c_str());
-							}
-						}
 					}
 				}
 			}
@@ -905,7 +745,7 @@ void EditorApplication::editObjectPropertyIndex(int selection_index) {
 						updateEditPropertyVectorList(temp_property_vector_list);
 					}
 				}
-			}*/
+			}
 		}
 	}
 }
