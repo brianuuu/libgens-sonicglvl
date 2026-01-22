@@ -401,14 +401,14 @@ void EditorApplication::createObjectsPropertiesGUI() {
 
 	LVCOLUMN Col;                                   
 	Col.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
-	Col.cx = 142;
+	Col.cx = 110;
 	Col.pszText = "Name";
 	Col.cchTextMax = strlen(Col.pszText);
 	ListView_InsertColumn(hPropertiesList, 0, &Col);
 
 
 	Col.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
-	Col.cx = 90;
+	Col.cx = 140;
 	Col.pszText = "Value";
 	Col.cchTextMax = strlen(Col.pszText);
 	ListView_InsertColumn(hPropertiesList, 1, &Col);
