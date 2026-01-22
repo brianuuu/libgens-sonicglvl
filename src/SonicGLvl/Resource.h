@@ -7,12 +7,8 @@
 #define IDD_LEFT_DIALOG                         107
 #define IDD_BOTTOM_DIALOG                       111
 #define IDD_TOP_DIALOG                          115
-#define IDD_EDIT_BOOL_DIALOG                    117
-#define IDD_EDIT_FLOAT_DIALOG                   119
-#define IDD_EDIT_STRING_DIALOG                  121
 #define IDD_EDIT_VECTOR_DIALOG                  123
 #define IDD_EDIT_VECTOR_LIST_DIALOG             125
-#define IDD_EDIT_ID_DIALOG                      127
 #define IDD_EDIT_ID_LIST_DIALOG                 129
 #define IDD_MULTISETPARAM_DIALOG                131
 #define IDD_MATERIAL_EDITOR                     133
@@ -25,9 +21,10 @@
 #define IDD_EDIT_BOOL_NEW                       147
 #define IDD_EDIT_NUMBER_NEW                     150
 #define IDD_EDIT_STRING_NEW                     152
-#define IDC_EDIT_FLOAT_VALUE                    40000
+#define IDD_EDIT_ID_NEW                         154
 #define IDC_MOVE_LAYER_TARGETS                  40000
 #define IDC_PALETTE_CATEGORY                    40000
+#define IDE_EDIT_ID_VALUE                       40000
 #define IDE_EDIT_VECTOR_X                       40000
 #define IDE_FIND_VALUE                          40000
 #define IDE_LOOK_AT_X                           40000
@@ -36,7 +33,6 @@
 #define IDR_MATERIAL_MODEL_MODE                 40000
 #define IDS_EDIT_VECTOR_LIST_X                  40000
 #define IDT_EDIT_ID_LIST_POINT                  40000
-#define IDT_EDIT_ID_POINT                       40000
 #define IDT_RIGHT_HELP_DESCRIPTION              40000
 #define IMD_OPEN_LEVEL                          40000
 #define IDB_DELETE_PHYSICS                      40001
@@ -52,8 +48,8 @@
 #define IDT_EDIT_PRESET_COUNT                   40001
 #define IMD_SAVE_LEVEL_DATA                     40001
 #define IDB_EDIT_ID_LIST_CREATE                 40002
+#define IDB_EDIT_ID_SELECT                      40002
 #define IDB_IMPORT_PHYSICS                      40002
-#define IDC_EDIT_ID_VALUE                       40002
 #define IDC_EDIT_NUMBER_VALUE                   40002
 #define IDC_EDIT_STRING_VALUE                   40002
 #define IDC_LAYER_CURRENT                       40002
@@ -65,8 +61,8 @@
 #define IDR_MATERIAL_TERRAIN_MODE               40002
 #define IDS_EDIT_VECTOR_LIST_Z                  40002
 #define IMD_SAVE_LEVEL_RESOURCES                40002
-#define IDB_EDIT_ID_GO_TO_TARGET                40003
 #define IDB_EDIT_ID_LIST_DELETE                 40003
+#define IDB_EDIT_ID_SWITCH                      40003
 #define IDC_EDIT_BOOL_VALUE                     40003
 #define IDC_FIND_EXACTLY                        40003
 #define IDC_LOOK_AT_VIEWPORT                    40003
@@ -80,13 +76,13 @@
 #define IDB_EDIT_ID_LIST_MOVE_UP                40004
 #define IDB_FIND                                40004
 #define IDB_MATERIAL_LOAD_MODEL                 40004
-#define IDC_EDIT_ID_SELECT_FROM_VIEWPORT        40004
 #define IDC_LOOK_AT_OBJECT                      40004
 #define IDE_EDIT_VECTOR_LIST_Z                  40004
 #define IDE_MULTISETPARAM_COUNT                 40004
 #define IDG_PALETTE_GROUP                       40004
 #define IDS_EDIT_VECTOR_Y                       40004
 #define IDS_RIGHT_SELECTION_ROT_Y               40004
+#define IDT_EDIT_ID_TARGET                      40004
 #define IMD_UNDO                                40004
 #define IDB_EDIT_ID_LIST_MOVE_DOWN              40005
 #define IDB_EDIT_VECTOR_LIST_CREATE             40005

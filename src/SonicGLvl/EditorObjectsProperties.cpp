@@ -604,6 +604,38 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 		}
 		break;
 	}
+	case LibGens::OBJECT_ELEMENT_ID:
+	{
+		hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_ID_NEW), hEditGroup, EditIdCallback);
+		
+		size_t value = 0;
+		for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
+			LibGens::Object* object = *it;
+			if (!object) continue;
+
+			LibGens::ObjectElement* element = object->getElement(element_name);
+			if (!element) continue;
+
+			LibGens::ObjectElementID* element_id = static_cast<LibGens::ObjectElementID*>(element);
+			if (!hasValue)
+			{
+				hasValue = true;
+				value = element_id->value;
+			}
+			else if (value != element_id->value)
+			{
+				hasValue = false;
+				break;
+			}
+		}
+
+		if (hasValue)
+		{
+			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_ID_VALUE, ToString(value).c_str());
+		}
+
+		break;
+	}
 	}
 
 	if (hEditPropertyDlg) {
@@ -628,7 +660,7 @@ void EditorApplication::editObjectPropertyIndex(int selection_index) {
 
 		if (!hEditPropertyDlg) {
 			history_edit_property_wrapper = new HistoryActionWrapper();
-
+			/*
 			if (current_properties_types[current_property_index] == LibGens::OBJECT_ELEMENT_BOOL) {
 				// Create Dialog for Bool
 				hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_BOOL_DIALOG), hwnd, EditBoolCallback);
@@ -873,7 +905,7 @@ void EditorApplication::editObjectPropertyIndex(int selection_index) {
 						updateEditPropertyVectorList(temp_property_vector_list);
 					}
 				}
-			}
+			}*/
 		}
 	}
 }
@@ -981,6 +1013,7 @@ void EditorApplication::updateEditPropertyID(size_t v)
 {
 	string element_name = current_properties_names[current_property_index];
 
+	bool changed = false;
 	for (list<LibGens::Object*>::iterator it = current_object_list_properties.begin(); it != current_object_list_properties.end(); ++it)
 	{
 		LibGens::ObjectElement* element = (*it)->getElement(element_name);
@@ -990,14 +1023,24 @@ void EditorApplication::updateEditPropertyID(size_t v)
 			if (element->getType() == LibGens::OBJECT_ELEMENT_ID)
 			{
 				LibGens::ObjectElementID* element_id = static_cast<LibGens::ObjectElementID*>(element);
-				HistoryActionEditObjectElementID* history_action = new HistoryActionEditObjectElementID((*it), object_node_manager, element_id, element_id->value, v);
-				element_id->value = v;
-				history_edit_property_wrapper->push(history_action);
+				
+				if (element_id->value != v)
+				{
+					changed = true;
+					HistoryActionEditObjectElementID* history_action = new HistoryActionEditObjectElementID((*it), object_node_manager, element_id, element_id->value, v);
+					element_id->value = v;
+					history_edit_property_wrapper->push(history_action);
+				}
 			}
 		}
 	}
 
-	updateObjectsPropertiesValuesGUI(current_object_list_properties);
+	if (changed)
+	{
+		setTargetName(v);
+		updateObjectsPropertiesValuesGUI(current_object_list_properties);
+		confirmEditProperty();
+	}
 }
 
 void EditorApplication::updateEditPropertyIDList(vector<size_t> v)
@@ -1220,21 +1263,10 @@ void EditorApplication::openQueryTargetMode(bool mode)
 	{
 		is_pick_target = true;
 		SetFocus(hwnd);
-
-		RECT main_window_rect;
-		GetWindowRect(hwnd, &main_window_rect);
-		GetWindowRect(hEditPropertyDlg, &hEditPropertyDlg_old_rect);
-
-		LONG dlg_w = hEditPropertyDlg_old_rect.right - hEditPropertyDlg_old_rect.left;
-		LONG dlg_h = hEditPropertyDlg_old_rect.bottom - hEditPropertyDlg_old_rect.top;
-		MoveWindow(hEditPropertyDlg, main_window_rect.right - dlg_w - 15, main_window_rect.bottom - dlg_h - SONICGLVL_GUI_BOTTOM_HEIGHT - 15, dlg_w, dlg_h, true);
 	}
 	else
 	{
 		is_pick_target = false;
-		LONG dlg_w = hEditPropertyDlg_old_rect.right - hEditPropertyDlg_old_rect.left;
-		LONG dlg_h = hEditPropertyDlg_old_rect.bottom - hEditPropertyDlg_old_rect.top;
-		MoveWindow(hEditPropertyDlg, hEditPropertyDlg_old_rect.left, hEditPropertyDlg_old_rect.top, dlg_w, dlg_h, true);
 	}
 }
 
@@ -2000,7 +2032,11 @@ void EditorApplication::moveID(int index, bool up)
 
 void EditorApplication::setTargetName(size_t id, bool is_list)
 {
-	LibGens::Object* obj = getCurrentLevel()->getLevel()->getObjectByID(id);
+	
+	// TODO:
+	return;
+
+	/*LibGens::Object* obj = getCurrentLevel()->getLevel()->getObjectByID(id);
 	string object_name = "none";
 	bool enabled = false;
 
@@ -2026,7 +2062,7 @@ void EditorApplication::setTargetName(size_t id, bool is_list)
 
 		button = GetDlgItem(hEditPropertyDlg, IDB_EDIT_ID_LIST_GO_TO_TARGET);
 		EnableWindow(button, enabled);
-	}
+	}*/
 }
 
 INT_PTR CALLBACK EditIdCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -2043,24 +2079,25 @@ INT_PTR CALLBACK EditIdCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 		return true;
 
 	case WM_COMMAND:
-		if (HIWORD(wParam) == CBN_EDITCHANGE)
-		{
-			if (LOWORD(wParam) == IDC_EDIT_ID_VALUE)
-			{
-				size_t id = GetDlgItemFloat(hDlg, IDC_EDIT_ID_VALUE);
-				editor_application->setTargetName(id);
-			}
-		}
-
 		switch (LOWORD(wParam))
 		{
-		case IDC_EDIT_ID_SELECT_FROM_VIEWPORT:
-			editor_application->openQueryTargetMode(IsDlgButtonChecked(hDlg, IDC_EDIT_ID_SELECT_FROM_VIEWPORT));
-			break;
-
-		case IDB_EDIT_ID_GO_TO_TARGET:
+		case IDE_EDIT_ID_VALUE:
 		{
-			size_t id = GetDlgItemFloat(hDlg, IDC_EDIT_ID_VALUE);
+			if (HIWORD(wParam) == EN_CHANGE) {
+				size_t id = GetDlgItemInt(hDlg, IDE_EDIT_ID_VALUE, NULL, false);
+				editor_application->updateEditPropertyID(id);
+			}
+			break;
+		}
+		case IDB_EDIT_ID_SELECT:
+		{
+			editor_application->openQueryTargetMode(true);
+			break;
+		}
+		case IDB_EDIT_ID_SWITCH:
+		{
+			size_t id = GetDlgItemInt(hDlg, IDE_EDIT_ID_VALUE, NULL, false);
+			// TODO: no current level
 			LibGens::Object* obj = editor_application->getCurrentLevel()->getLevel()->getObjectByID(id);
 			if (obj)
 			{
@@ -2076,23 +2113,7 @@ INT_PTR CALLBACK EditIdCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 			}
 			break;
 		}
-		break;
-
-		case IDOK:
-		{
-			size_t value = GetDlgItemFloat(hDlg, IDC_EDIT_ID_VALUE);
-			editor_application->updateEditPropertyID(value);
-			editor_application->confirmEditProperty();
-			SendMessage(hDlg, WM_CLOSE, 0, 0);
-			return true;
 		}
-
-		case IDCANCEL:
-			SendMessage(hDlg, WM_CLOSE, 0, 0);
-			return true;
-
-		}
-
 		break;
 	}
 
