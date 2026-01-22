@@ -268,6 +268,11 @@ void EditorApplication::mousePressedObjectsPalettePreview(const OIS::MouseEvent 
 						new_object->setID(current_level->getLevel()->newObjectID());
 					}
 				}
+				else
+				{
+					static size_t id = LIBGENS_LEVEL_START_ID_GENERATION;
+					new_object->setID(id++);
+				}
 
 				LibGens::ObjectSet* set = getCurrentSet();
 				if (set) {
