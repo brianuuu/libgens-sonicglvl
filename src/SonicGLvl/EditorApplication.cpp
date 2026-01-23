@@ -765,6 +765,10 @@ void EditorApplication::windowResized(Ogre::RenderWindow* rw) {
 	if (hRightDlg)	MoveWindow(hRightDlg, screen_width - SONICGLVL_GUI_RIGHT_WIDTH, 0, SONICGLVL_GUI_RIGHT_WIDTH, screen_height, true);
 	if (hBottomDlg) MoveWindow(hBottomDlg, 0, screen_height-SONICGLVL_GUI_BOTTOM_HEIGHT, SONICGLVL_GUI_LEFT_WIDTH, SONICGLVL_GUI_BOTTOM_HEIGHT+1, true);
 	
+	if (hLeftDlg)   InvalidateRect(hLeftDlg, NULL, true);
+	if (hRightDlg)	InvalidateRect(hRightDlg, NULL, true);
+	if (hBottomDlg) InvalidateRect(hBottomDlg, NULL, true);
+
 	// Move Left Bar Elements
 	RECT temp_rect;
 
