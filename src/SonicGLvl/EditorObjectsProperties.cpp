@@ -408,7 +408,7 @@ void EditorApplication::createObjectsPropertiesGUI() {
 
 
 	Col.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
-	Col.cx = 140;
+	Col.cx = 130;
 	Col.pszText = "Value";
 	Col.cchTextMax = strlen(Col.pszText);
 	ListView_InsertColumn(hPropertiesList, 1, &Col);
@@ -655,7 +655,7 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 		Col.pszText = "ID";
 		Col.cchTextMax = strlen(Col.pszText);
 		ListView_InsertColumn(hIDList, 0, &Col);
-		Col.cx = 160;
+		Col.cx = 145;
 		Col.pszText = "Target";
 		Col.cchTextMax = strlen(Col.pszText);
 		ListView_InsertColumn(hIDList, 1, &Col);
