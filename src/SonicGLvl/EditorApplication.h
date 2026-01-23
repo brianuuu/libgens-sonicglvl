@@ -155,8 +155,8 @@ class EditorApplication : public BaseApplication {
 
 		int current_vector_list_selection;
 		int last_vector_list_selection;
-		int current_id_list_selection;
-		int last_id_list_selection;
+		int current_id_list_selection; // TODO: delete
+		int last_id_list_selection; // TODO: delete
 		bool is_update_vector_list;
 		bool is_pick_target;
 		bool is_pick_target_position;
@@ -519,7 +519,7 @@ class EditorApplication : public BaseApplication {
 		void updateEditPropertyFloat(float v);
 		void updateEditPropertyString(string v);
 		void updateEditPropertyID(size_t v);
-		void updateEditPropertyIDList(vector<size_t> v);
+		void updateEditPropertyIDList(vector<size_t> const& v);
 		void updateEditPropertyVector(LibGens::Vector3 v);
 		void updateEditPropertyVectorFocus(int index = 0);
 		void updateEditPropertyVectorGUI(int index = 0, bool is_list = false);
@@ -527,7 +527,7 @@ class EditorApplication : public BaseApplication {
 		void updateEditPropertyVectorList(vector<LibGens::Vector3> v);
 		void selectNode(EditorNode* node);
 		void openQueryTargetMode(bool mode);
-		void setTargetName(size_t id, bool is_list = false);
+		void setTargetName(size_t id);
 		void addVectorToList(LibGens::Vector3 = LibGens::Vector3(0, 0, 0));
 		void updateVectorListSelection(int index);
 		void removeVectorFromList(int index);
@@ -537,8 +537,9 @@ class EditorApplication : public BaseApplication {
 		void addIDToList(size_t id);
 		void updateIDListSelection(int index);
 		void removeIDFromList(int index);
+		void clearIDList();
 		void moveID(int index, bool up);
-		bool isIDListSelectionValid();
+		bool isIDListSelectionValid(); // TODO: delete
 		vector<size_t>& getCurrentPropertyIDList();
 		vector<LibGens::Vector3>& getCurrentPropertyVectorList();
 		vector<VectorNode*>& getPropertyVectorNodes();

@@ -643,6 +643,73 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 
 		break;
 	}
+	case LibGens::OBJECT_ELEMENT_ID_LIST:
+	{
+		hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_ID_LIST_NEW), hEditGroup, EditIdListCallback);
+		
+		HWND hIDList = GetDlgItem(hEditPropertyDlg, IDL_EDIT_ID_LIST_LIST);
+
+		LVCOLUMN Col;
+		Col.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
+		Col.cx = 80;
+		Col.pszText = "ID";
+		Col.cchTextMax = strlen(Col.pszText);
+		ListView_InsertColumn(hIDList, 0, &Col);
+		Col.cx = 160;
+		Col.pszText = "Target";
+		Col.cchTextMax = strlen(Col.pszText);
+		ListView_InsertColumn(hIDList, 1, &Col);
+		ListView_SetExtendedListViewStyleEx(hIDList, LVS_EX_FULLROWSELECT, LVS_EX_FULLROWSELECT);
+
+		vector<size_t> values;
+		for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
+			LibGens::Object* object = *it;
+			if (!object) continue;
+
+			LibGens::ObjectElement* element = object->getElement(element_name);
+			if (!element) continue;
+
+			LibGens::ObjectElementIDList* element_id_list = static_cast<LibGens::ObjectElementIDList*>(element);
+
+			if (!hasValue)
+			{
+				hasValue = true;
+				values = element_id_list->value;
+			}
+			else
+			{
+				// not the same size = not the same list
+				if (element_id_list->value.size() != values.size())
+				{
+					hasValue = false;
+					break;
+				}
+
+				// check if all of them have the same target list
+				for (vector<size_t>::iterator it = element_id_list->value.begin(); it != element_id_list->value.end(); ++it) {
+					if (!count(values.begin(), values.end(), *it))
+					{
+						hasValue = false;
+						break;
+					}
+				}
+
+				if (!hasValue)
+				{
+					break;
+				}
+			}
+		}
+
+		if (hasValue)
+		{
+			for (size_t value : values)
+			{
+				addIDToList(value);
+			}
+		}
+		break;
+	}
 	}
 
 	if (hEditPropertyDlg) {
@@ -667,35 +734,6 @@ void EditorApplication::editObjectPropertyIndex(int selection_index) {
 
 		if (!hEditPropertyDlg) {
 			history_edit_property_wrapper = new HistoryActionWrapper();
-
-			if (current_properties_types[current_property_index] == LibGens::OBJECT_ELEMENT_ID_LIST) {
-				// Create dialog for ID list
-				hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_ID_LIST_DIALOG), hwnd, EditIdListCallback);
-				HWND hIDList = GetDlgItem(hEditPropertyDlg, IDL_EDIT_ID_LIST_LIST);
-
-				LVCOLUMN Col;
-				Col.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
-				Col.cx = 285;
-				Col.pszText = "Object IDs";
-				Col.cchTextMax = strlen(Col.pszText);
-				ListView_InsertColumn(hIDList, 0, &Col);
-
-				if (current_single_property_object) {
-					string element_name = current_properties_names[current_property_index];
-					LibGens::ObjectElement* element = current_single_property_object->getElement(element_name);
-
-					if (element) {
-						LibGens::ObjectElementIDList* element_id_list = static_cast<LibGens::ObjectElementIDList*>(element);
-						
-						for (vector<size_t>::iterator it = element_id_list->value.begin(); it != element_id_list->value.end(); ++it) {
-							addIDToList(*it);
-						}
-
-						updateEditPropertyIDList(temp_property_id_list);
-					}
-				}
-			}
-
 			
 			if (current_properties_types[current_property_index] == LibGens::OBJECT_ELEMENT_VECTOR) {
 				// Create Dialog for Vector
@@ -894,9 +932,46 @@ void EditorApplication::updateEditPropertyID(size_t v)
 	}
 }
 
-void EditorApplication::updateEditPropertyIDList(vector<size_t> v)
+void EditorApplication::updateEditPropertyIDList(vector<size_t> const& v)
 {
 	string element_name = current_properties_names[current_property_index];
+
+	bool changed = false;
+	for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
+		LibGens::Object* object = *it;
+		if (!object) continue;
+
+		LibGens::ObjectElement* element = object->getElement(element_name);
+		if (!element) continue;
+
+		LibGens::ObjectElementIDList* element_id_list = static_cast<LibGens::ObjectElementIDList*>(element);
+		
+		// not the same size = not the same list
+		if (element_id_list->value.size() != v.size())
+		{
+			changed = true;
+			break;
+		}
+
+		// check if all of them have the same target list
+		for (vector<size_t>::iterator it = element_id_list->value.begin(); it != element_id_list->value.end(); ++it) {
+			if (!count(v.begin(), v.end(), *it))
+			{
+				changed = true;
+				break;
+			}
+		}
+
+		if (changed)
+		{
+			break;
+		}
+	}
+
+	if (!changed)
+	{
+		return;
+	}
 
 	for (list<LibGens::Object*>::iterator it = current_object_list_properties.begin(); it != current_object_list_properties.end(); ++it)
 	{
@@ -915,6 +990,7 @@ void EditorApplication::updateEditPropertyIDList(vector<size_t> v)
 	}
 
 	updateObjectsPropertiesValuesGUI(current_object_list_properties);
+	confirmEditProperty();
 }
 
 
@@ -1808,7 +1884,7 @@ void EditorApplication::addIDToList(size_t id)
 	HWND hIDList = GetDlgItem(hEditPropertyDlg, IDL_EDIT_ID_LIST_LIST);
 	
 	string id_string = ToString<size_t>(id);
-	char v[128];
+	char v[256];
 
 	strcpy(v, id_string.c_str());
 
@@ -1822,6 +1898,21 @@ void EditorApplication::addIDToList(size_t id)
 	item.iItem = temp_property_id_list.size();
 	ListView_InsertItem(hIDList, &item);
 	ListView_SetItemText(hIDList, item.iItem, 0, item.pszText);
+
+	LibGens::Object* obj = NULL;
+	EditorLevel* level = editor_application->getCurrentLevel();
+	if (level)
+	{
+		obj = level->getLevel()->getObjectByID(id);
+	}
+	else
+	{
+		ObjectNode* obj_node = editor_application->getObjectNodeManager()->findObjectNodeByID(id);
+		obj = obj_node ? obj_node->getObject() : NULL;
+	}
+
+	strcpy(v, obj ? obj->getName().c_str() : "(unknown)");
+	ListView_SetItemText(hIDList, item.iItem, 1, v);
 
 	temp_property_id_list.push_back(id);
 }
@@ -1839,6 +1930,13 @@ void EditorApplication::removeIDFromList(int index)
 			return;
 		}
 	}
+}
+
+void EditorApplication::clearIDList()
+{
+	HWND list_view = GetDlgItem(hEditPropertyDlg, IDL_EDIT_ID_LIST_LIST);
+	temp_property_id_list.clear();
+	ListView_DeleteAllItems(list_view);
 }
 
 void EditorApplication::moveID(int index, bool up)
@@ -1874,7 +1972,7 @@ void EditorApplication::moveID(int index, bool up)
 	
 }
 
-void EditorApplication::setTargetName(size_t id, bool is_list)
+void EditorApplication::setTargetName(size_t id)
 {
 	LibGens::Object* obj = NULL;
 	EditorLevel* level = editor_application->getCurrentLevel();
@@ -1898,22 +1996,10 @@ void EditorApplication::setTargetName(size_t id, bool is_list)
 	}
 
 	string result = "Target: " + object_name;
-	HWND button;
 
-	if (!is_list)
-	{
-		SetDlgItemText(hEditPropertyDlg, IDT_EDIT_ID_TARGET, result.c_str());
-
-		button = GetDlgItem(hEditPropertyDlg, IDB_EDIT_ID_SWITCH);
-		EnableWindow(button, enabled);
-	}
-	else
-	{
-		SetDlgItemText(hEditPropertyDlg, IDT_EDIT_ID_LIST_POINT, result.c_str());
-
-		button = GetDlgItem(hEditPropertyDlg, IDB_EDIT_ID_LIST_GO_TO_TARGET);
-		EnableWindow(button, enabled);
-	}
+	SetDlgItemText(hEditPropertyDlg, IDT_EDIT_ID_TARGET, result.c_str());
+	HWND button = GetDlgItem(hEditPropertyDlg, IDB_EDIT_ID_SWITCH);
+	EnableWindow(button, enabled);
 }
 
 INT_PTR CALLBACK EditIdCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -1984,59 +2070,10 @@ INT_PTR CALLBACK EditIdCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 
 void EditorApplication::updateIDListSelection(int index)
 {
-	HWND list_delete = GetDlgItem(hEditPropertyDlg, IDB_EDIT_ID_LIST_DELETE);
-	HWND list_move_up = GetDlgItem(hEditPropertyDlg, IDB_EDIT_ID_LIST_MOVE_UP);
-	HWND list_move_down = GetDlgItem(hEditPropertyDlg, IDB_EDIT_ID_LIST_MOVE_DOWN);
-	HWND list_add = GetDlgItem(hEditPropertyDlg, IDC_EDIT_ID_LIST_ADD_FROM_VIEWPORT);
-	HWND list_text = GetDlgItem(hEditPropertyDlg, IDE_EDIT_ID_LIST_VALUE);
-
-	current_id_list_selection = index;
-	if (current_id_list_selection != last_id_list_selection)
-	{
-		last_id_list_selection = current_id_list_selection;
-		if (isIDListSelectionValid())
-		{
-			size_t id = temp_property_id_list[index];
-			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_ID_LIST_VALUE, ToString<size_t>(id).c_str());
-		}
-	}
-
-	if (isIDListSelectionValid())
-	{
-		EnableWindow(list_delete, true);
-		EnableWindow(list_add, true);
-		EnableWindow(list_text, true);
-
-		// Enable or disable buttons based on current selection in the list view
-		if (temp_property_id_list.size() > 1)
-		{
-			if (current_id_list_selection > 0)
-			{
-				EnableWindow(list_move_up, true);
-
-				if (current_id_list_selection < temp_property_id_list.size() - 1)
-					EnableWindow(list_move_down, true);
-				else
-					EnableWindow(list_move_down, false);
-			}
-
-			if (current_id_list_selection == 0)
-			{
-				EnableWindow(list_move_up, false);
-
-				if (temp_property_id_list.size() > 1)
-					EnableWindow(list_move_down, true);
-			}
-		}
-	}
-	else
-	{
-		EnableWindow(list_delete, false);
-		EnableWindow(list_move_up, false);
-		EnableWindow(list_move_down, false);
-		EnableWindow(list_add, false);
-		EnableWindow(list_text, false);
-	}
+	HWND hSwitch = GetDlgItem(hEditPropertyDlg, IDB_EDIT_ID_LIST_SWITCH);
+	HWND hDelete = GetDlgItem(hEditPropertyDlg, IDB_EDIT_ID_LIST_DELETE);
+	EnableWindow(hSwitch, index >= 0);
+	EnableWindow(hDelete, index >= 0);
 }
 
 vector<size_t>& EditorApplication::getCurrentPropertyIDList()
@@ -2067,79 +2104,57 @@ INT_PTR CALLBACK EditIdListCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 		return true;
 
 	case WM_COMMAND:
-		if (HIWORD(wParam) == EN_CHANGE)
-		{
-			if (LOWORD(wParam) == IDE_EDIT_ID_LIST_VALUE)
-			{
-				if (editor_application->isIDListSelectionValid())
-				{
-					size_t id = GetDlgItemFloat(hDlg, IDE_EDIT_ID_LIST_VALUE);
-					string id_string = ToString<size_t>(id);
-					char buffer[128];
-					strcpy(buffer, id_string.c_str());
-
-					ListView_SetItemText(list_view, index, 0, (char*)buffer);
-					editor_application->getCurrentPropertyIDList()[index] = id;
-					editor_application->setTargetName(id, true);
-				}
-			}
-		}
-
 		switch (LOWORD(wParam))
 		{
-		case IDB_EDIT_ID_LIST_CREATE:
-			editor_application->addIDToList(0);
-			editor_application->updateEditPropertyIDList(editor_application->getCurrentPropertyIDList());
-			break;
-
 		case IDB_EDIT_ID_LIST_DELETE:
-			editor_application->removeIDFromList(index);
-			editor_application->updateEditPropertyIDList(editor_application->getCurrentPropertyIDList());
-			break;
-
-		case IDB_EDIT_ID_LIST_MOVE_UP:
-			editor_application->moveID(index, true);
-			break;
-
-		case IDB_EDIT_ID_LIST_MOVE_DOWN:
-			editor_application->moveID(index, false);
-			break;
-
-		case IDB_EDIT_ID_LIST_GO_TO_TARGET:
 		{
-			size_t id = GetDlgItemFloat(hDlg, IDE_EDIT_ID_LIST_VALUE);
-			LibGens::Object* obj = editor_application->getCurrentLevel()->getLevel()->getObjectByID(id);
-			if (obj)
+			if (index >= 0)
 			{
-				editor_application->clearSelection();
-				ObjectNode* obj_node = editor_application->getObjectNodeManager()->findObjectNode(obj);
-				if (obj_node)
-				{
-					SendMessage(hDlg, WM_CLOSE, 0, 0);
-					editor_application->selectNode(obj_node);
-					editor_application->updateSelection();
-					return true;
-				}
+				editor_application->removeIDFromList(index);
+				editor_application->updateEditPropertyIDList(editor_application->getCurrentPropertyIDList());
 			}
 			break;
 		}
-		break;
-
-		case IDC_EDIT_ID_LIST_ADD_FROM_VIEWPORT:
-			editor_application->openQueryTargetMode(IsDlgButtonChecked(hDlg, IDC_EDIT_ID_LIST_ADD_FROM_VIEWPORT));
-			break;
-
-		case IDCANCEL:
-			editor_application->revertEditProperty();
-			SendMessage(hDlg, WM_CLOSE, 0, 0);
-			return true;
-
-		case IDOK:
-			editor_application->openQueryTargetMode(false);
+		case IDB_EDIT_ID_LIST_CLEAR:
+		{
+			editor_application->clearIDList();
 			editor_application->updateEditPropertyIDList(editor_application->getCurrentPropertyIDList());
-			editor_application->confirmEditProperty();
-			SendMessage(hDlg, WM_CLOSE, 0, 0);
-			return true;
+			break;
+		}
+		case IDB_EDIT_ID_LIST_SWITCH:
+		{
+			char id_str[128] = "";
+			ListView_GetItemText(list_view, index, 0, id_str, 128);
+			size_t id = stoi(id_str);
+			ObjectNode* obj_node = NULL;
+
+			EditorLevel* level = editor_application->getCurrentLevel();
+			if (level)
+			{
+				LibGens::Object* obj = level->getLevel()->getObjectByID(id);
+				if (obj)
+				{
+					obj_node = editor_application->getObjectNodeManager()->findObjectNode(obj);
+				}
+			}
+			else
+			{
+				obj_node = editor_application->getObjectNodeManager()->findObjectNodeByID(id);
+			}
+
+			if (obj_node)
+			{
+				SendMessage(hDlg, WM_CLOSE, 0, 0);
+				editor_application->clearSelection();
+				editor_application->selectNode(obj_node);
+				editor_application->updateSelection();
+				return true;
+			}
+			break;
+		}
+		case IDB_EDIT_ID_LIST_ADD:
+			editor_application->openQueryTargetMode(true);
+			break;
 		}
 		break;
 	}

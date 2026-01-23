@@ -1181,8 +1181,13 @@ bool EditorApplication::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButto
 							if (is_pick_target)
 							{
 								bool is_list = current_properties_types[current_property_index] == LibGens::OBJECT_ELEMENT_ID_LIST;
-								int combo_box = is_list ? IDE_EDIT_ID_LIST_VALUE : IDE_EDIT_ID_VALUE;
-								SetDlgItemText(hEditPropertyDlg, combo_box, ToString<size_t>(id).c_str());
+								if (is_list) {
+									addIDToList(id);
+									updateEditPropertyIDList(temp_property_id_list);
+								}
+								else {
+									SetDlgItemText(hEditPropertyDlg, IDE_EDIT_ID_VALUE, ToString<size_t>(id).c_str());
+								}
 
 								openQueryTargetMode(false);
 							}
