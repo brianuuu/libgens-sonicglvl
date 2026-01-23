@@ -1101,6 +1101,9 @@ bool EditorApplication::mouseMoved(const OIS::MouseEvent &arg) {
 		else if (current_node) {
 			global_cursor_state = 1;
 		}
+		else if (is_pick_target && viewport->isMouseInLocalScreen(arg)) {
+			global_cursor_state = 3;
+		}
 		else {
 			global_cursor_state = 0;
 		}
