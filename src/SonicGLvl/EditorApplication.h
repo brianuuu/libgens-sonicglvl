@@ -155,8 +155,6 @@ class EditorApplication : public BaseApplication {
 
 		int current_vector_list_selection;
 		int last_vector_list_selection;
-		int current_id_list_selection; // TODO: delete
-		int last_id_list_selection; // TODO: delete
 		bool is_update_vector_list;
 		bool is_pick_target;
 		bool is_pick_target_position;
@@ -539,7 +537,6 @@ class EditorApplication : public BaseApplication {
 		void removeIDFromList(int index);
 		void clearIDList();
 		void moveID(int index, bool up);
-		bool isIDListSelectionValid(); // TODO: delete
 		vector<size_t>& getCurrentPropertyIDList();
 		vector<LibGens::Vector3>& getCurrentPropertyVectorList();
 		vector<VectorNode*>& getPropertyVectorNodes();

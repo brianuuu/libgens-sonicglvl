@@ -2081,11 +2081,6 @@ vector<size_t>& EditorApplication::getCurrentPropertyIDList()
 	return temp_property_id_list;
 }
 
-bool EditorApplication::isIDListSelectionValid()
-{
-	return current_id_list_selection > -1 && current_id_list_selection < temp_property_id_list.size() && temp_property_id_list.size();
-}
-
 INT_PTR CALLBACK EditIdListCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	HWND list_view = GetDlgItem(hDlg, IDL_EDIT_ID_LIST_LIST);
