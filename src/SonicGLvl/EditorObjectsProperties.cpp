@@ -650,16 +650,9 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 		HWND hIDList = GetDlgItem(hEditPropertyDlg, IDL_EDIT_ID_LIST_LIST);
 
 		LVCOLUMN Col;
-		Col.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
-		Col.cx = 80;
-		Col.pszText = "ID";
-		Col.cchTextMax = strlen(Col.pszText);
+		Col.mask = LVCF_WIDTH | LVCF_SUBITEM;
+		Col.cx = 135;
 		ListView_InsertColumn(hIDList, 0, &Col);
-		Col.cx = 145;
-		Col.pszText = "Target";
-		Col.cchTextMax = strlen(Col.pszText);
-		ListView_InsertColumn(hIDList, 1, &Col);
-		ListView_SetExtendedListViewStyleEx(hIDList, LVS_EX_FULLROWSELECT, LVS_EX_FULLROWSELECT);
 
 		vector<size_t> values;
 		for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
@@ -714,7 +707,7 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 
 	if (hEditPropertyDlg) {
 		history_edit_property_wrapper = new HistoryActionWrapper();
-		MoveWindow(hEditPropertyDlg, 4, 14, 260, 180, true);
+		MoveWindow(hEditPropertyDlg, 4, 16, 260, 180, true);
 		SetFocus(hwnd);
 	}
 }
@@ -1883,7 +1876,19 @@ void EditorApplication::addIDToList(size_t id)
 {
 	HWND hIDList = GetDlgItem(hEditPropertyDlg, IDL_EDIT_ID_LIST_LIST);
 	
-	string id_string = ToString<size_t>(id);
+	LibGens::Object* obj = NULL;
+	EditorLevel* level = editor_application->getCurrentLevel();
+	if (level)
+	{
+		obj = level->getLevel()->getObjectByID(id);
+	}
+	else
+	{
+		ObjectNode* obj_node = editor_application->getObjectNodeManager()->findObjectNodeByID(id);
+		obj = obj_node ? obj_node->getObject() : NULL;
+	}
+
+	string id_string = ToString<size_t>(id) + " (" + string(obj ? obj->getName().c_str() : "unknown") + ")";
 	char v[256];
 
 	strcpy(v, id_string.c_str());
@@ -1897,22 +1902,6 @@ void EditorApplication::addIDToList(size_t id)
 	item.lParam = (LPARAM)NULL;
 	item.iItem = temp_property_id_list.size();
 	ListView_InsertItem(hIDList, &item);
-	ListView_SetItemText(hIDList, item.iItem, 0, item.pszText);
-
-	LibGens::Object* obj = NULL;
-	EditorLevel* level = editor_application->getCurrentLevel();
-	if (level)
-	{
-		obj = level->getLevel()->getObjectByID(id);
-	}
-	else
-	{
-		ObjectNode* obj_node = editor_application->getObjectNodeManager()->findObjectNodeByID(id);
-		obj = obj_node ? obj_node->getObject() : NULL;
-	}
-
-	strcpy(v, obj ? obj->getName().c_str() : "(unknown)");
-	ListView_SetItemText(hIDList, item.iItem, 1, v);
 
 	temp_property_id_list.push_back(id);
 }
