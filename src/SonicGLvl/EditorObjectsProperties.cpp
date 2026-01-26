@@ -407,7 +407,7 @@ void EditorApplication::createObjectsPropertiesGUI() {
 }
 
 
-void EditorApplication::updateObjectPropertyIndex(int selection_index) {
+void EditorApplication::updateObjectPropertyIndex(int selection_index, bool highlight_property) {
 	closeEditPropertyGUI();
 	
 	current_property_index = selection_index;
@@ -427,6 +427,12 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 		return;
 	}
 
+	// make sure row is highlighted (from undo/redo)
+	HWND hPropertiesList = GetDlgItem(hRightDlg, IDL_RIGHT_PROPERTIES_LIST);
+	ListView_SetItemState(hPropertiesList, selection_index, LVIS_SELECTED, LVIS_SELECTED);
+	ListView_EnsureVisible(hPropertiesList, selection_index, false);
+
+	bool focus = true;
 	bool hasValue = false;
 	HWND hEditGroup = GetDlgItem(hRightDlg, IDG_RIGHT_EDIT_GROUP);
 	switch (current_properties_types.at(selection_index))
@@ -503,6 +509,11 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 		if (hasValue)
 		{
 			SetDlgItemText(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE, ToString(value).c_str());
+			if (highlight_property)
+			{
+				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE, (UINT)CB_SETEDITSEL, (WPARAM)0, MAKELPARAM(0, -1));
+				focus = false;
+			}
 		}
 		break;
 	}
@@ -543,6 +554,11 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 		if (hasValue)
 		{
 			SetDlgItemText(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE, ToString(value).c_str());
+			if (highlight_property)
+			{
+				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE, (UINT)CB_SETEDITSEL, (WPARAM)0, MAKELPARAM(0, -1));
+				focus = false;
+			}
 		}
 		break;
 	}
@@ -597,6 +613,11 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 		if (hasValue)
 		{
 			SetDlgItemText(hEditPropertyDlg, IDC_EDIT_STRING_VALUE, value.c_str());
+			if (highlight_property)
+			{
+				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_STRING_VALUE, (UINT)CB_SETEDITSEL, (WPARAM)0, MAKELPARAM(0, -1));
+				focus = false;
+			}
 		}
 		break;
 	}
@@ -701,7 +722,10 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 	if (hEditPropertyDlg) {
 		history_edit_property_wrapper = new HistoryActionWrapper();
 		MoveWindow(hEditPropertyDlg, 4, 16, 260, 180, true);
-		SetFocus(hwnd);
+		
+		if (focus) {
+			SetFocus(hwnd);
+		}
 	}
 }
 
