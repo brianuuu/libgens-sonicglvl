@@ -1330,6 +1330,9 @@ bool EditorApplication::frameRenderingQueued(const Ogre::FrameEvent& evt) {
 	// Update Trajectory previews
 	updateTrajectoryNodes(timeSinceLastFrame);
 
+	// Update object link lines
+	updateObjectLinkNodes(false);
+
 	if (terrain_streamer) {
 		Ogre::Vector3 v = viewport->getCamera()->getPosition();
 		terrain_streamer->getMutex().lock();
@@ -1590,4 +1593,68 @@ void EditorApplication::updateTrajectoryNodes(Ogre::Real timeSinceLastFrame)
 		delete trajectory_preview_nodes.back();
 		trajectory_preview_nodes.pop_back();
 	}
+}
+
+void EditorApplication::updateObjectLinkNodes(bool recreate)
+{
+	if (recreate)
+	{
+		clearObjectLinkNodes();
+		if (current_properties_names.size() < current_property_index)
+		{
+			return;
+		}
+
+		string const& element_name = current_properties_names.at(current_property_index);
+		for (LibGens::Object* object : current_object_list_properties)
+		{
+			LibGens::ObjectElement* element = object->getElement(element_name);
+			if (!element) continue;
+			
+			set<LibGens::Object*> children;
+			if (element->getType() == LibGens::OBJECT_ELEMENT_ID)
+			{
+				LibGens::ObjectElementID* element_id = static_cast<LibGens::ObjectElementID*>(element);
+				LibGens::Object* child = getObjectFromID(element_id->value);
+				if (child)
+				{
+					children.insert(child);
+				}
+			}
+			else if (element->getType() == LibGens::OBJECT_ELEMENT_ID_LIST)
+			{
+				LibGens::ObjectElementIDList* element_id_list = static_cast<LibGens::ObjectElementIDList*>(element);
+				for (size_t id : element_id_list->value)
+				{
+					LibGens::Object* child = getObjectFromID(id);
+					if (child)
+					{
+						children.insert(child);
+					}
+				}
+			}
+			else
+			{
+				continue;
+			}
+
+			object_link_nodes[object] = new ObjectLinkNode(scene_manager, object, children);
+		}
+	}
+	else
+	{
+		for (auto& iter : object_link_nodes)
+		{
+			iter.second->restart();
+		}
+	}
+}
+
+void EditorApplication::clearObjectLinkNodes()
+{
+	for (auto& iter : object_link_nodes)
+	{
+		delete iter.second;
+	}
+	object_link_nodes.clear();
 }

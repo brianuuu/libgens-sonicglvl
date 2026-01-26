@@ -625,10 +625,7 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 			}
 		}
 
-		for (LibGens::Object* object : current_object_list_properties)
-		{
-			ObjectLinkNode* link_node = new ObjectLinkNode(scene_manager, object, {});
-		}
+		updateObjectLinkNodes(true);
 
 		if (hasValue)
 		{
@@ -687,6 +684,8 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 				}
 			}
 		}
+
+		updateObjectLinkNodes(true);
 
 		if (hasValue)
 		{
@@ -914,6 +913,7 @@ void EditorApplication::updateEditPropertyID(size_t v)
 	setTargetName(v);
 	if (changed)
 	{
+		updateObjectLinkNodes(true);
 		updateObjectsPropertiesValuesGUI(current_object_list_properties);
 		confirmEditProperty();
 	}
@@ -976,6 +976,7 @@ void EditorApplication::updateEditPropertyIDList(vector<size_t> const& v)
 		}
 	}
 
+	updateObjectLinkNodes(true);
 	updateObjectsPropertiesValuesGUI(current_object_list_properties);
 	confirmEditProperty();
 }
@@ -1285,6 +1286,7 @@ void EditorApplication::clearEditPropertyGUI() {
 	property_vector_nodes.clear();
 	temp_property_vector_list.clear();
 	temp_property_id_list.clear();
+	clearObjectLinkNodes();
 
 	if (hRightDlg) InvalidateRect(hRightDlg, NULL, true);
 }

@@ -133,6 +133,7 @@
     <ClCompile Include="LibGensHavokMesh.cpp" />
     <ClCompile Include="LibGensOgreMesh.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ObjectLinkNode.cpp" />
     <ClCompile Include="ObjectNode.cpp" />
     <ClCompile Include="ObjectNodeHistory.cpp" />
     <ClCompile Include="PathNode.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="History.h" />
     <ClInclude Include="HistoryAction.h" />
     <ClInclude Include="MessageTypes.h" />
+    <ClInclude Include="ObjectLinkNode.h" />
     <ClInclude Include="ObjectNode.h" />
     <ClInclude Include="ObjectNodeHistory.h" />
     <ClInclude Include="PathNode.h" />

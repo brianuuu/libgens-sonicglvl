@@ -24,6 +24,7 @@
 #include "BaseApplication.h"
 #include "EditorViewport.h"
 #include "ObjectNode.h"
+#include "ObjectLinkNode.h"
 #include "TerrainNode.h"
 #include "HavokNode.h"
 #include "GhostNode.h"
@@ -273,6 +274,7 @@ class EditorApplication : public BaseApplication {
 
 		vector<TrajectoryNode*> trajectory_preview_nodes;
 		vector<VectorNode *> property_vector_nodes;
+		map<LibGens::Object*, ObjectLinkNode*> object_link_nodes;
 		History *property_vector_history;
 		History* look_at_vector_history;
 
@@ -390,6 +392,8 @@ class EditorApplication : public BaseApplication {
 		void checkTerrainStreamer();
 		void checkTerrainVisibilityAndQuality(Ogre::Real timeSinceLastFrame);
 		void updateTrajectoryNodes(Ogre::Real timeSinceLastFrame);
+		void updateObjectLinkNodes(bool recreate);
+		void clearObjectLinkNodes();
 
 		void ignoreMouseClicks(int frames) {
 			ignore_mouse_clicks_frames = frames;
