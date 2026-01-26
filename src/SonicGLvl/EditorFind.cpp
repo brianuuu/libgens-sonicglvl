@@ -173,7 +173,6 @@ void EditorApplication::findNext(string obj_name, string param, string value)
 				if (!valueMatches(object, param, value))
 					continue;
 
-			clearSelection();
 			selectNode(object_node);
 
 			find_position = it;

@@ -2069,7 +2069,6 @@ INT_PTR CALLBACK EditIdCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 			if (obj_node)
 			{
 				SendMessage(hDlg, WM_CLOSE, 0, 0);
-				editor_application->clearSelection();
 				editor_application->selectNode(obj_node);
 				editor_application->updateSelection();
 				return true;
@@ -2141,7 +2140,6 @@ INT_PTR CALLBACK EditIdListCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 			if (obj_node)
 			{
 				SendMessage(hDlg, WM_CLOSE, 0, 0);
-				editor_application->clearSelection();
 				editor_application->selectNode(obj_node);
 				editor_application->updateSelection();
 				return true;

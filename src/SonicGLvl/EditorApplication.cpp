@@ -54,12 +54,42 @@ ObjectNodeManager* EditorApplication::getObjectNodeManager()
 
 void EditorApplication::selectNode(EditorNode* node)
 {
+	HistoryActionWrapper* wrapper = new HistoryActionWrapper();
+
+	// deselect others
+	for (EditorNode* n : selected_nodes)
+	{
+		if (n->isSelected())
+		{
+			n->setSelect(false);
+			HistoryActionSelectNode* action_deselect = new HistoryActionSelectNode(n, true, false, &selected_nodes);
+			wrapper->push(action_deselect);
+		}
+	}
+
+	selected_nodes.clear();
 	if (node)
 	{
+		// select node if it's not already selected
+		HistoryActionSelectNode* action_select = new HistoryActionSelectNode(node, false, true, &selected_nodes);
+		wrapper->push(action_select);
 		node->setSelect(true);
 		selected_nodes.push_back(node);
+
+		// focus on node
 		viewport->focusOnPoint(node->getPosition());
 	}
+
+	if (wrapper->empty())
+	{
+		delete wrapper;
+	}
+	else
+	{
+		pushHistory(wrapper);
+	}
+
+	SetFocus(hwnd);
 }
 
 void EditorApplication::updateSelection() {
