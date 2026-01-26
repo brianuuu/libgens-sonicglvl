@@ -349,18 +349,7 @@ void EditorApplication::updateObjectsPropertiesValuesGUI(list<LibGens::Object*> 
 					element_cast_id=static_cast<LibGens::ObjectElementID *>(element);
 					value = ToString(element_cast_id->value);
 
-					LibGens::Object* obj = NULL;
-					EditorLevel* level = editor_application->getCurrentLevel();
-					if (level)
-					{
-						obj = level->getLevel()->getObjectByID(element_cast_id->value);
-					}
-					else
-					{
-						ObjectNode* obj_node = editor_application->getObjectNodeManager()->findObjectNodeByID(element_cast_id->value);
-						obj = obj_node ? obj_node->getObject() : NULL;
-					}
-
+					LibGens::Object* obj = editor_application->getObjectFromID(element_cast_id->value);
 					if (obj) {
 						value += " (" + obj->getName() + ")";
 					}
@@ -634,6 +623,11 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index) {
 				hasValue = false;
 				break;
 			}
+		}
+
+		for (LibGens::Object* object : current_object_list_properties)
+		{
+			ObjectLinkNode* link_node = new ObjectLinkNode(scene_manager, object, {});
 		}
 
 		if (hasValue)
@@ -1872,21 +1866,42 @@ void EditorApplication::addVectorToList(LibGens::Vector3 v3)
 	property_vector_nodes.push_back(vector_node);
 }
 
+LibGens::Object* EditorApplication::getObjectFromID(size_t id)
+{
+	EditorLevel* level = getCurrentLevel();
+	if (level)
+	{
+		return level->getLevel()->getObjectByID(id);
+	}
+	else
+	{
+		ObjectNode* obj_node = getObjectNodeManager()->findObjectNodeByID(id);
+		return obj_node ? obj_node->getObject() : NULL;
+	}
+}
+
+ObjectNode* EditorApplication::getObjectNodeFromID(size_t id)
+{
+	EditorLevel* level = getCurrentLevel();
+	if (level)
+	{
+		LibGens::Object* obj = getObjectFromID(id);
+		if (obj)
+		{
+			return getObjectNodeManager()->findObjectNode(obj);
+		}
+	}
+	else
+	{
+		return getObjectNodeManager()->findObjectNodeByID(id);
+	}
+}
+
 void EditorApplication::addIDToList(size_t id)
 {
 	HWND hIDList = GetDlgItem(hEditPropertyDlg, IDL_EDIT_ID_LIST_LIST);
 	
-	LibGens::Object* obj = NULL;
-	EditorLevel* level = editor_application->getCurrentLevel();
-	if (level)
-	{
-		obj = level->getLevel()->getObjectByID(id);
-	}
-	else
-	{
-		ObjectNode* obj_node = editor_application->getObjectNodeManager()->findObjectNodeByID(id);
-		obj = obj_node ? obj_node->getObject() : NULL;
-	}
+	LibGens::Object* obj = getObjectFromID(id);
 
 	string id_string = ToString<size_t>(id) + " (" + string(obj ? obj->getName().c_str() : "unknown") + ")";
 	char v[256];
@@ -1963,17 +1978,7 @@ void EditorApplication::moveID(int index, bool up)
 
 void EditorApplication::setTargetName(size_t id)
 {
-	LibGens::Object* obj = NULL;
-	EditorLevel* level = editor_application->getCurrentLevel();
-	if (level)
-	{
-		obj = level->getLevel()->getObjectByID(id);
-	}
-	else
-	{
-		ObjectNode* obj_node = editor_application->getObjectNodeManager()->findObjectNodeByID(id);
-		obj = obj_node ? obj_node->getObject() : NULL;
-	}
+	LibGens::Object* obj = getObjectFromID(id);
 
 	string object_name = "(none)";
 	bool enabled = false;
@@ -2023,22 +2028,7 @@ INT_PTR CALLBACK EditIdCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 		case IDB_EDIT_ID_SWITCH:
 		{
 			size_t id = GetDlgItemInt(hDlg, IDE_EDIT_ID_VALUE, NULL, false);
-			ObjectNode* obj_node = NULL;
-
-			EditorLevel* level = editor_application->getCurrentLevel();
-			if (level)
-			{
-				LibGens::Object* obj = level->getLevel()->getObjectByID(id);
-				if (obj)
-				{
-					obj_node = editor_application->getObjectNodeManager()->findObjectNode(obj);
-				}
-			}
-			else
-			{
-				obj_node = editor_application->getObjectNodeManager()->findObjectNodeByID(id);
-			}
-
+			ObjectNode* obj_node = editor_application->getObjectNodeFromID(id);
 			if (obj_node)
 			{
 				SendMessage(hDlg, WM_CLOSE, 0, 0);
@@ -2110,22 +2100,7 @@ INT_PTR CALLBACK EditIdListCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 			char id_str[128] = "";
 			ListView_GetItemText(list_view, index, 0, id_str, 128);
 			size_t id = stoi(id_str);
-			ObjectNode* obj_node = NULL;
-
-			EditorLevel* level = editor_application->getCurrentLevel();
-			if (level)
-			{
-				LibGens::Object* obj = level->getLevel()->getObjectByID(id);
-				if (obj)
-				{
-					obj_node = editor_application->getObjectNodeManager()->findObjectNode(obj);
-				}
-			}
-			else
-			{
-				obj_node = editor_application->getObjectNodeManager()->findObjectNodeByID(id);
-			}
-
+			ObjectNode* obj_node = editor_application->getObjectNodeFromID(id);
 			if (obj_node)
 			{
 				SendMessage(hDlg, WM_CLOSE, 0, 0);

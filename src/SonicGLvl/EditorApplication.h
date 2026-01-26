@@ -532,6 +532,8 @@ class EditorApplication : public BaseApplication {
 		void moveVector(int index, bool up);
 		bool isVectorListSelectionValid();
 		bool isUpdateVectorList();
+		LibGens::Object* getObjectFromID(size_t id);
+		ObjectNode* getObjectNodeFromID(size_t id);
 		void addIDToList(size_t id);
 		void updateIDListSelection(int index);
 		void removeIDFromList(int index);
@@ -548,7 +550,7 @@ class EditorApplication : public BaseApplication {
 
 		void verifySonicSpawnChange();
 		void confirmEditProperty();
-		void revertEditProperty();
+		void revertEditProperty(); // TODO: remove
 		
 
 		void updateObjectCategoriesGUI();
