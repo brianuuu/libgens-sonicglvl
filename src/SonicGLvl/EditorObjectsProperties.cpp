@@ -1206,6 +1206,17 @@ void EditorApplication::openQueryTargetMode(bool mode)
 	else
 	{
 		is_pick_target = false;
+
+		if (current_properties_types.size() > current_property_index)
+		{
+			bool is_list = current_properties_types.at(current_property_index) == LibGens::OBJECT_ELEMENT_ID_LIST;
+			if (is_list) {
+				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_ID_LIST_ADD, BM_SETCHECK, (WPARAM)(false), 0);
+			}
+			else {
+				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_ID_SELECT, BM_SETCHECK, (WPARAM)(false), 0);
+			}
+		}
 	}
 }
 
@@ -2046,9 +2057,9 @@ INT_PTR CALLBACK EditIdCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPara
 			}
 			break;
 		}
-		case IDB_EDIT_ID_SELECT:
+		case IDC_EDIT_ID_SELECT:
 		{
-			editor_application->openQueryTargetMode(true);
+			editor_application->openQueryTargetMode(IsDlgButtonChecked(hDlg, IDC_EDIT_ID_SELECT));
 			break;
 		}
 		case IDB_EDIT_ID_SWITCH:
@@ -2137,8 +2148,8 @@ INT_PTR CALLBACK EditIdListCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 			}
 			break;
 		}
-		case IDB_EDIT_ID_LIST_ADD:
-			editor_application->openQueryTargetMode(true);
+		case IDC_EDIT_ID_LIST_ADD:
+			editor_application->openQueryTargetMode(IsDlgButtonChecked(hDlg, IDC_EDIT_ID_LIST_ADD));
 			break;
 		}
 		break;

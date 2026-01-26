@@ -36,6 +36,7 @@
 #define IDT_RIGHT_HELP_DESCRIPTION              40000
 #define IMD_OPEN_LEVEL                          40000
 #define IDB_DELETE_PHYSICS                      40001
+#define IDC_EDIT_ID_SELECT                      40001
 #define IDE_EDIT_VECTOR_Y                       40001
 #define IDE_FIND_PROPERTY_VALUE                 40001
 #define IDE_LOOK_AT_Y                           40001
@@ -47,8 +48,6 @@
 #define IDS_EDIT_VECTOR_LIST_Y                  40001
 #define IDT_EDIT_PRESET_COUNT                   40001
 #define IMD_SAVE_LEVEL_DATA                     40001
-#define IDB_EDIT_ID_LIST_ADD                    40002
-#define IDB_EDIT_ID_SELECT                      40002
 #define IDB_IMPORT_PHYSICS                      40002
 #define IDC_EDIT_NUMBER_VALUE                   40002
 #define IDC_EDIT_STRING_VALUE                   40002
@@ -75,6 +74,7 @@
 #define IMD_CLOSE                               40003
 #define IDB_FIND                                40004
 #define IDB_MATERIAL_LOAD_MODEL                 40004
+#define IDC_EDIT_ID_LIST_ADD                    40004
 #define IDC_LOOK_AT_OBJECT                      40004
 #define IDE_EDIT_VECTOR_LIST_Z                  40004
 #define IDE_MULTISETPARAM_COUNT                 40004
