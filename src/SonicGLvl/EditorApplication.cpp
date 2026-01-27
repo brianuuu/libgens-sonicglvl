@@ -331,6 +331,10 @@ void EditorApplication::cloneSelection() {
 						new_object->setID(current_level->getLevel()->newObjectID());
 					}
 				}
+				else
+				{
+					new_object->setID(no_level_id++);
+				}
 			
 				LibGens::ObjectSet *parent_set = object->getParentSet();
 				if (parent_set) {
@@ -377,6 +381,10 @@ void EditorApplication::temporaryCloneSelection() {
 					if (current_level->getLevel()) {
 						new_object->setID(current_level->getLevel()->newObjectID());
 					}
+				}
+				else
+				{
+					new_object->setID(no_level_id++);
 				}
 
 				LibGens::ObjectSet* parent_set = object->getParentSet();

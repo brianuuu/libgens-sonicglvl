@@ -84,6 +84,10 @@ void EditorApplication::createMultiSetParamObjects()
 							new_obj->setID(current_level->getLevel()->newObjectID());
 						}
 					}
+					else
+					{
+						new_obj->setID(no_level_id++);
+					}
 
 					LibGens::ObjectSet* set = getCurrentSet();
 					if (set) {

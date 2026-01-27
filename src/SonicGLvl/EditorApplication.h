@@ -217,6 +217,7 @@ class EditorApplication : public BaseApplication {
 		LibGens::ObjectLibrary *unleashed_library;
 		LibGens::ObjectLibrary *library;
 		LibGens::ObjectProduction *object_production;
+		size_t no_level_id = LIBGENS_LEVEL_START_ID_GENERATION;
 
 		// Ghost
 		GhostNode *ghost_node;
