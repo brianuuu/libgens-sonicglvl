@@ -147,6 +147,48 @@ void EditorApplication::deleteSelection() {
 					HistoryActionSelectNode *action_select = new HistoryActionSelectNode((*it), true, false, &selected_nodes);
 					(*it)->setSelect(false);
 					wrapper->push(action_select);
+
+					// remove all references to current object
+					for (ObjectNode* n : object_node->getReferences())
+					{
+						LibGens::Object* o = n->getObject();
+						if (!o) continue;
+
+						for (LibGens::ObjectElement* element : o->getElements())
+						{
+							if (element->getType() == LibGens::OBJECT_ELEMENT_ID)
+							{
+								LibGens::ObjectElementID* element_id = static_cast<LibGens::ObjectElementID*>(element);
+								if (object->getID() != element_id->value) continue;
+
+								HistoryActionEditObjectElementID* history_action = new HistoryActionEditObjectElementID(o, object_node_manager, element_id, element_id->value, 0, -1);
+								element_id->value = 0;
+								wrapper->push(history_action);
+							}
+							else if (element->getType() == LibGens::OBJECT_ELEMENT_ID_LIST)
+							{
+								LibGens::ObjectElementIDList* element_id_list = static_cast<LibGens::ObjectElementIDList*>(element);
+								if (!count(element_id_list->value.begin(), element_id_list->value.end(), object->getID())) continue;
+
+								vector<size_t> new_list = element_id_list->value;
+								for (auto iter = new_list.begin(); iter != new_list.end();)
+								{
+									if (*iter == object->getID())
+									{
+										iter = new_list.erase(iter);
+									}
+									else
+									{
+										iter++;
+									}
+								}
+
+								HistoryActionEditObjectElementIDList* history_action = new HistoryActionEditObjectElementIDList(o, object_node_manager, element_id_list, element_id_list->value, new_list, -1);
+								element_id_list->value = new_list;
+								wrapper->push(history_action);
+							}
+						}
+					}
 				}
 			}
 			else if ((*it)->getType() == EDITOR_NODE_OBJECT_MSP) {

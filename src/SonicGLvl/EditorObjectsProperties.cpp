@@ -916,11 +916,20 @@ void EditorApplication::updateEditPropertyID(size_t v)
 				
 				if (element_id->value != v)
 				{
+					// TODO: initial references on level load
+					ObjectNode* this_node = object_node_manager->findObjectNode(*it);
+					if (this_node)
+					{
+						ObjectNode* old_node = getObjectNodeFromID(element_id->value);
+						if (old_node) old_node->removeReference(this_node);
+						ObjectNode* new_node = getObjectNodeFromID(v);
+						if (new_node) new_node->addReference(this_node);
+					}
+
 					changed = true;
 					HistoryActionEditObjectElementID* history_action = new HistoryActionEditObjectElementID((*it), object_node_manager, element_id, element_id->value, v, getCurrentPropertyIndex());
 					element_id->value = v;
 					history_edit_property_wrapper->push(history_action);
-					// TODO: add/remove reference
 				}
 			}
 		}
@@ -985,10 +994,25 @@ void EditorApplication::updateEditPropertyIDList(vector<size_t> const& v)
 			if (element->getType() == LibGens::OBJECT_ELEMENT_ID_LIST)
 			{
 				LibGens::ObjectElementIDList* element_id_list = static_cast<LibGens::ObjectElementIDList*>(element);
+				// TODO: initial references on level load
+				ObjectNode* this_node = object_node_manager->findObjectNode(*it);
+				if (this_node)
+				{
+					for (size_t id : element_id_list->value)
+					{
+						ObjectNode* old_node = getObjectNodeFromID(id);
+						if (old_node) old_node->removeReference(this_node);
+					}
+					for (size_t id : v)
+					{
+						ObjectNode* new_node = getObjectNodeFromID(id);
+						if (new_node) new_node->addReference(this_node);
+					}
+				}
+
 				HistoryActionEditObjectElementIDList* history_action = new HistoryActionEditObjectElementIDList((*it), object_node_manager, element_id_list, element_id_list->value, v, getCurrentPropertyIndex());
 				element_id_list->value = v;
 				history_edit_property_wrapper->push(history_action);
-				// TODO: add/remove reference
 			}
 		}
 	}

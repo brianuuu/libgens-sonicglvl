@@ -246,6 +246,15 @@ void HistoryActionEditObjectElementID::undo() {
 	object_element->value = previous_value;
 
 	if (object_node_manager) {
+		ObjectNode* this_node = object_node_manager->findObjectNode(object);
+		if (this_node)
+		{
+			ObjectNode* old_node = editor_application->getObjectNodeFromID(previous_value);
+			if (old_node) old_node->addReference(this_node);
+			ObjectNode* new_node = editor_application->getObjectNodeFromID(new_value);
+			if (new_node) new_node->removeReference(this_node);
+		}
+
 		object_node_manager->reloadObjectNode(object);
 	}
 
@@ -259,6 +268,15 @@ void HistoryActionEditObjectElementID::redo() {
 	object_element->value = new_value;
 
 	if (object_node_manager) {
+		ObjectNode* this_node = object_node_manager->findObjectNode(object);
+		if (this_node)
+		{
+			ObjectNode* old_node = editor_application->getObjectNodeFromID(previous_value);
+			if (old_node) old_node->removeReference(this_node);
+			ObjectNode* new_node = editor_application->getObjectNodeFromID(new_value);
+			if (new_node) new_node->addReference(this_node);
+		}
+
 		object_node_manager->reloadObjectNode(object);
 	}
 
@@ -273,6 +291,21 @@ void HistoryActionEditObjectElementIDList::undo() {
 	object_element->value = previous_value;
 
 	if (object_node_manager) {
+		ObjectNode* this_node = object_node_manager->findObjectNode(object);
+		if (this_node)
+		{
+			for (size_t id : previous_value)
+			{
+				ObjectNode* old_node = editor_application->getObjectNodeFromID(id);
+				if (old_node) old_node->addReference(this_node);
+			}
+			for (size_t id : new_value)
+			{
+				ObjectNode* new_node = editor_application->getObjectNodeFromID(id);
+				if (new_node) new_node->removeReference(this_node);
+			}
+		}
+
 		object_node_manager->reloadObjectNode(object);
 	}
 
@@ -286,6 +319,21 @@ void HistoryActionEditObjectElementIDList::redo() {
 	object_element->value = new_value;
 
 	if (object_node_manager) {
+		ObjectNode* this_node = object_node_manager->findObjectNode(object);
+		if (this_node)
+		{
+			for (size_t id : previous_value)
+			{
+				ObjectNode* old_node = editor_application->getObjectNodeFromID(id);
+				if (old_node) old_node->removeReference(this_node);
+			}
+			for (size_t id : new_value)
+			{
+				ObjectNode* new_node = editor_application->getObjectNodeFromID(id);
+				if (new_node) new_node->addReference(this_node);
+			}
+		}
+
 		object_node_manager->reloadObjectNode(object);
 	}
 

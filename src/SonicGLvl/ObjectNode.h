@@ -134,6 +134,7 @@ class ObjectNode : public EditorNode {
 
 		bool offset_rotation_animation_enabled;
 
+		set<ObjectNode *> referenced_by_nodes;
 		list<ObjectMultiSetNode *> object_msp_nodes;
 
 		Ogre::AnimationState *animation_state;
@@ -196,6 +197,18 @@ class ObjectNode : public EditorNode {
 			current_animation_name = "";
 			current_skeleton_name = "";
 			current_type_name = "";
+		}
+
+		void addReference(ObjectNode* n) {
+			referenced_by_nodes.insert(n);
+		}
+
+		void removeReference(ObjectNode* n) {
+			referenced_by_nodes.erase(n);
+		}
+
+		set<ObjectNode*> const& getReferences() {
+			return referenced_by_nodes;
 		}
 
 		~ObjectNode();
