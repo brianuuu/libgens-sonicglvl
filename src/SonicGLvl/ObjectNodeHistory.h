@@ -87,14 +87,14 @@ class HistoryActionEditObjectElementBool : public HistoryAction {
 		bool new_value;
 		int selection_index;
 	public:
-		HistoryActionEditObjectElementBool(LibGens::Object *object_p, ObjectNodeManager *object_node_manager_p, LibGens::ObjectElementBool *object_element_p, bool previous_value_p, bool new_value_p) {
+		HistoryActionEditObjectElementBool(LibGens::Object *object_p, ObjectNodeManager *object_node_manager_p, LibGens::ObjectElementBool *object_element_p, bool previous_value_p, bool new_value_p, int selection_index_p) {
 			type = HISTORY_ACTION_EDIT_OBJECT_ELEMENT_BOOL;
 			object = object_p;
 			object_node_manager = object_node_manager_p;
 			object_element = object_element_p;
 			previous_value = previous_value_p;
 			new_value = new_value_p;
-			selection_index = editor_application->getCurrentPropertyIndex();
+			selection_index = selection_index_p;
 		}
 
 		void undo();
@@ -111,14 +111,14 @@ class HistoryActionEditObjectElementInteger : public HistoryAction {
 		unsigned int new_value;
 		int selection_index;
 	public:
-		HistoryActionEditObjectElementInteger(LibGens::Object *object_p, ObjectNodeManager *object_node_manager_p, LibGens::ObjectElementInteger *object_element_p, unsigned int previous_value_p, unsigned int new_value_p) {
+		HistoryActionEditObjectElementInteger(LibGens::Object *object_p, ObjectNodeManager *object_node_manager_p, LibGens::ObjectElementInteger *object_element_p, unsigned int previous_value_p, unsigned int new_value_p, int selection_index_p) {
 			type = HISTORY_ACTION_EDIT_OBJECT_ELEMENT_INTEGER;
 			object = object_p;
 			object_node_manager = object_node_manager_p;
 			object_element = object_element_p;
 			previous_value = previous_value_p;
 			new_value = new_value_p;
-			selection_index = editor_application->getCurrentPropertyIndex();
+			selection_index = selection_index_p;
 		}
 
 		void undo();
@@ -136,14 +136,14 @@ class HistoryActionEditObjectElementFloat : public HistoryAction {
 		float new_value;
 		int selection_index;
 	public:
-		HistoryActionEditObjectElementFloat(LibGens::Object *object_p, ObjectNodeManager *object_node_manager_p, LibGens::ObjectElementFloat *object_element_p, float previous_value_p, float new_value_p) {
+		HistoryActionEditObjectElementFloat(LibGens::Object *object_p, ObjectNodeManager *object_node_manager_p, LibGens::ObjectElementFloat *object_element_p, float previous_value_p, float new_value_p, int selection_index_p) {
 			type = HISTORY_ACTION_EDIT_OBJECT_ELEMENT_FLOAT;
 			object = object_p;
 			object_node_manager = object_node_manager_p;
 			object_element = object_element_p;
 			previous_value = previous_value_p;
 			new_value = new_value_p;
-			selection_index = editor_application->getCurrentPropertyIndex();
+			selection_index = selection_index_p;
 		}
 
 		void undo();
@@ -160,14 +160,14 @@ class HistoryActionEditObjectElementString : public HistoryAction {
 		string new_value;
 		int selection_index;
 	public:
-		HistoryActionEditObjectElementString(LibGens::Object *object_p, ObjectNodeManager *object_node_manager_p, LibGens::ObjectElementString *object_element_p, string previous_value_p, string new_value_p) {
+		HistoryActionEditObjectElementString(LibGens::Object *object_p, ObjectNodeManager *object_node_manager_p, LibGens::ObjectElementString *object_element_p, string previous_value_p, string new_value_p, int selection_index_p) {
 			type = HISTORY_ACTION_EDIT_OBJECT_ELEMENT_STRING;
 			object = object_p;
 			object_node_manager = object_node_manager_p;
 			object_element = object_element_p;
 			previous_value = previous_value_p;
 			new_value = new_value_p;
-			selection_index = editor_application->getCurrentPropertyIndex();
+			selection_index = selection_index_p;
 		}
 
 		void undo();
@@ -184,14 +184,14 @@ class HistoryActionEditObjectElementID : public HistoryAction {
 		size_t new_value;
 		int selection_index;
 	public:
-		HistoryActionEditObjectElementID(LibGens::Object *object_p, ObjectNodeManager *object_node_manager_p, LibGens::ObjectElementID *object_element_p, size_t previous_value_p, size_t new_value_p) {
+		HistoryActionEditObjectElementID(LibGens::Object *object_p, ObjectNodeManager *object_node_manager_p, LibGens::ObjectElementID *object_element_p, size_t previous_value_p, size_t new_value_p, int selection_index_p) {
 			type = HISTORY_ACTION_EDIT_OBJECT_ELEMENT_ID;
 			object = object_p;
 			object_node_manager = object_node_manager_p;
 			object_element = object_element_p;
 			previous_value = previous_value_p;
 			new_value = new_value_p;
-			selection_index = editor_application->getCurrentPropertyIndex();
+			selection_index = selection_index_p;
 		}
 
 		void undo();
@@ -208,14 +208,14 @@ class HistoryActionEditObjectElementIDList : public HistoryAction {
 		vector<size_t> new_value;
 		int selection_index;
 	public:
-		HistoryActionEditObjectElementIDList(LibGens::Object *object_p, ObjectNodeManager *object_node_manager_p, LibGens::ObjectElementIDList *object_element_p, vector<size_t> previous_value_p, vector<size_t> new_value_p) {
+		HistoryActionEditObjectElementIDList(LibGens::Object *object_p, ObjectNodeManager *object_node_manager_p, LibGens::ObjectElementIDList *object_element_p, vector<size_t> previous_value_p, vector<size_t> new_value_p, int selection_index_p) {
 			type = HISTORY_ACTION_EDIT_OBJECT_ELEMENT_ID_LIST;
 			object = object_p;
 			object_node_manager = object_node_manager_p;
 			object_element = object_element_p;
 			previous_value = previous_value_p;
 			new_value = new_value_p;
-			selection_index = editor_application->getCurrentPropertyIndex();
+			selection_index = selection_index_p;
 		}
 
 		void undo();
@@ -232,14 +232,14 @@ class HistoryActionEditObjectElementVector : public HistoryAction {
 		LibGens::Vector3 new_value;
 		int selection_index;
 	public:
-		HistoryActionEditObjectElementVector(LibGens::Object *object_p, ObjectNodeManager *object_node_manager_p, LibGens::ObjectElementVector *object_element_p, LibGens::Vector3 previous_value_p, LibGens::Vector3 new_value_p) {
+		HistoryActionEditObjectElementVector(LibGens::Object *object_p, ObjectNodeManager *object_node_manager_p, LibGens::ObjectElementVector *object_element_p, LibGens::Vector3 previous_value_p, LibGens::Vector3 new_value_p, int selection_index_p) {
 			type = HISTORY_ACTION_EDIT_OBJECT_ELEMENT_VECTOR;
 			object = object_p;
 			object_node_manager = object_node_manager_p;
 			object_element = object_element_p;
 			previous_value = previous_value_p;
 			new_value = new_value_p;
-			selection_index = editor_application->getCurrentPropertyIndex();
+			selection_index = selection_index_p;
 		}
 
 		void undo();
@@ -256,14 +256,14 @@ class HistoryActionEditObjectElementVectorList : public HistoryAction {
 		vector<LibGens::Vector3> new_value;
 		int selection_index;
 	public:
-		HistoryActionEditObjectElementVectorList(LibGens::Object *object_p, ObjectNodeManager *object_node_manager_p, LibGens::ObjectElementVectorList *object_element_p, vector<LibGens::Vector3> previous_value_p, vector<LibGens::Vector3> new_value_p) {
+		HistoryActionEditObjectElementVectorList(LibGens::Object *object_p, ObjectNodeManager *object_node_manager_p, LibGens::ObjectElementVectorList *object_element_p, vector<LibGens::Vector3> previous_value_p, vector<LibGens::Vector3> new_value_p, int selection_index_p) {
 			type = HISTORY_ACTION_EDIT_OBJECT_ELEMENT_VECTOR_LIST;
 			object = object_p;
 			object_node_manager = object_node_manager_p;
 			object_element = object_element_p;
 			previous_value = previous_value_p;
 			new_value = new_value_p;
-			selection_index = editor_application->getCurrentPropertyIndex();
+			selection_index = selection_index_p;
 		}
 
 		void undo();

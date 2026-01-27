@@ -815,7 +815,7 @@ void EditorApplication::updateEditPropertyBool(bool v) {
 		if (element) {
 			if (element->getType() == LibGens::OBJECT_ELEMENT_BOOL) {
 				LibGens::ObjectElementBool *element_bool = static_cast<LibGens::ObjectElementBool *>(element);
-				HistoryActionEditObjectElementBool *history_action = new HistoryActionEditObjectElementBool((*it), object_node_manager, element_bool, element_bool->value, v);
+				HistoryActionEditObjectElementBool *history_action = new HistoryActionEditObjectElementBool((*it), object_node_manager, element_bool, element_bool->value, v, getCurrentPropertyIndex());
 				element_bool->value = v;
 				history_edit_property_wrapper->push(history_action);
 
@@ -839,7 +839,7 @@ void EditorApplication::updateEditPropertyInteger(unsigned int v) {
 		if (element) {
 			if (element->getType() == LibGens::OBJECT_ELEMENT_ID) {
 				LibGens::ObjectElementID *element_id = static_cast<LibGens::ObjectElementID *>(element);
-				HistoryActionEditObjectElementID *history_action = new HistoryActionEditObjectElementID((*it), object_node_manager, element_id, element_id->value, v);
+				HistoryActionEditObjectElementID *history_action = new HistoryActionEditObjectElementID((*it), object_node_manager, element_id, element_id->value, v, getCurrentPropertyIndex());
 				element_id->value = v;
 				history_edit_property_wrapper->push(history_action);
 
@@ -848,7 +848,7 @@ void EditorApplication::updateEditPropertyInteger(unsigned int v) {
 
 			if (element->getType() == LibGens::OBJECT_ELEMENT_INTEGER) {
 				LibGens::ObjectElementInteger *element_integer = static_cast<LibGens::ObjectElementInteger *>(element);
-				HistoryActionEditObjectElementInteger *history_action = new HistoryActionEditObjectElementInteger((*it), object_node_manager, element_integer, element_integer->value, v);
+				HistoryActionEditObjectElementInteger *history_action = new HistoryActionEditObjectElementInteger((*it), object_node_manager, element_integer, element_integer->value, v, getCurrentPropertyIndex());
 				element_integer->value = v;
 				history_edit_property_wrapper->push(history_action);
 
@@ -871,7 +871,7 @@ void EditorApplication::updateEditPropertyFloat(float v) {
 		if (element) {
 			if (element->getType() == LibGens::OBJECT_ELEMENT_FLOAT) {
 				LibGens::ObjectElementFloat *element_float = static_cast<LibGens::ObjectElementFloat *>(element);
-				HistoryActionEditObjectElementFloat *history_action = new HistoryActionEditObjectElementFloat((*it), object_node_manager, element_float, element_float->value, v);
+				HistoryActionEditObjectElementFloat *history_action = new HistoryActionEditObjectElementFloat((*it), object_node_manager, element_float, element_float->value, v, getCurrentPropertyIndex());
 				element_float->value = v;
 				history_edit_property_wrapper->push(history_action);
 
@@ -895,7 +895,7 @@ void EditorApplication::updateEditPropertyString(string v) {
 		if (element) {
 			if (element->getType() == LibGens::OBJECT_ELEMENT_STRING) {
 				LibGens::ObjectElementString *element_string = static_cast<LibGens::ObjectElementString *>(element);
-				HistoryActionEditObjectElementString *history_action = new HistoryActionEditObjectElementString((*it), object_node_manager, element_string, element_string->value, v);
+				HistoryActionEditObjectElementString *history_action = new HistoryActionEditObjectElementString((*it), object_node_manager, element_string, element_string->value, v, getCurrentPropertyIndex());
 				element_string->value = v;
 				history_edit_property_wrapper->push(history_action);
 
@@ -926,9 +926,10 @@ void EditorApplication::updateEditPropertyID(size_t v)
 				if (element_id->value != v)
 				{
 					changed = true;
-					HistoryActionEditObjectElementID* history_action = new HistoryActionEditObjectElementID((*it), object_node_manager, element_id, element_id->value, v);
+					HistoryActionEditObjectElementID* history_action = new HistoryActionEditObjectElementID((*it), object_node_manager, element_id, element_id->value, v, getCurrentPropertyIndex());
 					element_id->value = v;
 					history_edit_property_wrapper->push(history_action);
+					// TODO: add/remove reference
 				}
 			}
 		}
@@ -993,9 +994,10 @@ void EditorApplication::updateEditPropertyIDList(vector<size_t> const& v)
 			if (element->getType() == LibGens::OBJECT_ELEMENT_ID_LIST)
 			{
 				LibGens::ObjectElementIDList* element_id_list = static_cast<LibGens::ObjectElementIDList*>(element);
-				HistoryActionEditObjectElementIDList* history_action = new HistoryActionEditObjectElementIDList((*it), object_node_manager, element_id_list, element_id_list->value, v);
+				HistoryActionEditObjectElementIDList* history_action = new HistoryActionEditObjectElementIDList((*it), object_node_manager, element_id_list, element_id_list->value, v, getCurrentPropertyIndex());
 				element_id_list->value = v;
 				history_edit_property_wrapper->push(history_action);
+				// TODO: add/remove reference
 			}
 		}
 	}
@@ -1015,7 +1017,7 @@ void EditorApplication::updateEditPropertyVector(LibGens::Vector3 v) {
 		if (element) {
 			if (element->getType() == LibGens::OBJECT_ELEMENT_VECTOR) {
 				LibGens::ObjectElementVector *element_vector = static_cast<LibGens::ObjectElementVector *>(element);
-				HistoryActionEditObjectElementVector *history_action = new HistoryActionEditObjectElementVector((*it), object_node_manager, element_vector, element_vector->value, v);
+				HistoryActionEditObjectElementVector *history_action = new HistoryActionEditObjectElementVector((*it), object_node_manager, element_vector, element_vector->value, v, getCurrentPropertyIndex());
 				element_vector->value = v;
 				history_edit_property_wrapper->push(history_action);
 
@@ -1043,7 +1045,7 @@ void EditorApplication::updateEditPropertyVectorList(vector<LibGens::Vector3> v)
 			if (element->getType() == LibGens::OBJECT_ELEMENT_VECTOR_LIST)
 			{
 				LibGens::ObjectElementVectorList* element_vector_list = static_cast<LibGens::ObjectElementVectorList*>(element);
-				HistoryActionEditObjectElementVectorList* history_action = new HistoryActionEditObjectElementVectorList((*it), object_node_manager, element_vector_list, element_vector_list->value, v);
+				HistoryActionEditObjectElementVectorList* history_action = new HistoryActionEditObjectElementVectorList((*it), object_node_manager, element_vector_list, element_vector_list->value, v, getCurrentPropertyIndex());
 				element_vector_list->value = v;
 				history_edit_property_wrapper->push(history_action);
 
@@ -1251,7 +1253,7 @@ void EditorApplication::verifySonicSpawnChange() {
 								// Edit Boolean value and add to history wrapper
 								LibGens::ObjectElementBool *element_bool = static_cast<LibGens::ObjectElementBool *>(element);
 
-								HistoryActionEditObjectElementBool *history_action = new HistoryActionEditObjectElementBool((*it), object_node_manager, element_bool, element_bool->value, false);
+								HistoryActionEditObjectElementBool *history_action = new HistoryActionEditObjectElementBool((*it), object_node_manager, element_bool, element_bool->value, false, getCurrentPropertyIndex());
 								element_bool->value = false;
 
 								if (history_edit_property_wrapper) {
