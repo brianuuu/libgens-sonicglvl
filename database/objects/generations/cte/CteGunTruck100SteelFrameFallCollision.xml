@@ -15,9 +15,9 @@
   <Shape_Type type="float" default="0" description="" />
   <TargetList0 type="id_list" description="" />
   <TargetList1 type="id_list" description="" />
-  <TargetList2 type="undefined" description="" />
-  <TargetList3 type="undefined" description="" />
-  <TargetList4 type="undefined" description="" />
+  <TargetList2 type="id_list" description="" />
+  <TargetList3 type="id_list" description="" />
+  <TargetList4 type="id_list" description="" />
   <Timer0 type="float" default="0" description="" />
   <Timer1 type="float" default="0" description="" />
   <Timer2 type="float" default="0" description="" />

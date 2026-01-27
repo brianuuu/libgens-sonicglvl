@@ -8,7 +8,7 @@
   <IsPrimitiveCollision type="bool" default="true" description="" />
   <OffTimer type="float" default="5" description="" />
   <Range type="float" default="30" description="" />
-  <TargetListOFF type="undefined" description="" />
+  <TargetListOFF type="id_list" description="" />
   <TargetListON type="id_list" description="" />
   <TimerOFF type="float" default="0" description="" />
   <TimerON type="float" default="0" description="" />

@@ -3,7 +3,7 @@
   <AttachOffsetX type="float" default="0" description="" />
   <AttachOffsetY type="float" default="0" description="" />
   <AttachOffsetZ type="float" default="0" description="" />
-  <AttachTarget type="undefined" description="" />
+  <AttachTarget type="id_list" description="" />
   <CameraID_0 type="id" description="" />
   <EnterEaseTime_0 type="float" default="0" description="" />
   <FloorType type="float" default="0" description="" />

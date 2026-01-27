@@ -11,7 +11,7 @@
   <IsCastShadow type="bool" default="true" description="" />
   <IsEnableCollision type="bool" default="false" description="" />
   <LineType type="float" default="0" description="" />
-  <PositionList type="undefined" description="" />
+  <PositionList type="vector_list" description="" />
   <Priority type="float" default="0" description="" />
   <Range type="float" default="30" description="" />
   <Shape_Type type="float" default="0" description="" />

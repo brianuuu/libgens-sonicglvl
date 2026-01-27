@@ -8,15 +8,15 @@
   <IsCastShadow type="bool" default="true" description="" />
   <NoClearFlag type="bool" default="false" description="" />
   <PositionList0 type="vector_list" description="" />
-  <PositionList1 type="undefined" description="" />
+  <PositionList1 type="vector_list" description="" />
   <PositionList2 type="vector_list" description="" />
   <PositionList3 type="vector_list" description="" />
   <PositionList4 type="vector_list" description="" />
-  <PositionList5 type="undefined" description="" />
-  <PositionList6 type="undefined" description="" />
-  <PositionList7 type="undefined" description="" />
-  <PositionList8 type="undefined" description="" />
-  <PositionList9 type="undefined" description="" />
+  <PositionList5 type="vector_list" description="" />
+  <PositionList6 type="vector_list" description="" />
+  <PositionList7 type="vector_list" description="" />
+  <PositionList8 type="vector_list" description="" />
+  <PositionList9 type="vector_list" description="" />
   <PositionListStart type="vector_list" description="" />
   <Range type="float" default="99999" description="" />
   <SensorDistance type="float" default="30" description="" />

@@ -4,7 +4,7 @@
   <AttachOffsetX type="float" default="0" description="" />
   <AttachOffsetY type="float" default="0" description="" />
   <AttachOffsetZ type="float" default="0" description="" />
-  <AttachTarget type="undefined" description="" />
+  <AttachTarget type="id_list" description="" />
   <BeginEdge type="bool" default="false" description="" />
   <Cycle type="float" default="1" description="" />
   <Gravity type="float" default="45" description="" />
