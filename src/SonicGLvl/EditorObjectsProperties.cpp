@@ -837,15 +837,6 @@ void EditorApplication::updateEditPropertyInteger(unsigned int v) {
 		LibGens::ObjectElement *element = (*it)->getElement(element_name);
 
 		if (element) {
-			if (element->getType() == LibGens::OBJECT_ELEMENT_ID) {
-				LibGens::ObjectElementID *element_id = static_cast<LibGens::ObjectElementID *>(element);
-				HistoryActionEditObjectElementID *history_action = new HistoryActionEditObjectElementID((*it), object_node_manager, element_id, element_id->value, v, getCurrentPropertyIndex());
-				element_id->value = v;
-				history_edit_property_wrapper->push(history_action);
-
-				object_node_manager->reloadObjectNode((*it));
-			}
-
 			if (element->getType() == LibGens::OBJECT_ELEMENT_INTEGER) {
 				LibGens::ObjectElementInteger *element_integer = static_cast<LibGens::ObjectElementInteger *>(element);
 				HistoryActionEditObjectElementInteger *history_action = new HistoryActionEditObjectElementInteger((*it), object_node_manager, element_integer, element_integer->value, v, getCurrentPropertyIndex());
