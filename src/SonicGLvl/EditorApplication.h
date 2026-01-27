@@ -374,6 +374,7 @@ class EditorApplication : public BaseApplication {
 		list<EditorNode*> getSelectedNodes();
 		ObjectNode* getObjectNodeFromEditorNode(EditorNode* node);
 		TrajectoryMode getTrajectoryMode(EditorNode* node);
+		void copyObjectNodeReferences(ObjectNode* from, ObjectNode* to);
 		bool isUpdatePosRot();
 
 		void openFindGUI();

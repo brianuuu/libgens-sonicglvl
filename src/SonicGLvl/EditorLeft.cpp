@@ -285,6 +285,7 @@ void EditorApplication::mousePressedObjectsPalettePreview(const OIS::MouseEvent 
 
 				// Create
 				ObjectNode *new_object_node = object_node_manager->createObjectNode(new_object);
+				copyObjectNodeReferences((*it), new_object_node);
 
 				// Push to History
 				HistoryActionCreateObjectNode *action = new HistoryActionCreateObjectNode(new_object, object_node_manager);

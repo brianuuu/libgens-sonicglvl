@@ -344,6 +344,7 @@ void EditorApplication::cloneSelection() {
 
 				// Create
 				ObjectNode *new_object_node = object_node_manager->createObjectNode(new_object);
+				copyObjectNodeReferences(object_node, new_object_node);
 
 				// Push to History
 				HistoryActionCreateObjectNode *action = new HistoryActionCreateObjectNode(new_object, object_node_manager);
@@ -395,6 +396,7 @@ void EditorApplication::temporaryCloneSelection() {
 
 				// Create
 				ObjectNode* new_object_node = object_node_manager->createObjectNode(new_object);
+				// Don't call copyObjectNodeReferences(), createMultiSetParamObjects() will handle it
 
 				// Add to current selection
 				new_object_node->setSelect(true);

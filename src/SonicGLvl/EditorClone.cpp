@@ -100,6 +100,7 @@ void EditorApplication::createMultiSetParamObjects()
 					}
 
 					ObjectNode* new_object_node = object_node_manager->createObjectNode(new_obj);
+					copyObjectNodeReferences(obj_node, new_object_node);
 				}
 			}
 			else if (cloning_mode == SONICGLVL_MULTISETPARAM_MODE_MSP)
@@ -204,6 +205,38 @@ void EditorApplication::deleteTemporaryNodes()
 	}
 
 	temporary_nodes.clear();
+}
+
+void EditorApplication::copyObjectNodeReferences(ObjectNode* from, ObjectNode* to)
+{
+	LibGens::Object* o = from->getObject();
+	if (!o) return;
+
+	// all targets of the "from" object now need to reference "to" object
+	for (LibGens::ObjectElement* element : o->getElements())
+	{
+		if (element->getType() == LibGens::OBJECT_ELEMENT_ID)
+		{
+			LibGens::ObjectElementID* element_id = static_cast<LibGens::ObjectElementID*>(element);
+			ObjectNode* target = getObjectNodeFromID(element_id->value);
+			if (target)
+			{
+				target->addReference(to);
+			}
+		}
+		else if (element->getType() == LibGens::OBJECT_ELEMENT_ID_LIST)
+		{
+			LibGens::ObjectElementIDList* element_id_list = static_cast<LibGens::ObjectElementIDList*>(element);
+			for (size_t id : element_id_list->value)
+			{
+				ObjectNode* target = getObjectNodeFromID(id);
+				if (target)
+				{
+					target->addReference(to);
+				}
+			}
+		}
+	}
 }
 
 INT_PTR CALLBACK MultiSetParamCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
