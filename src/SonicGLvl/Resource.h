@@ -22,6 +22,7 @@
 #define IDD_EDIT_STRING_NEW                     152
 #define IDD_EDIT_ID_NEW                         154
 #define IDD_EDIT_ID_LIST_NEW                    156
+#define IDD_REFERENCE_LIST                      158
 #define IDB_EDIT_ID_LIST_CLEAR                  40000
 #define IDC_MOVE_LAYER_TARGETS                  40000
 #define IDC_PALETTE_CATEGORY                    40000
@@ -36,6 +37,7 @@
 #define IDT_RIGHT_HELP_DESCRIPTION              40000
 #define IMD_OPEN_LEVEL                          40000
 #define IDB_DELETE_PHYSICS                      40001
+#define IDB_REFERENCE_SWITCH                    40001
 #define IDC_EDIT_ID_SELECT                      40001
 #define IDE_EDIT_VECTOR_Y                       40001
 #define IDE_FIND_PROPERTY_VALUE                 40001
@@ -49,6 +51,7 @@
 #define IDT_EDIT_PRESET_COUNT                   40001
 #define IMD_SAVE_LEVEL_DATA                     40001
 #define IDB_IMPORT_PHYSICS                      40002
+#define IDB_REFERENCE_DELETE                    40002
 #define IDC_EDIT_NUMBER_VALUE                   40002
 #define IDC_EDIT_STRING_VALUE                   40002
 #define IDC_LAYER_CURRENT                       40002
@@ -62,6 +65,7 @@
 #define IMD_SAVE_LEVEL_RESOURCES                40002
 #define IDB_EDIT_ID_LIST_DELETE                 40003
 #define IDB_EDIT_ID_SWITCH                      40003
+#define IDB_REFERENCE_CLEAR                     40003
 #define IDC_EDIT_BOOL_VALUE                     40003
 #define IDC_FIND_EXACTLY                        40003
 #define IDC_LOOK_AT_VIEWPORT                    40003
@@ -174,6 +178,7 @@
 #define IDG_RIGHT_HELP_GROUP                    40018
 #define IMD_UV_ANIMATIONS                       40018
 #define IDB_MATERIAL_CREATE_TEXTURE_UNITS       40019
+#define IDL_REFERENCE_LIST                      40019
 #define IMD_SKYBOX                              40019
 #define IDE_MATERIAL_TEXTURE_FILENAME           40020
 #define IMD_SHOW_OBJECTS                        40020

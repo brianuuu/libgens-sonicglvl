@@ -31,6 +31,7 @@ INT_PTR CALLBACK EditVectorCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 INT_PTR CALLBACK EditIdCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK EditIdListCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 INT_PTR CALLBACK EditVectorListCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK EditObjectReferenceCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
 LRESULT CALLBACK EditControlCallback(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 WNDPROC globalEditControlOldProc;
@@ -294,6 +295,7 @@ void EditorApplication::updateObjectsPropertiesGUI() {
 	}
 
 	updateObjectsPropertiesValuesGUI(selected_objects);
+	updateObjectReferenceGUI();
 }
 
 
@@ -413,6 +415,7 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 	current_property_index = selection_index;
 	if (selection_index < 0 || selection_index >= current_properties_names.size() || current_object_list_properties.empty()) {
 		updateHelpWithPropertyGUI(NULL);
+		updateObjectReferenceGUI();
 		return;
 	}
 
@@ -722,6 +725,8 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 	if (hEditPropertyDlg) {
 		history_edit_property_wrapper = new HistoryActionWrapper();
 		MoveWindow(hEditPropertyDlg, 4, 16, 260, 180, true);
+		InvalidateRect(hEditPropertyDlg, NULL, true);
+		SetDlgItemText(hRightDlg, IDG_RIGHT_EDIT_GROUP, "Edit Property");
 		
 		if (focus) {
 			SetFocus(hwnd);
@@ -1324,6 +1329,64 @@ void EditorApplication::updateHelpWithPropertyGUI(LibGens::ObjectElement *elemen
 	SetDlgItemText(hRightDlg, IDT_RIGHT_HELP_DESCRIPTION, help_description.c_str());
 }
 
+void EditorApplication::updateObjectReferenceGUI()
+{
+	closeEditPropertyGUI();
+	if (current_object_list_properties.empty())
+	{
+		return;
+	}
+
+	HWND hEditGroup = GetDlgItem(hRightDlg, IDG_RIGHT_EDIT_GROUP);
+	hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_REFERENCE_LIST), hEditGroup, EditObjectReferenceCallback);
+
+	HWND hIDList = GetDlgItem(hEditPropertyDlg, IDL_REFERENCE_LIST);
+
+	LVCOLUMN Col;
+	Col.mask = LVCF_WIDTH | LVCF_SUBITEM;
+	Col.cx = 135;
+	ListView_InsertColumn(hIDList, 0, &Col);
+
+	SetDlgItemText(hRightDlg, IDG_RIGHT_EDIT_GROUP, "Referenced By Objects");
+	vector<ObjectNode*> references;
+	for (LibGens::Object* object : current_object_list_properties)
+	{
+		ObjectNode* node = object_node_manager->findObjectNode(object);
+		if (!node) continue;
+
+		for (ObjectNode* n : node->getReferences())
+		{
+			if (count(references.begin(), references.end(), n)) continue;
+			references.push_back(n);
+		}
+	}
+	sort(references.begin(), references.end(), [](ObjectNode* a, ObjectNode* b) { return a->getObject()->getID() > b->getObject()->getID(); });
+
+	for (ObjectNode* node : references)
+	{
+		LibGens::Object* obj = node->getObject();
+
+		string id_string = ToString<size_t>(obj->getID()) + " (" + string(obj ? obj->getName().c_str() : "unknown") + ")";
+		char v[256];
+
+		strcpy(v, id_string.c_str());
+
+		LV_ITEM item;
+		item.mask = LVIF_TEXT;
+		item.pszText = v;
+		item.cchTextMax = strlen(v);
+		item.state = 0;
+		item.iSubItem = 0;
+		item.lParam = (LPARAM)NULL;
+		item.iItem = temp_property_id_list.size();
+		ListView_InsertItem(hIDList, &item);
+	}
+	// TODO: ObjectLinkNode
+	MoveWindow(hEditPropertyDlg, 4, 16, 260, 180, true);
+	InvalidateRect(hEditPropertyDlg, NULL, true);
+	SetFocus(hwnd);
+}
+
 void EditorApplication::clearEditPropertyGUI() {
 	hEditPropertyDlg = NULL;
 
@@ -1340,7 +1403,8 @@ void EditorApplication::clearEditPropertyGUI() {
 	temp_property_id_list.clear();
 	clearObjectLinkNodes();
 
-	if (hRightDlg) InvalidateRect(hRightDlg, NULL, true);
+	HWND hEditGroup = GetDlgItem(hRightDlg, IDG_RIGHT_EDIT_GROUP);
+	InvalidateRect(hEditGroup, NULL, true);
 }
 
 void EditorApplication::closeEditPropertyGUI() {
@@ -2166,6 +2230,63 @@ INT_PTR CALLBACK EditIdListCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 		case IDC_EDIT_ID_LIST_ADD:
 			editor_application->openQueryTargetMode(IsDlgButtonChecked(hDlg, IDC_EDIT_ID_LIST_ADD));
 			break;
+		}
+		break;
+	}
+
+	return false;
+}
+
+INT_PTR CALLBACK EditObjectReferenceCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	HWND list_view = GetDlgItem(hDlg, IDL_REFERENCE_LIST);
+	int index = ListView_GetNextItem(list_view, -1, LVIS_SELECTED | LVIS_FOCUSED);
+	HWND hSwitch = GetDlgItem(hDlg, IDB_REFERENCE_SWITCH);
+	HWND hDelete = GetDlgItem(hDlg, IDB_REFERENCE_DELETE);
+	EnableWindow(hSwitch, index >= 0);
+	EnableWindow(hDelete, index >= 0);
+
+	switch (msg)
+	{
+	case WM_INITDIALOG:
+		return true;
+
+	case WM_CLOSE:
+		DestroyWindow(hDlg);
+		editor_application->clearEditPropertyGUI();
+		return true;
+
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDB_REFERENCE_DELETE:
+		{
+			if (index >= 0)
+			{
+				// TODO:
+			}
+			break;
+		}
+		case IDB_REFERENCE_CLEAR:
+		{
+			// TODO:
+			break;
+		}
+		case IDB_REFERENCE_SWITCH:
+		{
+			char id_str[128] = "";
+			ListView_GetItemText(list_view, index, 0, id_str, 128);
+			size_t id = stoi(id_str);
+			ObjectNode* obj_node = editor_application->getObjectNodeFromID(id);
+			if (obj_node)
+			{
+				SendMessage(hDlg, WM_CLOSE, 0, 0);
+				editor_application->selectNode(obj_node);
+				editor_application->updateSelection();
+				return true;
+			}
+			break;
+		}
 		}
 		break;
 	}

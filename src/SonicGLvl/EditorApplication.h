@@ -503,6 +503,7 @@ class EditorApplication : public BaseApplication {
 		void editObjectPropertyIndex(int selection_index);
 		void updateHelpWithObjectGUI(LibGens::Object *object);
 		void updateHelpWithPropertyGUI(LibGens::ObjectElement *element);
+		void updateObjectReferenceGUI();
 		int getCurrentPropertyIndex() { return current_property_index; }
 
 		void openMultiSetParamDlg();

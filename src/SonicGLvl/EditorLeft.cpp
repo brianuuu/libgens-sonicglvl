@@ -187,6 +187,7 @@ void EditorApplication::updateObjectsPalettePreview() {
 		last_palette_selection = current_palette_selection;
 
 		updateHelpWithObjectGUI(current_palette_selection);
+		updateObjectReferenceGUI();
 	}
 }
 
