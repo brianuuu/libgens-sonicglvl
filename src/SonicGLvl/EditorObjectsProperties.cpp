@@ -515,6 +515,7 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 			if (highlight_property)
 			{
 				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE, (UINT)CB_SETEDITSEL, (WPARAM)0, MAKELPARAM(0, -1));
+				SetFocus(GetDlgItem(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE));
 				focus = false;
 			}
 		}
@@ -560,6 +561,7 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 			if (highlight_property)
 			{
 				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE, (UINT)CB_SETEDITSEL, (WPARAM)0, MAKELPARAM(0, -1));
+				SetFocus(GetDlgItem(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE));
 				focus = false;
 			}
 		}
@@ -619,6 +621,7 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 			if (highlight_property)
 			{
 				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_STRING_VALUE, (UINT)CB_SETEDITSEL, (WPARAM)0, MAKELPARAM(0, -1));
+				SetFocus(GetDlgItem(hEditPropertyDlg, IDC_EDIT_STRING_VALUE));
 				focus = false;
 			}
 		}
