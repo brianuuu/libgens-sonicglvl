@@ -1335,8 +1335,10 @@ void EditorApplication::updateHelpWithPropertyGUI(LibGens::ObjectElement *elemen
 void EditorApplication::updateObjectReferenceGUI()
 {
 	closeEditPropertyGUI();
+	clearObjectLinkNodes();
 	if (current_object_list_properties.empty())
 	{
+		InvalidateRect(hRightDlg, NULL, true);
 		return;
 	}
 
@@ -1355,13 +1357,17 @@ void EditorApplication::updateObjectReferenceGUI()
 	for (LibGens::Object* object : current_object_list_properties)
 	{
 		ObjectNode* node = object_node_manager->findObjectNode(object);
-		if (!node) continue;
+		if (!node || node->isForceHidden()) continue;
 
+		set<LibGens::Object*> refSet;
 		for (ObjectNode* n : node->getReferences())
 		{
 			if (count(references.begin(), references.end(), n)) continue;
 			references.push_back(n);
+			refSet.insert(n->getObject());
 		}
+		
+		object_link_nodes[object] = new ObjectLinkNode(scene_manager, object, refSet);
 	}
 	sort(references.begin(), references.end(), [](ObjectNode* a, ObjectNode* b) { return a->getObject()->getID() > b->getObject()->getID(); });
 
@@ -1384,7 +1390,7 @@ void EditorApplication::updateObjectReferenceGUI()
 		item.iItem = temp_property_id_list.size();
 		ListView_InsertItem(hIDList, &item);
 	}
-	// TODO: ObjectLinkNode
+
 	MoveWindow(hEditPropertyDlg, 4, 16, 260, 180, true);
 	InvalidateRect(hEditPropertyDlg, NULL, true);
 	SetFocus(hwnd);
