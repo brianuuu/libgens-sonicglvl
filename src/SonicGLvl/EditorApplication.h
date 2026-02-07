@@ -159,6 +159,7 @@ class EditorApplication : public BaseApplication {
 		bool is_update_vector_list;
 		bool is_pick_target;
 		bool is_pick_target_position;
+		bool is_pick_terrain_position;
 		bool is_update_pos_rot;
 		bool is_update_look_at_vector;
 
@@ -532,6 +533,7 @@ class EditorApplication : public BaseApplication {
 		void updateEditPropertyVectorList(vector<LibGens::Vector3> v);
 		void selectNode(EditorNode* node);
 		void openQueryTargetMode(bool mode);
+		void openQueryTerrainMode(bool mode);
 		void setTargetName(size_t id);
 		void addVectorToList(LibGens::Vector3 = LibGens::Vector3(0, 0, 0));
 		void updateVectorListSelection(int index);

@@ -777,6 +777,7 @@ void EditorApplication::createScene(void) {
 	cloning_mode = SONICGLVL_MULTISETPARAM_MODE_CLONE;
 	is_pick_target = false;
 	is_pick_target_position = false;
+	is_pick_terrain_position = false;
 	is_update_look_at_vector = 
 
 	// Set up Scene Managers
@@ -947,6 +948,11 @@ bool EditorApplication::keyPressed(const OIS::KeyEvent &arg) {
 		if (is_pick_target_position)
 		{
 			queryLookAtObject(false);
+		}
+
+		if (is_pick_terrain_position)
+		{
+			openQueryTerrainMode(false);
 		}
 	}
 
@@ -1233,7 +1239,7 @@ bool EditorApplication::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButto
 			}
 			else if (id == OIS::MB_Left) {
 				if (current_node) {
-					if (!is_pick_target && !is_pick_target_position) {
+					if (!is_pick_target && !is_pick_target_position && !is_pick_terrain_position) {
 						if (!keyboard->isModifierDown(OIS::Keyboard::Ctrl)) {
 							clearSelection();
 						}
@@ -1266,18 +1272,31 @@ bool EditorApplication::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButto
 
 							if (is_pick_target)
 							{
-								bool is_list = current_properties_types[current_property_index] == LibGens::OBJECT_ELEMENT_ID_LIST;
-								if (is_list) {
+								switch (current_properties_types.at(current_property_index))
+								{
+								case LibGens::OBJECT_ELEMENT_VECTOR:
+								{
+									Ogre::Vector3 position = object_node->getPosition();
+									updateEditPropertyVector(LibGens::Vector3(position.x, position.y, position.z));
+									updateObjectPropertyIndex(getCurrentPropertyIndex());
+									break;
+								}
+								case LibGens::OBJECT_ELEMENT_ID:
+								{
+									SetDlgItemText(hEditPropertyDlg, IDE_EDIT_ID_VALUE, ToString<size_t>(id).c_str());
+									break;
+								}
+								case LibGens::OBJECT_ELEMENT_ID_LIST:
+								{
 									addIDToList(id);
 									updateEditPropertyIDList(temp_property_id_list);
+									break;
 								}
-								else {
-									SetDlgItemText(hEditPropertyDlg, IDE_EDIT_ID_VALUE, ToString<size_t>(id).c_str());
 								}
 
 								openQueryTargetMode(false);
 							}
-
+							
 							if (is_pick_target_position)
 							{
 								is_update_look_at_vector = false;
@@ -1289,6 +1308,23 @@ bool EditorApplication::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButto
 
 								updateLookAtPointVectorNode(position);
 								is_update_look_at_vector = true;
+							}
+						}
+						else if (current_node->getType() == EDITOR_NODE_TERRAIN)
+						{
+							if (is_pick_terrain_position)
+							{
+								float mouse_x = arg.state.X.abs / float(arg.state.width);
+								float mouse_y = arg.state.Y.abs / float(arg.state.height);
+								viewport->convertMouseToLocalScreen(mouse_x, mouse_y);
+
+								// Raycast from camera to viewport
+								Ogre::Vector3 raycast_point(0.0f);
+								if (viewport->raycastPlacement(mouse_x, mouse_y, 0.0f, &raycast_point, EDITOR_NODE_QUERY_TERRAIN | EDITOR_NODE_QUERY_HAVOK))
+								{
+									updateEditPropertyVector(LibGens::Vector3(raycast_point.x, raycast_point.y, raycast_point.z));
+									updateObjectPropertyIndex(getCurrentPropertyIndex());
+								}
 							}
 						}
 					}

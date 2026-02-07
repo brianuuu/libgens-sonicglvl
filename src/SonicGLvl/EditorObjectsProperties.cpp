@@ -1166,9 +1166,8 @@ void EditorApplication::updateEditPropertyVectorMode(bool mode_state, bool is_li
 		EnableWindow(GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_Y), !mode_state);
 		EnableWindow(GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_Z), !mode_state);
 
-		EnableWindow(GetDlgItem(hEditPropertyDlg, IDS_EDIT_VECTOR_X), !mode_state);
-		EnableWindow(GetDlgItem(hEditPropertyDlg, IDS_EDIT_VECTOR_Y), !mode_state);
-		EnableWindow(GetDlgItem(hEditPropertyDlg, IDS_EDIT_VECTOR_Z), !mode_state);
+		EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_TERRAIN), !mode_state);
+		EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_OBJECT), !mode_state);
 	}
 	else
 	{
@@ -1177,10 +1176,6 @@ void EditorApplication::updateEditPropertyVectorMode(bool mode_state, bool is_li
 		EnableWindow(GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_X), !mode_state);
 		EnableWindow(GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Y), !mode_state);
 		EnableWindow(GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Z), !mode_state);
-
-		EnableWindow(GetDlgItem(hEditPropertyDlg, IDS_EDIT_VECTOR_LIST_X), !mode_state);
-		EnableWindow(GetDlgItem(hEditPropertyDlg, IDS_EDIT_VECTOR_LIST_Y), !mode_state);
-		EnableWindow(GetDlgItem(hEditPropertyDlg, IDS_EDIT_VECTOR_LIST_Z), !mode_state);
 	}
 
 	if (mode_state) {
@@ -1248,15 +1243,52 @@ void EditorApplication::openQueryTargetMode(bool mode)
 
 		if (current_properties_types.size() > current_property_index)
 		{
-			bool is_list = current_properties_types.at(current_property_index) == LibGens::OBJECT_ELEMENT_ID_LIST;
-			if (is_list) {
-				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_ID_LIST_ADD, BM_SETCHECK, (WPARAM)(false), 0);
-			}
-			else {
+			switch (current_properties_types.at(current_property_index))
+			{
+			case LibGens::OBJECT_ELEMENT_VECTOR:
+				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_VECTOR_OBJECT, BM_SETCHECK, (WPARAM)(false), 0);
+				break;
+			case LibGens::OBJECT_ELEMENT_ID:
 				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_ID_SELECT, BM_SETCHECK, (WPARAM)(false), 0);
+				break;
+			case LibGens::OBJECT_ELEMENT_ID_LIST:
+				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_ID_LIST_ADD, BM_SETCHECK, (WPARAM)(false), 0);
+				break;
 			}
 		}
 	}
+
+	if (current_properties_types.size() > current_property_index)
+	{
+		switch (current_properties_types.at(current_property_index))
+		{
+		case LibGens::OBJECT_ELEMENT_VECTOR:
+			EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_TERRAIN), !mode);
+			EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_EDITING), !mode);
+			break;
+		}
+	}
+}
+
+void EditorApplication::openQueryTerrainMode(bool mode)
+{
+	if (mode)
+	{
+		editor_mode = EDITOR_NODE_QUERY_TERRAIN;
+		is_pick_terrain_position = true;
+		SetFocus(hwnd);
+	}
+	else
+	{
+		editor_mode = EDITOR_NODE_QUERY_OBJECT;
+		is_pick_terrain_position = false;
+		global_cursor_state = 0;
+
+		SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_VECTOR_TERRAIN, BM_SETCHECK, (WPARAM)(false), 0);
+	}
+
+	EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_OBJECT), !mode);
+	EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_EDITING), !mode);
 }
 
 void EditorApplication::verifySonicSpawnChange() {
@@ -1629,6 +1661,8 @@ INT_PTR CALLBACK EditVectorCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 			}
 
 			DestroyWindow(hDlg);
+			editor_application->openQueryTargetMode(false);
+			editor_application->openQueryTerrainMode(false);
 			editor_application->clearEditPropertyGUI();
 			return true;
 
@@ -1650,11 +1684,21 @@ INT_PTR CALLBACK EditVectorCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 
 			switch(LOWORD(wParam)) {
 				case IDC_EDIT_VECTOR_EDITING:
+					editor_application->openQueryTargetMode(false);
+					editor_application->openQueryTerrainMode(false);
 					editor_application->updateEditPropertyVectorMode(IsDlgButtonChecked(hDlg, IDC_EDIT_VECTOR_EDITING));
 					return true;
 
 				case IDB_EDIT_VECTOR_FOCUS:
 					editor_application->updateEditPropertyVectorFocus();
+					return true;
+
+				case IDC_EDIT_VECTOR_OBJECT:
+					editor_application->openQueryTargetMode(IsDlgButtonChecked(hDlg, IDC_EDIT_VECTOR_OBJECT));
+					return true;
+
+				case IDC_EDIT_VECTOR_TERRAIN:
+					editor_application->openQueryTerrainMode(IsDlgButtonChecked(hDlg, IDC_EDIT_VECTOR_TERRAIN));
 					return true;
 
 				/*
