@@ -924,7 +924,6 @@ void EditorApplication::updateEditPropertyID(size_t v)
 				
 				if (element_id->value != v)
 				{
-					// TODO: initial references on level load
 					ObjectNode* this_node = object_node_manager->findObjectNode(*it);
 					if (this_node)
 					{
@@ -1002,7 +1001,6 @@ void EditorApplication::updateEditPropertyIDList(vector<size_t> const& v)
 			if (element->getType() == LibGens::OBJECT_ELEMENT_ID_LIST)
 			{
 				LibGens::ObjectElementIDList* element_id_list = static_cast<LibGens::ObjectElementIDList*>(element);
-				// TODO: initial references on level load
 				ObjectNode* this_node = object_node_manager->findObjectNode(*it);
 				if (this_node)
 				{
@@ -2111,7 +2109,7 @@ void EditorApplication::setTargetName(size_t id)
 
 	string object_name = "(none)";
 	bool enabled = false;
-	// TODO: obj is deleted (force hide)
+	
 	if (obj)
 	{
 		object_name = obj->getName();

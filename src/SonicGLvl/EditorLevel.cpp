@@ -388,6 +388,39 @@ void EditorLevel::loadData(LibGens::ObjectLibrary *library, ObjectNodeManager *o
 			object_node_manager->createObjectNode(*it);
 		}
 	}
+
+	// Link all references between objects
+	for (ObjectNode* n : object_node_manager->getObjectNodes())
+	{
+		if (!n) continue;
+		LibGens::Object* o = n->getObject();
+		if (!o) continue;
+
+		for (LibGens::ObjectElement* element : o->getElements())
+		{
+			if (element->getType() == LibGens::OBJECT_ELEMENT_ID)
+			{
+				LibGens::ObjectElementID* element_id = static_cast<LibGens::ObjectElementID*>(element);
+				ObjectNode* node = editor_application->getObjectNodeFromID(element_id->value);
+				if (node)
+				{
+					node->addReference(n);
+				}
+			}
+			else if (element->getType() == LibGens::OBJECT_ELEMENT_ID_LIST)
+			{
+				LibGens::ObjectElementIDList* element_id_list = static_cast<LibGens::ObjectElementIDList*>(element);
+				for (size_t id : element_id_list->value)
+				{
+					ObjectNode* node = editor_application->getObjectNodeFromID(id);
+					if (node)
+					{
+						node->addReference(n);
+					}
+				}
+			}
+		}
+	}
 }
 
 void EditorLevel::cleanCollision(list<HavokNode *> &havok_nodes_list) {
