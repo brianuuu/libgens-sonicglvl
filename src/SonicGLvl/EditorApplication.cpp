@@ -775,6 +775,11 @@ void EditorApplication::createScene(void) {
 	current_single_property_object = NULL;
 	history_edit_property_wrapper = NULL;
 	cloning_mode = SONICGLVL_MULTISETPARAM_MODE_CLONE;
+
+	current_vector_list_selection = -1;
+	last_vector_list_selection = -1;
+	is_update_vector_list = true;
+
 	is_pick_target = false;
 	is_pick_target_position = false;
 	is_pick_terrain_position = false;

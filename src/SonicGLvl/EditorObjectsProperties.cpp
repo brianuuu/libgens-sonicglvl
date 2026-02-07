@@ -757,6 +757,66 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 
 		break;
 	}
+	case LibGens::OBJECT_ELEMENT_VECTOR_LIST:
+	{
+		hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_VECTOR_LIST_NEW), hEditGroup, EditVectorListCallback);
+
+		HWND hIDList = GetDlgItem(hEditPropertyDlg, IDL_EDIT_VECTOR_LIST_LIST);
+
+		LVCOLUMN Col;
+		Col.mask = LVCF_WIDTH | LVCF_SUBITEM;
+		Col.cx = 150;
+		ListView_InsertColumn(hIDList, 0, &Col);
+
+		vector<LibGens::Vector3> values;
+		for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
+			LibGens::Object* object = *it;
+			if (!object) continue;
+
+			LibGens::ObjectElement* element = object->getElement(element_name);
+			if (!element) continue;
+
+			LibGens::ObjectElementVectorList* element_vector_list = static_cast<LibGens::ObjectElementVectorList*>(element);
+
+			if (!hasValue)
+			{
+				hasValue = true;
+				values = element_vector_list->value;
+			}
+			else
+			{
+				// not the same size = not the same list
+				if (element_vector_list->value.size() != values.size())
+				{
+					hasValue = false;
+					break;
+				}
+
+				// check if all of them have the same target list
+				for (vector<LibGens::Vector3>::iterator it = element_vector_list->value.begin(); it != element_vector_list->value.end(); ++it) {
+					if (!count(values.begin(), values.end(), *it))
+					{
+						hasValue = false;
+						break;
+					}
+				}
+
+				if (!hasValue)
+				{
+					break;
+				}
+			}
+		}
+
+		if (hasValue)
+		{
+			for (LibGens::Vector3 value : values)
+			{
+				addVectorToList(value);
+			}
+		}
+		break;
+	}
 	}
 
 	if (hEditPropertyDlg) {
@@ -776,7 +836,7 @@ void EditorApplication::editObjectPropertyIndex(int selection_index) {
 	if (selection_index < 0) {
 		return;
 	}
-
+	// TODO: remove
 	if ((size_t)selection_index < current_properties_names.size()) {
 		if (selection_index != current_property_index) {
 			closeEditPropertyGUI();
@@ -1084,6 +1144,44 @@ void EditorApplication::updateEditPropertyVectorList(vector<LibGens::Vector3> v)
 {
 	string element_name = current_properties_names[current_property_index];
 
+	bool changed = false;
+	for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
+		LibGens::Object* object = *it;
+		if (!object) continue;
+
+		LibGens::ObjectElement* element = object->getElement(element_name);
+		if (!element) continue;
+
+		LibGens::ObjectElementVectorList* element_vector_list = static_cast<LibGens::ObjectElementVectorList*>(element);
+
+		// not the same size = not the same list
+		if (element_vector_list->value.size() != v.size())
+		{
+			changed = true;
+			break;
+		}
+
+		// check if all of them have the same target list
+		for (int i = 0; i < element_vector_list->value.size(); i++)
+		{
+			if (v.at(i) != element_vector_list->value.at(i))
+			{
+				changed = true;
+				break;
+			}
+		}
+
+		if (changed)
+		{
+			break;
+		}
+	}
+
+	if (!changed)
+	{
+		return;
+	}
+
 	for (list<LibGens::Object*>::iterator it = current_object_list_properties.begin(); it != current_object_list_properties.end(); ++it)
 	{
 		LibGens::ObjectElement* element = (*it)->getElement(element_name);
@@ -1102,6 +1200,11 @@ void EditorApplication::updateEditPropertyVectorList(vector<LibGens::Vector3> v)
 	}
 
 	updateObjectsPropertiesValuesGUI(current_object_list_properties);
+
+	// don't confirm during vector edit, otherwise it overwrites undo/redo
+	if (editor_mode != EDITOR_NODE_QUERY_VECTOR) {
+		confirmEditProperty();
+	}
 
 	if (property_vector_nodes.size()) {
 		for (int i = 0; i < property_vector_nodes.size(); ++i)
@@ -1778,22 +1881,52 @@ void EditorApplication::updateVectorListSelection(int index)
 	HWND vector_up = GetDlgItem(hEditPropertyDlg, IDB_EDIT_VECTOR_LIST_MOVE_UP);
 	HWND vector_down = GetDlgItem(hEditPropertyDlg, IDB_EDIT_VECTOR_LIST_MOVE_DOWN);
 
+	HWND vector_x = GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_X);
+	HWND vector_y = GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Y);
+	HWND vector_z = GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Z);
+	HWND scroll_x = GetDlgItem(hEditPropertyDlg, IDS_EDIT_VECTOR_LIST_X);
+	HWND scroll_y = GetDlgItem(hEditPropertyDlg, IDS_EDIT_VECTOR_LIST_Y);
+	HWND scroll_z = GetDlgItem(hEditPropertyDlg, IDS_EDIT_VECTOR_LIST_Z);
+
+	HWND select_object = GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_LIST_OBJECT);
+	HWND select_terrain = GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_LIST_TERRAIN);
+
+	bool valid = isVectorListSelectionValid();
+
+	EnableWindow(vector_x, valid);
+	EnableWindow(vector_y, valid);
+	EnableWindow(vector_z, valid);
+	EnableWindow(scroll_x, valid);
+	EnableWindow(scroll_y, valid);
+	EnableWindow(scroll_z, valid);
+
+	EnableWindow(select_object, valid && editor_mode != EDITOR_NODE_QUERY_VECTOR);
+	EnableWindow(select_terrain, valid && editor_mode != EDITOR_NODE_QUERY_VECTOR);
+
+	bool has_block = false;
 	if (current_vector_list_selection != last_vector_list_selection)
 	{
 		last_vector_list_selection = current_vector_list_selection;
 		
-		if (isVectorListSelectionValid())
-		{
-			is_update_vector_list = false;
-			LibGens::Vector3 v = temp_property_vector_list[current_vector_list_selection];
+		has_block = true;
+		is_update_vector_list = false;
 
+		if (valid)
+		{
+			LibGens::Vector3 v = temp_property_vector_list[current_vector_list_selection];
 			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_X, ToString<float>(v.x).c_str());
 			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Y, ToString<float>(v.y).c_str());
 			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Z, ToString<float>(v.z).c_str());
 		}
+		else
+		{
+			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_X, "");
+			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Y, "");
+			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Z, "");
+		}
 	}
 
-	if (isVectorListSelectionValid())
+	if (valid)
 	{
 		EnableWindow(viewport_edit, true);
 		EnableWindow(viewport_focus, true);
@@ -1830,7 +1963,10 @@ void EditorApplication::updateVectorListSelection(int index)
 		EnableWindow(vector_down, false);
 	}
 
-	is_update_vector_list = true;
+	if (has_block)
+	{
+		is_update_vector_list = true;
+	}
 }
 
 void EditorApplication::removeVectorFromList(int index)
@@ -1958,23 +2094,13 @@ INT_PTR CALLBACK EditVectorListCallback(HWND hDlg, UINT msg, WPARAM wParam, LPAR
 					ListView_SetItemText(list_view, list_view_index, 0, (char*)newText.c_str());
 					editor_application->getCurrentPropertyVectorList()[list_view_index] = LibGens::Vector3(value_x, value_y, value_z);
 					editor_application->getPropertyVectorNodes()[list_view_index]->setPosition(Ogre::Vector3(value_x, value_y, value_z));
+					editor_application->updateEditPropertyVectorList(editor_application->getCurrentPropertyVectorList());
 				}
 			}
 		}
 
 		switch ((LPARAM)wParam)
 		{
-		case IDCANCEL:
-			SendMessage(hDlg, WM_CLOSE, 0, 0);
-			editor_application->revertEditProperty();
-			return true;
-
-		case IDOK:
-			editor_application->updateEditPropertyVectorList(editor_application->getCurrentPropertyVectorList());
-			SendMessage(hDlg, WM_CLOSE, 0, 0);
-			editor_application->confirmEditProperty();
-			return true;
-
 		case IDB_EDIT_VECTOR_LIST_CREATE:
 			editor_application->addVectorToList(getVectorCreationPosition());
 			editor_application->updateEditPropertyVectorList(editor_application->getCurrentPropertyVectorList());
@@ -2000,10 +2126,12 @@ INT_PTR CALLBACK EditVectorListCallback(HWND hDlg, UINT msg, WPARAM wParam, LPAR
 
 		case IDB_EDIT_VECTOR_LIST_MOVE_UP:
 			editor_application->moveVector(list_view_index, true);
+			editor_application->updateEditPropertyVectorList(editor_application->getCurrentPropertyVectorList());
 			break;
 
 		case IDB_EDIT_VECTOR_LIST_MOVE_DOWN:
 			editor_application->moveVector(list_view_index, false);
+			editor_application->updateEditPropertyVectorList(editor_application->getCurrentPropertyVectorList());
 		}
 		break;
 	}
@@ -2032,7 +2160,6 @@ void EditorApplication::addVectorToList(LibGens::Vector3 v3)
 	item.lParam = (LPARAM)NULL;
 	item.iItem = temp_property_vector_list.size();
 	ListView_InsertItem(hVectorList, &item);
-	ListView_SetItemText(hVectorList, item.iItem, 0, item.pszText);
 
 	temp_property_vector_list.push_back(v3);
 	VectorNode* vector_node = new VectorNode(scene_manager);
