@@ -723,6 +723,43 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 		}
 		break;
 	}
+	case LibGens::OBJECT_ELEMENT_VECTOR:
+	{
+		hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_VECTOR_NEW), hEditGroup, EditVectorCallback);
+
+		LibGens::Vector3 value;
+		for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
+			LibGens::Object* object = *it;
+			if (!object) continue;
+
+			LibGens::ObjectElement* element = object->getElement(element_name);
+			if (!element) continue;
+
+			LibGens::ObjectElementVector* element_vector = static_cast<LibGens::ObjectElementVector*>(element);
+			if (!hasValue)
+			{
+				hasValue = true;
+				value = element_vector->value;
+			}
+			else if (value != element_vector->value)
+			{
+				hasValue = false;
+				break;
+			}
+		}
+
+		if (hasValue)
+		{
+			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_X, ToString(value.x).c_str());
+			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_Y, ToString(value.y).c_str());
+			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_Z, ToString(value.z).c_str());
+		}
+
+		VectorNode* vector_node = new VectorNode(scene_manager);
+		vector_node->setPosition(Ogre::Vector3(value.x, value.y, value.z));
+		property_vector_nodes.push_back(vector_node);
+		break;
+	}
 	}
 
 	if (hEditPropertyDlg) {
@@ -752,36 +789,6 @@ void EditorApplication::editObjectPropertyIndex(int selection_index) {
 
 		if (!hEditPropertyDlg) {
 			history_edit_property_wrapper = new HistoryActionWrapper();
-			
-			if (current_properties_types[current_property_index] == LibGens::OBJECT_ELEMENT_VECTOR) {
-				// Create Dialog for Vector
-				hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_VECTOR_DIALOG), hwnd, EditVectorCallback);
-
-				HWND hEditMainControl = GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_X);
-				SetFocus(hEditMainControl);
-				
-				ObjectNode* first_selection = static_cast<ObjectNode*>(*(selected_nodes.begin()));
-				LibGens::Vector3 dv = first_selection->getObject()->getPosition();
-
-				// Set Default
-				if (current_single_property_object) {
-					string element_name = current_properties_names[current_property_index];
-					LibGens::ObjectElement *element = current_single_property_object->getElement(element_name);
-
-					if (element) {
-						LibGens::ObjectElementVector *element_vector = static_cast<LibGens::ObjectElementVector *>(element);
-						dv = element_vector->value;
-
-						SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_X, ToString(dv.x).c_str());
-						SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_Y, ToString(dv.y).c_str());
-						SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_Z, ToString(dv.z).c_str());
-					}
-				}
-
-				VectorNode *vector_node = new VectorNode(scene_manager);
-				vector_node->setPosition(Ogre::Vector3(dv.x, dv.y, dv.z));
-				property_vector_nodes.push_back(vector_node);
-			}
 
 			if (current_properties_types[current_property_index] == LibGens::OBJECT_ELEMENT_VECTOR_LIST) {
 				// Create Dialog for Vector List
@@ -1030,14 +1037,25 @@ void EditorApplication::updateEditPropertyIDList(vector<size_t> const& v)
 
 
 void EditorApplication::updateEditPropertyVector(LibGens::Vector3 v) {
+	// initial creation edit text but history isn't ready
+	if (!history_edit_property_wrapper) return;
+	
 	string element_name = current_properties_names[current_property_index];
 
+	bool changed = false;
 	for (list<LibGens::Object *>::iterator it=current_object_list_properties.begin(); it!=current_object_list_properties.end(); it++) {
 		LibGens::ObjectElement *element = (*it)->getElement(element_name);
 
 		if (element) {
 			if (element->getType() == LibGens::OBJECT_ELEMENT_VECTOR) {
 				LibGens::ObjectElementVector *element_vector = static_cast<LibGens::ObjectElementVector *>(element);
+				if (element_vector->value == v)
+				{
+					continue;
+				}
+
+				changed = true;
+
 				HistoryActionEditObjectElementVector *history_action = new HistoryActionEditObjectElementVector((*it), object_node_manager, element_vector, element_vector->value, v, getCurrentPropertyIndex());
 				element_vector->value = v;
 				history_edit_property_wrapper->push(history_action);
@@ -1047,7 +1065,13 @@ void EditorApplication::updateEditPropertyVector(LibGens::Vector3 v) {
 		}
 	}
 
+	if (!changed)
+	{
+		return;
+	}
+
 	updateObjectsPropertiesValuesGUI(current_object_list_properties);
+	confirmEditProperty();
 
 	if (property_vector_nodes.size()) {
 		property_vector_nodes[0]->setPosition(Ogre::Vector3(v.x, v.y, v.z));
@@ -1130,7 +1154,7 @@ void EditorApplication::updateEditPropertyVectorGUI(int index, bool is_list) {
 
 
 void EditorApplication::updateEditPropertyVectorMode(bool mode_state, bool is_list, int index) {
-	SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_VECTOR_EDITING, BM_SETCHECK, (WPARAM)mode_state, 0);
+	/*SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_VECTOR_EDITING, BM_SETCHECK, (WPARAM)mode_state, 0);
 	SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_VECTOR_LIST_EDITING, BM_SETCHECK, (WPARAM)mode_state, 0);
 	if (!is_list)
 	{
@@ -1201,7 +1225,7 @@ void EditorApplication::updateEditPropertyVectorMode(bool mode_state, bool is_li
 		LONG dlg_w=hEditPropertyDlg_old_rect.right - hEditPropertyDlg_old_rect.left;
 		LONG dlg_h=hEditPropertyDlg_old_rect.bottom - hEditPropertyDlg_old_rect.top;
 		MoveWindow(hEditPropertyDlg, hEditPropertyDlg_old_rect.left, hEditPropertyDlg_old_rect.top, dlg_w, dlg_h, true);
-	}
+	}*/
 }
 
 
@@ -1608,12 +1632,11 @@ INT_PTR CALLBACK EditVectorCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 			return true;
 
 		case WM_CLOSE:
-			if (IsDlgButtonChecked(hDlg, IDC_EDIT_VECTOR_EDITING)) {
-				editor_application->updateEditPropertyVectorMode(false);
-			}
+			//if (IsDlgButtonChecked(hDlg, IDC_EDIT_VECTOR_EDITING)) {
+			//	editor_application->updateEditPropertyVectorMode(false);
+			//}
 
 			DestroyWindow(hDlg);
-
 			editor_application->clearEditPropertyGUI();
 			return true;
 
@@ -1634,19 +1657,9 @@ INT_PTR CALLBACK EditVectorCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 			}
 
 			switch(LOWORD(wParam)) {
-				case IDOK:
-					SendMessage(hDlg, WM_CLOSE, 0, 0);
-					editor_application->confirmEditProperty();
-					return true;
-
-				case IDCANCEL:
-					SendMessage(hDlg, WM_CLOSE, 0, 0);
-					editor_application->revertEditProperty();
-					return true;
-
-				case IDC_EDIT_VECTOR_EDITING:
-					editor_application->updateEditPropertyVectorMode(IsDlgButtonChecked(hDlg, IDC_EDIT_VECTOR_EDITING));
-					return true;
+				//case IDC_EDIT_VECTOR_EDITING:
+				//	editor_application->updateEditPropertyVectorMode(IsDlgButtonChecked(hDlg, IDC_EDIT_VECTOR_EDITING));
+				//	return true;
 
 				case IDB_EDIT_VECTOR_FOCUS:
 					editor_application->updateEditPropertyVectorFocus();
@@ -1678,14 +1691,11 @@ INT_PTR CALLBACK EditVectorCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 					float value_y = 0.0f;
 					float value_z = 0.0f;
 
-					float spin_factor = 1.0;
+					float spin_factor = 0.01;
 
 					value_x = GetDlgItemFloat(hDlg, IDE_EDIT_VECTOR_X);
 					value_y = GetDlgItemFloat(hDlg, IDE_EDIT_VECTOR_Y);
 					value_z = GetDlgItemFloat(hDlg, IDE_EDIT_VECTOR_Z);
-
-					if (delta > 1)  delta = 1;
-					if (delta < -1) delta = -1;
 
 					if (LOWORD(wParam) == IDS_EDIT_VECTOR_X) {
 						value_x += (float)-delta * spin_factor;
