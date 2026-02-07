@@ -548,6 +548,7 @@ class EditorApplication : public BaseApplication {
 		void removeIDFromList(int index);
 		void clearIDList();
 		void moveID(int index, bool up);
+		void recreateVectorLinkNodes();
 		vector<size_t>& getCurrentPropertyIDList();
 		vector<LibGens::Vector3>& getCurrentPropertyVectorList();
 		vector<VectorNode*>& getPropertyVectorNodes();

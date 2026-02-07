@@ -2025,6 +2025,8 @@ void EditorApplication::removeVectorFromList(int index)
 
 	if (count)
 		ListView_SetSelectionMark(list_view, index - 1);
+
+	recreateVectorLinkNodes();
 }
 
 void EditorApplication::moveVector(int index, bool up)
@@ -2057,6 +2059,8 @@ void EditorApplication::moveVector(int index, bool up)
 		swap(temp_property_vector_list[index], temp_property_vector_list[index + 1]);
 		swap(property_vector_nodes[index], property_vector_nodes[index + 1]);
 	}
+
+	recreateVectorLinkNodes();
 }
 
 bool EditorApplication::isVectorListSelectionValid()
@@ -2214,6 +2218,36 @@ void EditorApplication::addVectorToList(LibGens::Vector3 v3)
 	VectorNode* vector_node = new VectorNode(scene_manager);
 	vector_node->setPosition(Ogre::Vector3(x, y, z));
 	property_vector_nodes.push_back(vector_node);
+
+	recreateVectorLinkNodes();
+}
+
+void EditorApplication::recreateVectorLinkNodes()
+{
+	clearObjectLinkNodes();
+	for (int i = 0; i < property_vector_nodes.size(); i++)
+	{
+		VectorNode* node = property_vector_nodes.at(i);
+		if (i == 0)
+		{
+			// first node link to object
+			set<EditorNode*> nodes;
+			for (LibGens::Object* object : current_object_list_properties)
+			{
+				EditorNode* object_node = getObjectNodeFromID(object->getID());
+				if (object_node)
+				{
+					nodes.insert(object_node);
+				}
+			}
+
+			object_link_nodes[node] = new ObjectLinkNode(scene_manager, node, nodes);
+		}
+		else
+		{
+			object_link_nodes[node] = new ObjectLinkNode(scene_manager, node, { property_vector_nodes.at(i - 1) });
+		}
+	}
 }
 
 LibGens::Object* EditorApplication::getObjectFromID(size_t id)
