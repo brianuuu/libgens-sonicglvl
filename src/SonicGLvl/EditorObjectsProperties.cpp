@@ -1904,6 +1904,13 @@ void EditorApplication::updateVectorListSelection(int index)
 
 		if (valid)
 		{
+			if (is_vector_edit)
+			{
+				// switch to editing this vector
+				updateEditPropertyVectorMode(false, true, index);
+				updateEditPropertyVectorMode(true, true, index);
+			}
+
 			LibGens::Vector3 v = temp_property_vector_list[current_vector_list_selection];
 			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_X, ToString<float>(v.x).c_str());
 			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Y, ToString<float>(v.y).c_str());
