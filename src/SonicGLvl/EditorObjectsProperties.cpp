@@ -1277,6 +1277,9 @@ void EditorApplication::updateEditPropertyVectorMode(bool mode_state, bool is_li
 		EnableWindow(GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_X), !mode_state);
 		EnableWindow(GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Y), !mode_state);
 		EnableWindow(GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Z), !mode_state);
+
+		EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_LIST_TERRAIN), !mode_state);
+		EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_LIST_OBJECT), !mode_state);
 	}
 
 	if (mode_state) {
@@ -1804,20 +1807,6 @@ INT_PTR CALLBACK EditVectorCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 				case IDC_EDIT_VECTOR_TERRAIN:
 					editor_application->openQueryTerrainMode(IsDlgButtonChecked(hDlg, IDC_EDIT_VECTOR_TERRAIN));
 					return true;
-
-				/*
-				case IDB_VECTOR_SELECT_FROM_POLYGON:
-					editor_application->ignoreMouseClicks(5);
-					editor_application->setEditorMode(EDITOR_NODE_QUERY_VECTOR_POLYGON);
-					ShowWindow(hDlg, SW_HIDE);
-					return true;
-
-				case IDB_VECTOR_SELECT_FROM_NODE:
-					editor_application->ignoreMouseClicks(5);
-					editor_application->setEditorMode(EDITOR_NODE_QUERY_VECTOR_NODE);
-					ShowWindow(hDlg, SW_HIDE);
-					return true;
-				*/
 			}
 
 			break;
@@ -1877,6 +1866,7 @@ void EditorApplication::updateVectorListSelection(int index)
 	current_vector_list_selection = index;
 	HWND viewport_edit = GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_LIST_EDITING);
 	HWND viewport_focus = GetDlgItem(hEditPropertyDlg, IDB_EDIT_VECTOR_LIST_FOCUS);
+	HWND vector_create = GetDlgItem(hEditPropertyDlg, IDB_EDIT_VECTOR_LIST_CREATE);
 	HWND vector_delete = GetDlgItem(hEditPropertyDlg, IDB_EDIT_VECTOR_LIST_DELETE);
 	HWND vector_up = GetDlgItem(hEditPropertyDlg, IDB_EDIT_VECTOR_LIST_MOVE_UP);
 	HWND vector_down = GetDlgItem(hEditPropertyDlg, IDB_EDIT_VECTOR_LIST_MOVE_DOWN);
@@ -1892,16 +1882,17 @@ void EditorApplication::updateVectorListSelection(int index)
 	HWND select_terrain = GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_LIST_TERRAIN);
 
 	bool valid = isVectorListSelectionValid();
+	bool is_vector_edit = editor_mode == EDITOR_NODE_QUERY_VECTOR;
 
-	EnableWindow(vector_x, valid);
-	EnableWindow(vector_y, valid);
-	EnableWindow(vector_z, valid);
-	EnableWindow(scroll_x, valid);
-	EnableWindow(scroll_y, valid);
-	EnableWindow(scroll_z, valid);
-
-	EnableWindow(select_object, valid && editor_mode != EDITOR_NODE_QUERY_VECTOR);
-	EnableWindow(select_terrain, valid && editor_mode != EDITOR_NODE_QUERY_VECTOR);
+	EnableWindow(vector_create, !is_vector_edit);
+	EnableWindow(vector_x, valid && !is_vector_edit);
+	EnableWindow(vector_y, valid && !is_vector_edit);
+	EnableWindow(vector_z, valid && !is_vector_edit);
+	EnableWindow(scroll_x, valid && !is_vector_edit);
+	EnableWindow(scroll_y, valid && !is_vector_edit);
+	EnableWindow(scroll_z, valid && !is_vector_edit);
+	EnableWindow(select_object, valid && !is_vector_edit);
+	EnableWindow(select_terrain, valid && !is_vector_edit);
 
 	bool has_block = false;
 	if (current_vector_list_selection != last_vector_list_selection)
@@ -1930,17 +1921,17 @@ void EditorApplication::updateVectorListSelection(int index)
 	{
 		EnableWindow(viewport_edit, true);
 		EnableWindow(viewport_focus, true);
-		EnableWindow(vector_delete, true);
+		EnableWindow(vector_delete, !is_vector_edit);
 
 		// Enable or disable buttons based on current selection in the list view
 		if (property_vector_nodes.size() > 1)
 		{
 			if (current_vector_list_selection > 0)
 			{
-				EnableWindow(vector_up, true);
+				EnableWindow(vector_up, !is_vector_edit);
 
 				if (current_vector_list_selection < property_vector_nodes.size() - 1)
-					EnableWindow(vector_down, true);
+					EnableWindow(vector_down, !is_vector_edit);
 				else
 					EnableWindow(vector_down, false);
 			}
@@ -1950,7 +1941,7 @@ void EditorApplication::updateVectorListSelection(int index)
 				EnableWindow(vector_up, false);
 
 				if (property_vector_nodes.size() > 1)
-					EnableWindow(vector_down, true);
+					EnableWindow(vector_down, !is_vector_edit);
 			}
 		}
 	}
@@ -2045,9 +2036,14 @@ LibGens::Vector3 getVectorCreationPosition()
 {
 	LibGens::Vector3 vector_creation_position = LibGens::Vector3(0, 0, 0);
 
-	// Try to use the position of the first selected object
-	if (!editor_application->getSelectedNodes().empty())
+	if (!editor_application->getCurrentPropertyVectorList().empty())
 	{
+		// use position of the last vector
+		vector_creation_position = editor_application->getCurrentPropertyVectorList().back();
+	}
+	else if (!editor_application->getSelectedNodes().empty())
+	{
+		// Try to use the position of the first selected object
 		ObjectNode* first_selection = static_cast<ObjectNode*>(*(editor_application->getSelectedNodes().begin()));
 		vector_creation_position = first_selection->getObject()->getPosition();
 	}
