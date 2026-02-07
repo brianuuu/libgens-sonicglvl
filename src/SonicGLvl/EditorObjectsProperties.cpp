@@ -727,7 +727,6 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 	{
 		hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_VECTOR_NEW), hEditGroup, EditVectorCallback);
 
-		LibGens::Vector3 value;
 		for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
 			LibGens::Object* object = *it;
 			if (!object) continue;
@@ -738,26 +737,24 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 			LibGens::ObjectElementVector* element_vector = static_cast<LibGens::ObjectElementVector*>(element);
 			if (!hasValue)
 			{
+				// always set the first existing value
 				hasValue = true;
-				value = element_vector->value;
+				SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_X, ToString(element_vector->value.x).c_str());
+				SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_Y, ToString(element_vector->value.y).c_str());
+				SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_Z, ToString(element_vector->value.z).c_str());
 			}
-			else if (value != element_vector->value)
+
+			VectorNode* vector_node = new VectorNode(scene_manager);
+			vector_node->setPosition(Ogre::Vector3(element_vector->value.x, element_vector->value.y, element_vector->value.z));
+			property_vector_nodes.push_back(vector_node);
+
+			EditorNode* object_node = getObjectNodeFromID(object->getID());
+			if (object_node)
 			{
-				hasValue = false;
-				break;
+				object_link_nodes[vector_node] = new ObjectLinkNode(scene_manager, vector_node, { object_node });
 			}
 		}
 
-		if (hasValue)
-		{
-			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_X, ToString(value.x).c_str());
-			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_Y, ToString(value.y).c_str());
-			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_Z, ToString(value.z).c_str());
-		}
-
-		VectorNode* vector_node = new VectorNode(scene_manager);
-		vector_node->setPosition(Ogre::Vector3(value.x, value.y, value.z));
-		property_vector_nodes.push_back(vector_node);
 		break;
 	}
 	}
@@ -1077,8 +1074,9 @@ void EditorApplication::updateEditPropertyVector(LibGens::Vector3 v) {
 		confirmEditProperty();
 	}
 
-	if (property_vector_nodes.size()) {
-		property_vector_nodes[0]->setPosition(Ogre::Vector3(v.x, v.y, v.z));
+	for (VectorNode* node : property_vector_nodes)
+	{
+		node->setPosition(Ogre::Vector3(v.x, v.y, v.z));
 	}
 }
 
