@@ -1290,6 +1290,24 @@ bool EditorApplication::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButto
 									updateObjectPropertyIndex(getCurrentPropertyIndex());
 									break;
 								}
+								case LibGens::OBJECT_ELEMENT_VECTOR_LIST:
+								{
+									if (isVectorListSelectionValid())
+									{
+										Ogre::Vector3 position = object_node->getPosition();
+										getCurrentPropertyVectorList()[current_vector_list_selection] = LibGens::Vector3(position.x, position.y, position.z);
+										getPropertyVectorNodes()[current_vector_list_selection]->setPosition(position);
+										updateEditPropertyVectorList(getCurrentPropertyVectorList());
+										updateEditPropertyVectorGUI(current_vector_list_selection, true);
+
+										is_update_vector_list = false;
+										SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_X, ToString<float>(position.x).c_str());
+										SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Y, ToString<float>(position.y).c_str());
+										SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Z, ToString<float>(position.z).c_str());
+										is_update_vector_list = true;
+									}
+									break;
+								}
 								case LibGens::OBJECT_ELEMENT_ID:
 								{
 									SetDlgItemText(hEditPropertyDlg, IDE_EDIT_ID_VALUE, ToString<size_t>(id).c_str());
@@ -1331,8 +1349,29 @@ bool EditorApplication::mousePressed(const OIS::MouseEvent &arg, OIS::MouseButto
 								Ogre::Vector3 raycast_point(0.0f);
 								if (viewport->raycastPlacement(mouse_x, mouse_y, 0.0f, &raycast_point, EDITOR_NODE_QUERY_TERRAIN | EDITOR_NODE_QUERY_HAVOK))
 								{
-									updateEditPropertyVector(LibGens::Vector3(raycast_point.x, raycast_point.y, raycast_point.z));
-									updateObjectPropertyIndex(getCurrentPropertyIndex());
+									switch (current_properties_types.at(current_property_index))
+									{
+									case LibGens::OBJECT_ELEMENT_VECTOR:
+									{
+										updateEditPropertyVector(LibGens::Vector3(raycast_point.x, raycast_point.y, raycast_point.z));
+										updateObjectPropertyIndex(getCurrentPropertyIndex());
+										break;
+									}
+									case LibGens::OBJECT_ELEMENT_VECTOR_LIST:
+									{
+										getCurrentPropertyVectorList()[current_vector_list_selection] = LibGens::Vector3(raycast_point.x, raycast_point.y, raycast_point.z);
+										getPropertyVectorNodes()[current_vector_list_selection]->setPosition(raycast_point);
+										updateEditPropertyVectorList(getCurrentPropertyVectorList());
+										updateEditPropertyVectorGUI(current_vector_list_selection, true);
+
+										is_update_vector_list = false;
+										SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_X, ToString<float>(raycast_point.x).c_str());
+										SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Y, ToString<float>(raycast_point.y).c_str());
+										SetDlgItemText(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Z, ToString<float>(raycast_point.z).c_str());
+										is_update_vector_list = true;
+										break;
+									}
+									}
 								}
 							}
 						}

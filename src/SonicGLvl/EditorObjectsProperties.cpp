@@ -1352,6 +1352,9 @@ void EditorApplication::openQueryTargetMode(bool mode)
 			case LibGens::OBJECT_ELEMENT_VECTOR:
 				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_VECTOR_OBJECT, BM_SETCHECK, (WPARAM)(false), 0);
 				break;
+			case LibGens::OBJECT_ELEMENT_VECTOR_LIST:
+				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_VECTOR_LIST_OBJECT, BM_SETCHECK, (WPARAM)(false), 0);
+				break;
 			case LibGens::OBJECT_ELEMENT_ID:
 				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_ID_SELECT, BM_SETCHECK, (WPARAM)(false), 0);
 				break;
@@ -1369,6 +1372,10 @@ void EditorApplication::openQueryTargetMode(bool mode)
 		case LibGens::OBJECT_ELEMENT_VECTOR:
 			EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_TERRAIN), !mode);
 			EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_EDITING), !mode);
+			break;
+		case LibGens::OBJECT_ELEMENT_VECTOR_LIST:
+			EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_LIST_TERRAIN), !mode);
+			EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_LIST_EDITING), !mode);
 			break;
 		}
 	}
@@ -1388,11 +1395,34 @@ void EditorApplication::openQueryTerrainMode(bool mode)
 		is_pick_terrain_position = false;
 		global_cursor_state = 0;
 
-		SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_VECTOR_TERRAIN, BM_SETCHECK, (WPARAM)(false), 0);
+		if (current_properties_types.size() > current_property_index)
+		{
+			switch (current_properties_types.at(current_property_index))
+			{
+			case LibGens::OBJECT_ELEMENT_VECTOR:
+				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_VECTOR_TERRAIN, BM_SETCHECK, (WPARAM)(false), 0);
+				break;
+			case LibGens::OBJECT_ELEMENT_VECTOR_LIST:
+				SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_VECTOR_LIST_TERRAIN, BM_SETCHECK, (WPARAM)(false), 0);
+				break;
+			}
+		}
 	}
 
-	EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_OBJECT), !mode);
-	EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_EDITING), !mode);
+	if (current_properties_types.size() > current_property_index)
+	{
+		switch (current_properties_types.at(current_property_index))
+		{
+		case LibGens::OBJECT_ELEMENT_VECTOR:
+			EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_OBJECT), !mode);
+			EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_EDITING), !mode);
+			break;
+		case LibGens::OBJECT_ELEMENT_VECTOR_LIST:
+			EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_LIST_OBJECT), !mode);
+			EnableWindow(GetDlgItem(hEditPropertyDlg, IDC_EDIT_VECTOR_LIST_EDITING), !mode);
+			break;
+		}
+	}
 }
 
 void EditorApplication::verifySonicSpawnChange() {
@@ -2073,6 +2103,8 @@ INT_PTR CALLBACK EditVectorListCallback(HWND hDlg, UINT msg, WPARAM wParam, LPAR
 		}
 		
 		DestroyWindow(hDlg);
+		editor_application->openQueryTargetMode(false);
+		editor_application->openQueryTerrainMode(false);
 		editor_application->clearEditPropertyGUI();
 		return true;
 
@@ -2124,7 +2156,11 @@ INT_PTR CALLBACK EditVectorListCallback(HWND hDlg, UINT msg, WPARAM wParam, LPAR
 
 		case IDC_EDIT_VECTOR_LIST_EDITING:
 			if (editor_application->isVectorListSelectionValid())
+			{
+				editor_application->openQueryTargetMode(false);
+				editor_application->openQueryTerrainMode(false);
 				editor_application->updateEditPropertyVectorMode(IsDlgButtonChecked(hDlg, IDC_EDIT_VECTOR_LIST_EDITING), true, list_view_index);
+			}
 			break;
 
 		case IDB_EDIT_VECTOR_LIST_MOVE_UP:
@@ -2135,6 +2171,16 @@ INT_PTR CALLBACK EditVectorListCallback(HWND hDlg, UINT msg, WPARAM wParam, LPAR
 		case IDB_EDIT_VECTOR_LIST_MOVE_DOWN:
 			editor_application->moveVector(list_view_index, false);
 			editor_application->updateEditPropertyVectorList(editor_application->getCurrentPropertyVectorList());
+
+		case IDC_EDIT_VECTOR_LIST_OBJECT:
+			if (editor_application->isVectorListSelectionValid())
+				editor_application->openQueryTargetMode(IsDlgButtonChecked(hDlg, IDC_EDIT_VECTOR_LIST_OBJECT));
+			return true;
+
+		case IDC_EDIT_VECTOR_LIST_TERRAIN:
+			if (editor_application->isVectorListSelectionValid())
+				editor_application->openQueryTerrainMode(IsDlgButtonChecked(hDlg, IDC_EDIT_VECTOR_LIST_TERRAIN));
+			return true;
 		}
 		break;
 	}
