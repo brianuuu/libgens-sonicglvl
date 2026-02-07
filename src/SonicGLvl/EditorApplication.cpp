@@ -1727,17 +1727,20 @@ void EditorApplication::updateObjectLinkNodes(bool recreate)
 		string const& element_name = current_properties_names.at(current_property_index);
 		for (LibGens::Object* object : current_object_list_properties)
 		{
+			EditorNode* object_node = getObjectNodeFromID(object->getID());
+			if (!object_node) continue;
+
 			LibGens::ObjectElement* element = object->getElement(element_name);
 			if (!element) continue;
 			
-			set<LibGens::Object*> children;
+			set<EditorNode*> children;
 			if (element->getType() == LibGens::OBJECT_ELEMENT_ID)
 			{
 				LibGens::ObjectElementID* element_id = static_cast<LibGens::ObjectElementID*>(element);
-				LibGens::Object* child = getObjectFromID(element_id->value);
-				if (child)
+				EditorNode* child_node = getObjectNodeFromID(element_id->value);
+				if (child_node)
 				{
-					children.insert(child);
+					children.insert(child_node);
 				}
 			}
 			else if (element->getType() == LibGens::OBJECT_ELEMENT_ID_LIST)
@@ -1745,10 +1748,10 @@ void EditorApplication::updateObjectLinkNodes(bool recreate)
 				LibGens::ObjectElementIDList* element_id_list = static_cast<LibGens::ObjectElementIDList*>(element);
 				for (size_t id : element_id_list->value)
 				{
-					LibGens::Object* child = getObjectFromID(id);
-					if (child)
+					EditorNode* child_node = getObjectNodeFromID(id);
+					if (child_node)
 					{
-						children.insert(child);
+						children.insert(child_node);
 					}
 				}
 			}
@@ -1757,7 +1760,7 @@ void EditorApplication::updateObjectLinkNodes(bool recreate)
 				continue;
 			}
 
-			object_link_nodes[object] = new ObjectLinkNode(scene_manager, object, children);
+			object_link_nodes[object_node] = new ObjectLinkNode(scene_manager, object_node, children);
 		}
 	}
 	else

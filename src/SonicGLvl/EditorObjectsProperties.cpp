@@ -1402,20 +1402,23 @@ void EditorApplication::updateObjectReferenceGUI()
 	vector<ObjectNode*> references;
 	for (LibGens::Object* object : current_object_list_properties)
 	{
+		EditorNode* object_node = getObjectNodeFromID(object->getID());
+		if (!object_node) continue;
+
 		ObjectNode* node = object_node_manager->findObjectNode(object);
 		if (!node || node->isForceHidden()) continue;
 
-		set<LibGens::Object*> refSet;
+		set<EditorNode*> refSet;
 		for (ObjectNode* n : node->getReferences())
 		{
 			if (!count(references.begin(), references.end(), n))
 			{
 				references.push_back(n);
 			}
-			refSet.insert(n->getObject());
+			refSet.insert(n);
 		}
 		
-		object_link_nodes[object] = new ObjectLinkNode(scene_manager, object, refSet);
+		object_link_nodes[object_node] = new ObjectLinkNode(scene_manager, object_node, refSet);
 	}
 	sort(references.begin(), references.end(), [](ObjectNode* a, ObjectNode* b) { return a->getObject()->getID() > b->getObject()->getID(); });
 

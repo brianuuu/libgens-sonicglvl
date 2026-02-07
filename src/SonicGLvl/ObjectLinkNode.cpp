@@ -1,7 +1,7 @@
 #include "ObjectLinkNode.h"
 #include "EditorApplication.h"
 
-ObjectLinkNode::ObjectLinkNode(Ogre::SceneManager* scene_manager, LibGens::Object* parent_p, set<LibGens::Object*> const& children_p)
+ObjectLinkNode::ObjectLinkNode(Ogre::SceneManager* scene_manager, EditorNode* parent_p, set<EditorNode*> const& children_p)
 {
 	scene_node = scene_manager->getRootSceneNode()->createChildSceneNode();
 	scene_node->setPosition(position);
@@ -22,13 +22,13 @@ ObjectLinkNode::~ObjectLinkNode()
 	delete lines;
 }
 
-void ObjectLinkNode::addChild(LibGens::Object* child)
+void ObjectLinkNode::addChild(EditorNode* child)
 {
 	children.insert(child);
 	restart();
 }
 
-void ObjectLinkNode::removeChild(LibGens::Object* child)
+void ObjectLinkNode::removeChild(EditorNode* child)
 {
 	children.erase(child);
 	restart();
@@ -42,16 +42,13 @@ void ObjectLinkNode::clearChild()
 
 void ObjectLinkNode::restart()
 {
-	ObjectNode* parent_node = editor_application->getObjectNodeManager()->findObjectNode(parent);
-
 	lines->clear();
-	for (LibGens::Object* child : children)
+	for (EditorNode* child : children)
 	{
-		ObjectNode* child_node = editor_application->getObjectNodeManager()->findObjectNode(child);
-		if (child_node)
+		if (child)
 		{
-			lines->addPoint(parent_node->getPosition());
-			lines->addPoint(child_node->getPosition());
+			lines->addPoint(parent->getPosition());
+			lines->addPoint(child->getPosition());
 		}
 	}
 

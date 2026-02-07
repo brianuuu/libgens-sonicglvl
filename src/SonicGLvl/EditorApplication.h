@@ -276,7 +276,7 @@ class EditorApplication : public BaseApplication {
 
 		vector<TrajectoryNode*> trajectory_preview_nodes;
 		vector<VectorNode *> property_vector_nodes;
-		map<LibGens::Object*, ObjectLinkNode*> object_link_nodes;
+		map<EditorNode*, ObjectLinkNode*> object_link_nodes;
 		History *property_vector_history;
 		History* look_at_vector_history;
 

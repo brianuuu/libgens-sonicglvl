@@ -8,15 +8,15 @@ class ObjectLinkNode : public EditorNode
 private:
 	DynamicLines* lines;
 
-	LibGens::Object* parent;
-	set<LibGens::Object*> children;
+	EditorNode* parent;
+	set<EditorNode*> children;
 
 public:
-	ObjectLinkNode(Ogre::SceneManager* scene_manager, LibGens::Object* parent_p, set<LibGens::Object*> const& children_p);
+	ObjectLinkNode(Ogre::SceneManager* scene_manager, EditorNode* parent_p, set<EditorNode*> const& children_p);
 	~ObjectLinkNode();
 
-	void addChild(LibGens::Object* child);
-	void removeChild(LibGens::Object* child);
+	void addChild(EditorNode* child);
+	void removeChild(EditorNode* child);
 	void clearChild();
 
 	void restart();
