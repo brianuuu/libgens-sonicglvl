@@ -246,6 +246,8 @@ LRESULT APIENTRY SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 						"  Ctrl+O: Open Level\n"
 						"  Ctrl+S: Save Stage Data\n"
 						"  Ctrl+F: Find\n\n"
+						"  Ctrl+T: Toggle Terrain/Object Selection\n"
+						"  Ctrl+I: Display Selected Terrain Names\n"
 
 						"Editing Hotkeys:\n"
 						"  Ctrl+Z: Undo\n"
@@ -254,6 +256,7 @@ LRESULT APIENTRY SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 						"  Ctrl+V: Paste\n"
 						"  Ctrl+D: Clear Selection\n"
 						"  Ctrl+A: Select All\n"
+						"  Ctrl+G: Focus on Selected Objects\n"
 						"  Del: Delete Object\n"
 						"  Ctrl+Drag: Clone Object\n"
 						"  Shift+Drag: Clone or Instance Object\n\n"
@@ -263,6 +266,7 @@ LRESULT APIENTRY SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 						"  R: Rotation Gizmo\n"
 						"  Tap Right Mouse Button: Toggle Translation/Rotation Gizmo\n"
 						"  Ctrl+E: Toggle World/Local Transform\n"
+						"  Ctrl+R: Toggle 5 degree Angle Snap\n"
 					);
 					break;
 			}

@@ -1030,10 +1030,14 @@ bool EditorApplication::keyPressed(const OIS::KeyEvent &arg) {
 			}
 
 			if(arg.key == OIS::KC_G) {
-				setupGhost();
-				clearSelection();
-				updateSelection();
-				editor_mode = (editor_mode == EDITOR_NODE_QUERY_GHOST ? EDITOR_NODE_QUERY_OBJECT : EDITOR_NODE_QUERY_GHOST);
+				if (selected_nodes.size())
+				{
+					viewport->focusOnPoint(axis->getPosition());
+				}
+				//setupGhost();
+				//clearSelection();
+				//updateSelection();
+				//editor_mode = (editor_mode == EDITOR_NODE_QUERY_GHOST ? EDITOR_NODE_QUERY_OBJECT : EDITOR_NODE_QUERY_GHOST);
 			}
 
 			if (arg.key == OIS::KC_O) {
