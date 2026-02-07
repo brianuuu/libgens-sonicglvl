@@ -1362,8 +1362,10 @@ void EditorApplication::updateObjectReferenceGUI()
 		set<LibGens::Object*> refSet;
 		for (ObjectNode* n : node->getReferences())
 		{
-			if (count(references.begin(), references.end(), n)) continue;
-			references.push_back(n);
+			if (!count(references.begin(), references.end(), n))
+			{
+				references.push_back(n);
+			}
 			refSet.insert(n->getObject());
 		}
 		
@@ -2246,6 +2248,135 @@ INT_PTR CALLBACK EditIdListCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 	return false;
 }
 
+void EditorApplication::removeReferenceFromList(int index)
+{
+	HWND list_view = GetDlgItem(hEditPropertyDlg, IDL_REFERENCE_LIST);
+
+	char id_str[128] = "";
+	ListView_GetItemText(list_view, index, 0, id_str, 128);
+	size_t id = stoi(id_str);
+	ObjectNode* n = getObjectNodeFromID(id);
+
+	if (!n) return;
+
+	LibGens::Object* o = n->getObject();
+	if (!o) return;
+
+	HistoryActionWrapper* wrapper = new HistoryActionWrapper();
+	for (LibGens::Object* object : current_object_list_properties)
+	{
+		ObjectNode* node = object_node_manager->findObjectNode(object);
+		for (LibGens::ObjectElement* element : o->getElements())
+		{
+			if (element->getType() == LibGens::OBJECT_ELEMENT_ID)
+			{
+				LibGens::ObjectElementID* element_id = static_cast<LibGens::ObjectElementID*>(element);
+				if (object->getID() != element_id->value) continue;
+
+				node->removeReference(n);
+
+				HistoryActionEditObjectElementID* history_action = new HistoryActionEditObjectElementID(o, object_node_manager, element_id, element_id->value, 0, -1);
+				element_id->value = 0;
+				wrapper->push(history_action);
+			}
+			else if (element->getType() == LibGens::OBJECT_ELEMENT_ID_LIST)
+			{
+				LibGens::ObjectElementIDList* element_id_list = static_cast<LibGens::ObjectElementIDList*>(element);
+				if (!count(element_id_list->value.begin(), element_id_list->value.end(), object->getID())) continue;
+
+				vector<size_t> new_list = element_id_list->value;
+				for (auto iter = new_list.begin(); iter != new_list.end();)
+				{
+					if (*iter == object->getID())
+					{
+						iter = new_list.erase(iter);
+					}
+					else
+					{
+						iter++;
+					}
+				}
+
+				node->removeReference(n);
+
+				HistoryActionEditObjectElementIDList* history_action = new HistoryActionEditObjectElementIDList(o, object_node_manager, element_id_list, element_id_list->value, new_list, -1);
+				element_id_list->value = new_list;
+				wrapper->push(history_action);
+			}
+		}
+	}
+
+	pushHistory(wrapper);
+	updateObjectPropertyIndex(-1);
+}
+
+void EditorApplication::removeAllReferenceFromList()
+{
+	HWND list_view = GetDlgItem(hEditPropertyDlg, IDL_REFERENCE_LIST);
+	int itemCount = ListView_GetItemCount(list_view);
+	if (itemCount <= 0) return;
+
+	HistoryActionWrapper* wrapper = new HistoryActionWrapper();
+	for (int index = 0; index < itemCount; index++)
+	{
+		char id_str[128] = "";
+		ListView_GetItemText(list_view, index, 0, id_str, 128);
+		size_t id = stoi(id_str);
+		ObjectNode* n = getObjectNodeFromID(id);
+
+		if (!n) continue;
+
+		LibGens::Object* o = n->getObject();
+		if (!o) continue;
+
+		for (LibGens::Object* object : current_object_list_properties)
+		{
+			ObjectNode* node = object_node_manager->findObjectNode(object);
+			for (LibGens::ObjectElement* element : o->getElements())
+			{
+				if (element->getType() == LibGens::OBJECT_ELEMENT_ID)
+				{
+					LibGens::ObjectElementID* element_id = static_cast<LibGens::ObjectElementID*>(element);
+					if (object->getID() != element_id->value) continue;
+
+					node->removeReference(n);
+
+					HistoryActionEditObjectElementID* history_action = new HistoryActionEditObjectElementID(o, object_node_manager, element_id, element_id->value, 0, -1);
+					element_id->value = 0;
+					wrapper->push(history_action);
+				}
+				else if (element->getType() == LibGens::OBJECT_ELEMENT_ID_LIST)
+				{
+					LibGens::ObjectElementIDList* element_id_list = static_cast<LibGens::ObjectElementIDList*>(element);
+					if (!count(element_id_list->value.begin(), element_id_list->value.end(), object->getID())) continue;
+
+					vector<size_t> new_list = element_id_list->value;
+					for (auto iter = new_list.begin(); iter != new_list.end();)
+					{
+						if (*iter == object->getID())
+						{
+							iter = new_list.erase(iter);
+						}
+						else
+						{
+							iter++;
+						}
+					}
+
+					node->removeReference(n);
+
+					HistoryActionEditObjectElementIDList* history_action = new HistoryActionEditObjectElementIDList(o, object_node_manager, element_id_list, element_id_list->value, new_list, -1);
+					element_id_list->value = new_list;
+					wrapper->push(history_action);
+				}
+			}
+		}
+	}
+
+	pushHistory(wrapper);
+	updateObjectPropertyIndex(-1);
+}
+
 INT_PTR CALLBACK EditObjectReferenceCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	HWND list_view = GetDlgItem(hDlg, IDL_REFERENCE_LIST);
@@ -2266,19 +2397,20 @@ INT_PTR CALLBACK EditObjectReferenceCallback(HWND hDlg, UINT msg, WPARAM wParam,
 		return true;
 
 	case WM_COMMAND:
+	{
 		switch (LOWORD(wParam))
 		{
 		case IDB_REFERENCE_DELETE:
 		{
 			if (index >= 0)
 			{
-				// TODO:
+				editor_application->removeReferenceFromList(index);
 			}
 			break;
 		}
 		case IDB_REFERENCE_CLEAR:
 		{
-			// TODO:
+			editor_application->removeAllReferenceFromList();
 			break;
 		}
 		case IDB_REFERENCE_SWITCH:
@@ -2298,6 +2430,7 @@ INT_PTR CALLBACK EditObjectReferenceCallback(HWND hDlg, UINT msg, WPARAM wParam,
 		}
 		}
 		break;
+	}
 	}
 
 	return false;

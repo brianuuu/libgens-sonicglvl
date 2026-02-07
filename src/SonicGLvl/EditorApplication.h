@@ -550,6 +550,8 @@ class EditorApplication : public BaseApplication {
 		vector<LibGens::Vector3>& getCurrentPropertyVectorList();
 		vector<VectorNode*>& getPropertyVectorNodes();
 		ObjectNodeManager* getObjectNodeManager();
+		void removeReferenceFromList(int index);
+		void removeAllReferenceFromList();
 
 
 		void closeVectorQueryMode();
