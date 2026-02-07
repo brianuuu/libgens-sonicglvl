@@ -123,6 +123,7 @@
 #define IDR_LOOK_AT_AXIS_Z                      40008
 #define IDS_RIGHT_SELECTION_ROT_X               40008
 #define IMD_PASTE                               40008
+#define IDC_EDIT_VECTOR_EDITING                 40009
 #define IDC_EDIT_VECTOR_LIST_EDITING            40009
 #define IDE_MATERIAL_NAME                       40009
 #define IDE_RIGHT_SELECTION_ROT_Z               40009

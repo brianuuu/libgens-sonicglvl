@@ -1071,7 +1071,11 @@ void EditorApplication::updateEditPropertyVector(LibGens::Vector3 v) {
 	}
 
 	updateObjectsPropertiesValuesGUI(current_object_list_properties);
-	confirmEditProperty();
+
+	// don't confirm during vector edit, otherwise it overwrites undo/redo
+	if (editor_mode != EDITOR_NODE_QUERY_VECTOR) {
+		confirmEditProperty();
+	}
 
 	if (property_vector_nodes.size()) {
 		property_vector_nodes[0]->setPosition(Ogre::Vector3(v.x, v.y, v.z));
@@ -1154,10 +1158,10 @@ void EditorApplication::updateEditPropertyVectorGUI(int index, bool is_list) {
 
 
 void EditorApplication::updateEditPropertyVectorMode(bool mode_state, bool is_list, int index) {
-	/*SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_VECTOR_EDITING, BM_SETCHECK, (WPARAM)mode_state, 0);
-	SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_VECTOR_LIST_EDITING, BM_SETCHECK, (WPARAM)mode_state, 0);
 	if (!is_list)
 	{
+		SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_VECTOR_EDITING, BM_SETCHECK, (WPARAM)mode_state, 0);
+
 		EnableWindow(GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_X), !mode_state);
 		EnableWindow(GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_Y), !mode_state);
 		EnableWindow(GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_Z), !mode_state);
@@ -1168,6 +1172,8 @@ void EditorApplication::updateEditPropertyVectorMode(bool mode_state, bool is_li
 	}
 	else
 	{
+		SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_VECTOR_LIST_EDITING, BM_SETCHECK, (WPARAM)mode_state, 0);
+
 		EnableWindow(GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_X), !mode_state);
 		EnableWindow(GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Y), !mode_state);
 		EnableWindow(GetDlgItem(hEditPropertyDlg, IDE_EDIT_VECTOR_LIST_Z), !mode_state);
@@ -1194,15 +1200,6 @@ void EditorApplication::updateEditPropertyVectorMode(bool mode_state, bool is_li
 
 		updateSelection();
 		updateEditPropertyVectorFocus(index);
-
-		// Move window to the bottom right corner of the main window
-		RECT main_window_rect;
-		GetWindowRect(hwnd, &main_window_rect);
-		GetWindowRect(hEditPropertyDlg, &hEditPropertyDlg_old_rect);
-
-		LONG dlg_w=hEditPropertyDlg_old_rect.right - hEditPropertyDlg_old_rect.left;
-		LONG dlg_h=hEditPropertyDlg_old_rect.bottom - hEditPropertyDlg_old_rect.top;
-		MoveWindow(hEditPropertyDlg, main_window_rect.right - dlg_w - 15, main_window_rect.bottom - dlg_h - SONICGLVL_GUI_BOTTOM_HEIGHT - 15, dlg_w, dlg_h, true);
 	}
 	else {
 		for (list<EditorNode *>::iterator it=selected_nodes.begin(); it!=selected_nodes.end(); it++) {
@@ -1220,12 +1217,7 @@ void EditorApplication::updateEditPropertyVectorMode(bool mode_state, bool is_li
 		property_vector_history->clear();
 
 		updateSelection();
-
-		// Restore Window to old position
-		LONG dlg_w=hEditPropertyDlg_old_rect.right - hEditPropertyDlg_old_rect.left;
-		LONG dlg_h=hEditPropertyDlg_old_rect.bottom - hEditPropertyDlg_old_rect.top;
-		MoveWindow(hEditPropertyDlg, hEditPropertyDlg_old_rect.left, hEditPropertyDlg_old_rect.top, dlg_w, dlg_h, true);
-	}*/
+	}
 }
 
 
@@ -1632,9 +1624,9 @@ INT_PTR CALLBACK EditVectorCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 			return true;
 
 		case WM_CLOSE:
-			//if (IsDlgButtonChecked(hDlg, IDC_EDIT_VECTOR_EDITING)) {
-			//	editor_application->updateEditPropertyVectorMode(false);
-			//}
+			if (IsDlgButtonChecked(hDlg, IDC_EDIT_VECTOR_EDITING)) {
+				editor_application->updateEditPropertyVectorMode(false);
+			}
 
 			DestroyWindow(hDlg);
 			editor_application->clearEditPropertyGUI();
@@ -1657,9 +1649,9 @@ INT_PTR CALLBACK EditVectorCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM l
 			}
 
 			switch(LOWORD(wParam)) {
-				//case IDC_EDIT_VECTOR_EDITING:
-				//	editor_application->updateEditPropertyVectorMode(IsDlgButtonChecked(hDlg, IDC_EDIT_VECTOR_EDITING));
-				//	return true;
+				case IDC_EDIT_VECTOR_EDITING:
+					editor_application->updateEditPropertyVectorMode(IsDlgButtonChecked(hDlg, IDC_EDIT_VECTOR_EDITING));
+					return true;
 
 				case IDB_EDIT_VECTOR_FOCUS:
 					editor_application->updateEditPropertyVectorFocus();
