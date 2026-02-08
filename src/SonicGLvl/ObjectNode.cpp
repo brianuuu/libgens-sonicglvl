@@ -27,6 +27,8 @@ ObjectNode::ObjectNode(LibGens::Object *object_p, Ogre::SceneManager *scene_mana
 	
     scene_node = scene_manager->getRootSceneNode()->createChildSceneNode();
 	preview_box_node = scene_node->createChildSceneNode();
+	preview_sphere_node = scene_node->createChildSceneNode();
+	preview_cylinder_node = scene_node->createChildSceneNode();
 
 	scene_node->getUserObjectBindings().setUserAny(EDITOR_NODE_BINDING, Ogre::Any((EditorNode *)this));
 	
@@ -92,6 +94,8 @@ ObjectNode::ObjectNode(LibGens::Object *object_p, Ogre::SceneManager *scene_mana
 	reloadEntities(scene_manager, model_library, material_library, object_production, slot_id_name);
 
 	preview_box_node->setVisible(false);
+	preview_sphere_node->setVisible(false);
+	preview_cylinder_node->setVisible(false);
 }
 
 
@@ -190,6 +194,19 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 			new_scale.z = scale_f;
 		}
 
+		LibGens::ObjectElementInteger* shape_type = (LibGens::ObjectElementInteger*)object->getElement("Shape_Type");
+		if (shape_type && shape_type->value == 1)
+		{
+			// sphere only use width
+			new_scale.y = new_scale.x;
+			new_scale.z = new_scale.x;
+		}
+		else if (shape_type && shape_type->value == 2)
+		{
+			// cylinder doesn't use length
+			new_scale.z = new_scale.x;
+		}
+
 		// Compensate scale of parent node
 		new_scale.x = new_scale.x * scale_x * (1 / scale_x_f);
 		new_scale.y = new_scale.y * scale_y * (1 / scale_y_f);
@@ -200,7 +217,20 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 		if (new_scale.y <= 0.0) new_scale.y = 0.1;
 		if (new_scale.z <= 0.0) new_scale.z = 0.1;
 
-		preview_box_node->setScale(new_scale);
+		if (shape_type && shape_type->value == 1)
+		{
+			preview_sphere_node->setScale(new_scale);
+		}
+		else if (shape_type && shape_type->value == 2)
+		{
+			preview_cylinder_node->setScale(new_scale);
+		}
+		else
+		{
+			preview_box_node->setScale(new_scale);
+		}
+
+		setPreviewVisible();
 	}
 
 	if ((object->getName() == OBJECT_NODE_OBJECT_PHYSICS) && object_production) {
@@ -309,6 +339,16 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 		preview_box_entity->setRenderQueueGroup(Ogre::RENDER_QUEUE_MAX);
 		preview_box_entity->setQueryFlags(EDITOR_NODE_QUERY_PREVIEW_BOX);
 		preview_box_node->attachObject(preview_box_entity);
+
+		preview_sphere_entity = scene_manager->createEntity("preview_sphere.mesh");
+		preview_sphere_entity->setRenderQueueGroup(Ogre::RENDER_QUEUE_MAX);
+		preview_sphere_entity->setQueryFlags(EDITOR_NODE_QUERY_PREVIEW_BOX);
+		preview_sphere_node->attachObject(preview_sphere_entity);
+
+		preview_cylinder_entity = scene_manager->createEntity("preview_cylinder.mesh");
+		preview_cylinder_entity->setRenderQueueGroup(Ogre::RENDER_QUEUE_MAX);
+		preview_cylinder_entity->setQueryFlags(EDITOR_NODE_QUERY_PREVIEW_BOX);
+		preview_cylinder_node->attachObject(preview_cylinder_entity);
 	}
 }
 
@@ -410,7 +450,38 @@ void ObjectNode::addTime(float time_s) {
 void ObjectNode::setSelect(bool v) {
 	EditorNode::setSelect(v);
 
-	preview_box_node->setVisible(v);
+	if (!v)
+	{
+		preview_box_node->setVisible(false);
+		preview_sphere_node->setVisible(false);
+		preview_cylinder_node->setVisible(false);
+		return;
+	}
+
+	setPreviewVisible();
+}
+
+void ObjectNode::setPreviewVisible()
+{
+	LibGens::ObjectElementInteger* shape_type = (LibGens::ObjectElementInteger*)object->getElement("Shape_Type");
+	if (shape_type && shape_type->value == 1)
+	{
+		preview_box_node->setVisible(false);
+		preview_sphere_node->setVisible(true);
+		preview_cylinder_node->setVisible(false);
+	}
+	else if (shape_type && shape_type->value == 2)
+	{
+		preview_box_node->setVisible(false);
+		preview_sphere_node->setVisible(false);
+		preview_cylinder_node->setVisible(true);
+	}
+	else
+	{
+		preview_box_node->setVisible(true);
+		preview_sphere_node->setVisible(false);
+		preview_cylinder_node->setVisible(false);
+	}
 }
 
 void ObjectNode::createObjectMultiSetNodes(LibGens::Object* object, Ogre::SceneManager *scene_manager) {

@@ -143,6 +143,12 @@ class ObjectNode : public EditorNode {
 		Ogre::SceneNode *preview_box_node;
 		Ogre::Entity *preview_box_entity;
 
+		Ogre::SceneNode *preview_sphere_node;
+		Ogre::Entity *preview_sphere_entity;
+
+		Ogre::SceneNode *preview_cylinder_node;
+		Ogre::Entity *preview_cylinder_entity;
+
 		string current_model_name;
 		string current_animation_name;
 		string current_skeleton_name;
@@ -183,6 +189,7 @@ class ObjectNode : public EditorNode {
 		void hide();
 
 		void setSelect(bool v);
+		void setPreviewVisible();
 
 		void setForceHide(bool v) {
 			force_hide = v;
