@@ -832,52 +832,6 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 }
 
 
-void EditorApplication::editObjectPropertyIndex(int selection_index) {
-	if (selection_index < 0) {
-		return;
-	}
-	// TODO: remove
-	if ((size_t)selection_index < current_properties_names.size()) {
-		if (selection_index != current_property_index) {
-			closeEditPropertyGUI();
-		}
-
-		current_property_index = selection_index;
-
-		if (!hEditPropertyDlg) {
-			history_edit_property_wrapper = new HistoryActionWrapper();
-
-			if (current_properties_types[current_property_index] == LibGens::OBJECT_ELEMENT_VECTOR_LIST) {
-				// Create Dialog for Vector List
-				hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_VECTOR_LIST_DIALOG), hwnd, EditVectorListCallback);
-				HWND hVectorList = GetDlgItem(hEditPropertyDlg, IDL_EDIT_VECTOR_LIST_LIST);
-
-				LVCOLUMN Col;
-				Col.mask = LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM;
-				Col.cx = 285;
-				Col.pszText = "Vector (x, y, z)";
-				Col.cchTextMax = strlen(Col.pszText);
-				ListView_InsertColumn(hVectorList, 0, &Col);
-
-				if (current_single_property_object) {
-					string element_name = current_properties_names[current_property_index];
-					LibGens::ObjectElement* element = current_single_property_object->getElement(element_name);
-
-					if (element) {
-						LibGens::ObjectElementVectorList* element_vector_list = static_cast<LibGens::ObjectElementVectorList*>(element);
-
-						for (vector<LibGens::Vector3>::iterator it = element_vector_list->value.begin(); it != element_vector_list->value.end(); ++it)
-							addVectorToList(*it);
-
-						updateEditPropertyVectorList(temp_property_vector_list);
-					}
-				}
-			}
-		}
-	}
-}
-
-
 void EditorApplication::updateEditPropertyBool(bool v) {
 	string element_name = current_properties_names[current_property_index];
 
