@@ -2001,6 +2001,8 @@ void EditorApplication::moveVector(int index, bool up)
 	{
 		item.iItem = index - 1;
 		ListView_InsertItem(list_view, &item);
+		ListView_SetItemState(list_view, index - 1, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+		ListView_EnsureVisible(list_view, index - 1, false);
 
 		swap(temp_property_vector_list[index], temp_property_vector_list[index - 1]);
 		swap(property_vector_nodes[index], property_vector_nodes[index - 1]);
@@ -2009,6 +2011,8 @@ void EditorApplication::moveVector(int index, bool up)
 	{
 		item.iItem = index + 1;
 		ListView_InsertItem(list_view, &item);
+		ListView_SetItemState(list_view, index + 1, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+		ListView_EnsureVisible(list_view, index + 1, false);
 
 		swap(temp_property_vector_list[index], temp_property_vector_list[index + 1]);
 		swap(property_vector_nodes[index], property_vector_nodes[index + 1]);
