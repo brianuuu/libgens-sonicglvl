@@ -20,7 +20,7 @@
   <OffsetTrgY type="float" default="0" description="" />
   <OffsetTrgZ type="float" default="0" description="" />
   <Range type="float" default="100" description="" />
-  <Shape_Type type="float" default="0" description="" />
+  <Shape_Type type="integer" default="0" description="" preset0="0 (Box)" preset1="1 (Sphere)" preset2="2 (Cylinder)"/>
   <Extra type="preview_box_x" name="Collision_Width" />
   <Extra type="preview_box_y" name="Collision_Height" />
   <Extra type="preview_box_z" name="Collision_Length" />

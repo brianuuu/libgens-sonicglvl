@@ -16,7 +16,7 @@
   <OffLayerIndex2 type="string" default="base" description="" />
   <OffLayerIndex3 type="string" default="base" description="" />
   <Range type="float" default="7000" description="" />
-  <Shape_Type type="float" default="0" description="" />
+  <Shape_Type type="integer" default="0" description="" preset0="0 (Box)" preset1="1 (Sphere)" preset2="2 (Cylinder)"/>
   <UseON type="bool" default="true" description="" />
   <UseON1 type="bool" default="true" description="" />
   <UseON2 type="bool" default="true" description="" />

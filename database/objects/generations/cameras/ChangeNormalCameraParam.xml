@@ -9,7 +9,7 @@
   <IsCameraView type="bool" default="true" description="" />
   <IsCastShadow type="bool" default="false" description="" />
   <Range type="float" default="1000" description="" />
-  <Shape_Type type="float" default="0" description="" />
+  <Shape_Type type="integer" default="0" description="" preset0="0 (Box)" preset1="1 (Sphere)" preset2="2 (Cylinder)"/>
   <m_Param.Distance type="float" default="8.6" description="" />
   <m_Param.Fovy type="float" default="50" description="" />
   <m_Param.TargetPitch type="float" default="0" description="" />

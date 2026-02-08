@@ -11,7 +11,7 @@
   <ShakeCount type="float" default="10" description="" />
   <ShakeSize type="float" default="0.5" description="" />
   <ShakeTime type="float" default="1" description="" />
-  <Shape_Type type="float" default="0" description="" />
+  <Shape_Type type="integer" default="0" description="" preset0="0 (Box)" preset1="1 (Sphere)" preset2="2 (Cylinder)"/>
   <SizeAttenuation type="float" default="0.05" description="" />
   <Trigger type="id" description="" />
   <TriggerType type="float" default="1" description="" />

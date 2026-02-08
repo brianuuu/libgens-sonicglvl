@@ -37,7 +37,7 @@
   <Range type="float" default="100" description="" />
   <SENAME1 type="string" default="4012_splash04" description="" />
   <SENAME2 type="string" default="4002_ring" description="" />
-  <Shape_Type type="float" default="0" description="" />
+  <Shape_Type type="integer" default="0" description="" preset0="0 (Box)" preset1="1 (Sphere)" preset2="2 (Cylinder)"/>
   <Trigger type="id" description="" />
   <TriggerType type="float" default="0" description="" />
   <USE1 type="bool" default="true" description="" />

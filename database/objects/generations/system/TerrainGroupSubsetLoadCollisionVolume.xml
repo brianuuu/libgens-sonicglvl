@@ -9,7 +9,7 @@
   <LoadTypeIn type="float" default="2" description="" />
   <LoadTypeOut type="float" default="2" description="" />
   <Range type="float" default="100" description="" />
-  <Shape_Type type="float" default="0" description="" />
+  <Shape_Type type="integer" default="0" description="" preset0="0 (Box)" preset1="1 (Sphere)" preset2="2 (Cylinder)"/>
   <SubsetID type="float" default="54" description="" />
   <SubsetID_1 type="float" default="0" description="" />
   <SubsetID_2 type="float" default="0" description="" />

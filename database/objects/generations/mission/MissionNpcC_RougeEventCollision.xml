@@ -9,7 +9,7 @@
   <IsCastShadow type="bool" default="false" description="" />
   <Range type="float" default="1000" description="" />
   <RougeID type="id" description="" />
-  <Shape_Type type="float" default="0" description="" />
+  <Shape_Type type="integer" default="0" description="" preset0="0 (Box)" preset1="1 (Sphere)" preset2="2 (Cylinder)"/>
   <Speed type="float" default="5.5" description="" />
   <TouchType type="float" default="0" description="" />
   <Extra type="preview_box_x" name="Collision_Width" />
