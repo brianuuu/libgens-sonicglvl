@@ -1551,7 +1551,8 @@ void EditorApplication::updateObjectReferenceGUI()
 			}
 			refSet.insert(n);
 		}
-		
+
+		if (refSet.empty()) continue;
 		object_link_nodes[object_node] = new ObjectLinkNode(scene_manager, object_node, refSet);
 	}
 	sort(references.begin(), references.end(), [](ObjectNode* a, ObjectNode* b) { return a->getObject()->getID() > b->getObject()->getID(); });
