@@ -1252,7 +1252,6 @@ void EditorApplication::updateEditPropertyVectorMode(bool mode_state, bool is_li
 		property_vector_nodes[index]->setSelect(true);
 
 		updateSelection();
-		updateEditPropertyVectorFocus(index);
 	}
 	else {
 		for (list<EditorNode *>::iterator it=selected_nodes.begin(); it!=selected_nodes.end(); it++) {
