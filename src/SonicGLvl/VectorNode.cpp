@@ -39,10 +39,11 @@ VectorNode::VectorNode(Ogre::SceneManager *scene_manager) {
 void VectorNode::setSelect(bool v)
 {
 	EditorNode::setSelect(v);
-	setEditing(v);
+	setScale((editing || selected) ? Ogre::Vector3(1.0f, 1.0f, 1.0f) : Ogre::Vector3(0.5f, 0.5f, 0.5f));
 }
 
 void VectorNode::setEditing(bool b)
 {
-	setScale((b || selected) ? Ogre::Vector3(1.0f, 1.0f, 1.0f) : Ogre::Vector3(0.5f, 0.5f, 0.5f));
+	editing = b;
+	setScale((editing || selected) ? Ogre::Vector3(1.0f, 1.0f, 1.0f) : Ogre::Vector3(0.5f, 0.5f, 0.5f));
 }

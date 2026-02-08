@@ -24,6 +24,7 @@
 
 class VectorNode : public EditorNode {
 	protected:
+		bool editing = false;
 	public:
 		VectorNode(Ogre::SceneManager *scene_manager);
 
