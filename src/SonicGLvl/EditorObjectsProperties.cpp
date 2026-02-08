@@ -2078,12 +2078,7 @@ LibGens::Vector3 getVectorCreationPosition()
 {
 	LibGens::Vector3 vector_creation_position = LibGens::Vector3(0, 0, 0);
 
-	if (!editor_application->getCurrentPropertyVectorList().empty())
-	{
-		// use position of the last vector
-		vector_creation_position = editor_application->getCurrentPropertyVectorList().back();
-	}
-	else if (!editor_application->getSelectedNodes().empty())
+	if (!editor_application->getSelectedNodes().empty())
 	{
 		// Try to use the position of the first selected object
 		ObjectNode* first_selection = static_cast<ObjectNode*>(*(editor_application->getSelectedNodes().begin()));
