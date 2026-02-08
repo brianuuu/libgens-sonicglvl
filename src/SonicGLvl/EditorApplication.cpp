@@ -148,6 +148,43 @@ void EditorApplication::deleteSelection() {
 					(*it)->setSelect(false);
 					wrapper->push(action_select);
 
+					// remove references by this object
+					for (LibGens::ObjectElement* element : object->getElements())
+					{
+						if (element->getType() == LibGens::OBJECT_ELEMENT_ID)
+						{
+							LibGens::ObjectElementID* element_id = static_cast<LibGens::ObjectElementID*>(element);
+
+							ObjectNode* ref = getObjectNodeFromID(element_id->value);
+							if (ref)
+							{
+								ref->removeReference(object_node);
+							}
+
+							HistoryActionEditObjectElementID* history_action = new HistoryActionEditObjectElementID(object, object_node_manager, element_id, element_id->value, 0, -1);
+							element_id->value = 0;
+							wrapper->push(history_action);
+						}
+						else if (element->getType() == LibGens::OBJECT_ELEMENT_ID_LIST)
+						{
+							LibGens::ObjectElementIDList* element_id_list = static_cast<LibGens::ObjectElementIDList*>(element);
+
+							for (size_t id : element_id_list->value)
+							{
+								ObjectNode* ref = getObjectNodeFromID(id);
+								if (ref)
+								{
+									ref->removeReference(object_node);
+								}
+							}
+
+							vector<size_t> new_list;
+							HistoryActionEditObjectElementIDList* history_action = new HistoryActionEditObjectElementIDList(object, object_node_manager, element_id_list, element_id_list->value, new_list, -1);
+							element_id_list->value = new_list;
+							wrapper->push(history_action);
+						}
+					}
+
 					// remove all references to current object
 					for (ObjectNode* n : object_node->getReferences())
 					{
