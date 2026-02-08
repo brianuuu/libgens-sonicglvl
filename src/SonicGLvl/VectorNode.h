@@ -30,6 +30,9 @@ class VectorNode : public EditorNode {
 		void setPosition(Ogre::Vector3 v) {
 			EditorNode::setPosition(v);
 		}
+
+		void setSelect(bool v) override;
+		void setEditing(bool b);
 };
 
 #endif

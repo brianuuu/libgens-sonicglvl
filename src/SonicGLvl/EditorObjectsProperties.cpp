@@ -1881,6 +1881,15 @@ void EditorApplication::updateVectorListSelection(int index)
 	bool has_block = false;
 	if (current_vector_list_selection != last_vector_list_selection)
 	{
+		if (current_vector_list_selection < property_vector_nodes.size())
+		{
+			property_vector_nodes.at(current_vector_list_selection)->setEditing(true);
+		}
+		if (last_vector_list_selection < property_vector_nodes.size())
+		{
+			property_vector_nodes.at(last_vector_list_selection)->setEditing(false);
+		}
+
 		last_vector_list_selection = current_vector_list_selection;
 		
 		has_block = true;
@@ -2006,6 +2015,9 @@ void EditorApplication::moveVector(int index, bool up)
 
 		swap(temp_property_vector_list[index], temp_property_vector_list[index - 1]);
 		swap(property_vector_nodes[index], property_vector_nodes[index - 1]);
+
+		property_vector_nodes[index - 1]->setEditing(true);
+		property_vector_nodes[index]->setEditing(false);
 	}
 	else
 	{
@@ -2016,6 +2028,9 @@ void EditorApplication::moveVector(int index, bool up)
 
 		swap(temp_property_vector_list[index], temp_property_vector_list[index + 1]);
 		swap(property_vector_nodes[index], property_vector_nodes[index + 1]);
+
+		property_vector_nodes[index + 1]->setEditing(true);
+		property_vector_nodes[index]->setEditing(false);
 	}
 
 	recreateVectorLinkNodes();
