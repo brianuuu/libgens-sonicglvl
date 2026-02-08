@@ -501,7 +501,6 @@ class EditorApplication : public BaseApplication {
 		void updateObjectsPropertiesGUI();
 		void updateObjectsPropertiesValuesGUI(list<LibGens::Object*> const& objects);
 		void updateObjectPropertyIndex(int selection_index, bool highlight_property = true);
-		void editObjectPropertyIndex(int selection_index);
 		void updateHelpWithObjectGUI(LibGens::Object *object);
 		void updateHelpWithPropertyGUI(LibGens::ObjectElement *element);
 		void updateObjectReferenceGUI();

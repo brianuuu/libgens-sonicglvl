@@ -213,12 +213,6 @@ INT_PTR CALLBACK RightBarCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPa
 				editor_application->updateObjectPropertyIndex(selection_index);
 				return true;
 			}
-			case NM_DBLCLK:
-			{
-				int selection_index = SendMessage(GetDlgItem(hDlg, IDL_RIGHT_PROPERTIES_LIST), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
-				editor_application->editObjectPropertyIndex(selection_index);
-				return true;
-			}
 			}
 			break;
 		}
