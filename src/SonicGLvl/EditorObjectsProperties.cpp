@@ -1211,7 +1211,7 @@ void EditorApplication::updateEditPropertyVectorGUI(int index, bool is_list) {
 				char buffer[128];
 				strcpy(buffer, vector_string.c_str());
 
-				ListView_SetItemText(list_view, index, 0, buffer);
+				ListView_SetItemText(list_view, index, 1, buffer);
 			}
 		}
 	}
@@ -2116,7 +2116,7 @@ INT_PTR CALLBACK EditVectorListCallback(HWND hDlg, UINT msg, WPARAM wParam, LPAR
 					string newText = ToString<float>(value_x) + ", " + ToString<float>(value_y) + ", " + ToString<float>(value_z);
 					strcpy(text, newText.c_str());
 
-					ListView_SetItemText(list_view, list_view_index, 0, (char*)newText.c_str());
+					ListView_SetItemText(list_view, list_view_index, 1, (char*)newText.c_str());
 					editor_application->getCurrentPropertyVectorList()[list_view_index] = LibGens::Vector3(value_x, value_y, value_z);
 					editor_application->getPropertyVectorNodes()[list_view_index]->setPosition(Ogre::Vector3(value_x, value_y, value_z));
 					editor_application->updateEditPropertyVectorList(editor_application->getCurrentPropertyVectorList());
@@ -2223,6 +2223,7 @@ void EditorApplication::addVectorToList(LibGens::Vector3 v3)
 	item.iItem = temp_property_vector_list.size() - 1;
 	ListView_InsertItem(hVectorList, &item);
 	ListView_SetItemText(hVectorList, temp_property_vector_list.size() - 1, 1, v);
+	ListView_EnsureVisible(hVectorList, ListView_GetItemCount(hVectorList) - 1, false);
 
 	recreateVectorLinkNodes();
 }
