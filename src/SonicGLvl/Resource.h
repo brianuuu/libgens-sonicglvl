@@ -7,7 +7,6 @@
 #define IDD_LEFT_DIALOG                         107
 #define IDD_BOTTOM_DIALOG                       111
 #define IDD_TOP_DIALOG                          115
-#define IDD_EDIT_VECTOR_LIST_DIALOG             125
 #define IDD_MULTISETPARAM_DIALOG                131
 #define IDD_MATERIAL_EDITOR                     133
 #define IDD_MATERIAL_EDITOR_PREVIEW             135

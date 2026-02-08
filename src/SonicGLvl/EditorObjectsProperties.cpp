@@ -765,8 +765,14 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 
 		LVCOLUMN Col;
 		Col.mask = LVCF_WIDTH | LVCF_SUBITEM;
-		Col.cx = 150;
+		Col.cx = 30;
 		ListView_InsertColumn(hIDList, 0, &Col);
+
+		Col.mask = LVCF_WIDTH | LVCF_SUBITEM;
+		Col.cx = 145;
+		ListView_InsertColumn(hIDList, 1, &Col);
+
+		ListView_SetExtendedListViewStyleEx(hIDList, LVS_EX_FULLROWSELECT, LVS_EX_FULLROWSELECT);
 
 		vector<LibGens::Vector3> values;
 		for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
@@ -2003,34 +2009,46 @@ void EditorApplication::moveVector(int index, bool up)
 	item.iSubItem = 0;
 	item.pszText = buffer;
 
+	char value_str[1024] = "";
 	ListView_GetItem(list_view, &item);
+	ListView_GetItemText(list_view, index, 1, value_str, 1024);
 	ListView_DeleteItem(list_view, index);
 
 	if (up)
 	{
-		item.iItem = index - 1;
-		ListView_InsertItem(list_view, &item);
-		ListView_SetItemState(list_view, index - 1, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
-		ListView_EnsureVisible(list_view, index - 1, false);
-
 		swap(temp_property_vector_list[index], temp_property_vector_list[index - 1]);
 		swap(property_vector_nodes[index], property_vector_nodes[index - 1]);
 
 		property_vector_nodes[index - 1]->setEditing(true);
 		property_vector_nodes[index]->setEditing(false);
+
+		item.iItem = index - 1;
+		ListView_InsertItem(list_view, &item);
+		ListView_SetItemText(list_view, index - 1, 1, value_str);
+		ListView_SetItemState(list_view, index - 1, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+		ListView_EnsureVisible(list_view, index - 1, false);
 	}
 	else
 	{
-		item.iItem = index + 1;
-		ListView_InsertItem(list_view, &item);
-		ListView_SetItemState(list_view, index + 1, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
-		ListView_EnsureVisible(list_view, index + 1, false);
-
 		swap(temp_property_vector_list[index], temp_property_vector_list[index + 1]);
 		swap(property_vector_nodes[index], property_vector_nodes[index + 1]);
 
 		property_vector_nodes[index + 1]->setEditing(true);
 		property_vector_nodes[index]->setEditing(false);
+
+		item.iItem = index + 1;
+		ListView_InsertItem(list_view, &item);
+		ListView_SetItemText(list_view, index + 1, 1, value_str);
+		ListView_SetItemState(list_view, index + 1, LVIS_SELECTED | LVIS_FOCUSED, LVIS_SELECTED | LVIS_FOCUSED);
+		ListView_EnsureVisible(list_view, index + 1, false);
+	}
+
+	// reorder need rename all numbers
+	for (int i = 0; i < ListView_GetItemCount(list_view); i++)
+	{
+		char c[32];
+		strcpy(c, (ToString(i + 1) + ")").c_str());
+		ListView_SetItemText(list_view, i, 0, c);
 	}
 
 	recreateVectorLinkNodes();
@@ -2169,23 +2187,42 @@ void EditorApplication::addVectorToList(LibGens::Vector3 v3)
 
 	string v3_combined = ToString<float>(x) + ", " + ToString<float>(y) + ", " + ToString<float>(z);
 	char v[256];
-
 	strcpy(v, v3_combined.c_str());
+
+	int index = current_vector_list_selection;
+	if (index < 0)
+	{
+		temp_property_vector_list.push_back(v3);
+	}
+	else
+	{
+		temp_property_vector_list.insert(temp_property_vector_list.begin() + index, v3);
+	}
+
+	VectorNode* vector_node = new VectorNode(scene_manager);
+	vector_node->setPosition(Ogre::Vector3(x, y, z));
+	if (index < 0)
+	{
+		property_vector_nodes.push_back(vector_node);
+	}
+	else
+	{
+		property_vector_nodes.insert(property_vector_nodes.begin() + index, vector_node);
+	}
+
+	char c[32];
+	strcpy(c, (ToString(temp_property_vector_list.size()) + ")").c_str());
 
 	LV_ITEM item;
 	item.mask = LVIF_TEXT;
-	item.pszText = v;
-	item.cchTextMax = strlen(v);
+	item.pszText = c;
+	item.cchTextMax = strlen(c);
 	item.state = 0;
 	item.iSubItem = 0;
 	item.lParam = (LPARAM)NULL;
-	item.iItem = temp_property_vector_list.size();
+	item.iItem = temp_property_vector_list.size() - 1;
 	ListView_InsertItem(hVectorList, &item);
-
-	temp_property_vector_list.push_back(v3);
-	VectorNode* vector_node = new VectorNode(scene_manager);
-	vector_node->setPosition(Ogre::Vector3(x, y, z));
-	property_vector_nodes.push_back(vector_node);
+	ListView_SetItemText(hVectorList, temp_property_vector_list.size() - 1, 1, v);
 
 	recreateVectorLinkNodes();
 }
