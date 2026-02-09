@@ -245,9 +245,9 @@ LRESULT APIENTRY SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 						"General Hotkeys:\n"
 						"  Ctrl+O: Open Level\n"
 						"  Ctrl+S: Save Stage Data\n"
-						"  Ctrl+F: Find\n\n"
+						"  Ctrl+F: Find\n"
 						"  Ctrl+T: Toggle Terrain/Object Selection\n"
-						"  Ctrl+I: Display Selected Terrain Names\n"
+						"  Ctrl+I: Display Selected Terrain Names\n\n"
 
 						"Editing Hotkeys:\n"
 						"  Ctrl+Z: Undo\n"
