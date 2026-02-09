@@ -81,6 +81,10 @@ EditorAxis::EditorAxis(Ogre::SceneManager *scene_manager) {
 	visible = false;
 	position = Ogre::Vector3::ZERO;
 	rotation = Ogre::Quaternion::IDENTITY;
+	rotation_frozen = false;
+	rotation_snap = false;
+	translation_snap = false;
+	current_axis = -1;
 
 	current_w_offset = 0.0f;
 }
