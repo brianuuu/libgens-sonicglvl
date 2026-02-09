@@ -174,7 +174,7 @@ void EditorApplication::updateObjectsPalettePreview() {
 
 		// Create Object Previewing Node
 		if (current_palette_selection) {
-			clearSelection();
+			//clearSelection();
 			updateSelection();
 
 			current_palette_selection->setPosition(LibGens::Vector3(LIBGENS_AABB_MAX_START, LIBGENS_AABB_MAX_START, LIBGENS_AABB_MAX_START));
@@ -313,6 +313,71 @@ void EditorApplication::mousePressedObjectsPalettePreview(const OIS::MouseEvent 
 	}
 }
 
+void EditorApplication::doubleClickedObjectPalettePreview()
+{
+	if (current_palette_nodes.empty()) return;
+
+	Ogre::Vector3 target_point = axis->getPosition();
+	if (!axis->isVisible())
+	{
+		Ogre::Ray ray = viewport->getCamera()->getCameraToViewportRay(0.5f, 0.5f);
+		target_point = ray.getPoint(15.0f);
+	}
+
+	// should only expect one object
+	for (ObjectNode* node : current_palette_nodes) {
+		node->setPosition(target_point);
+	}
+
+	// copied from mousePressedObjectsPalettePreview
+	clearSelection();
+
+	HistoryActionWrapper* wrapper = new HistoryActionWrapper();
+	for (list<ObjectNode*>::iterator it = current_palette_nodes.begin(); it != current_palette_nodes.end(); it++) {
+		LibGens::Object* object_from_preview = (*it)->getObject();
+
+		if (object_from_preview) {
+			LibGens::Object* new_object = new LibGens::Object(object_from_preview);
+
+			if (current_level) {
+				if (current_level->getLevel()) {
+					new_object->setID(current_level->getLevel()->newObjectID());
+				}
+			}
+			else
+			{
+				new_object->setID(no_level_id++);
+			}
+
+			LibGens::ObjectSet* set = getCurrentSet();
+			if (set) {
+				set->addObject(new_object);
+				updateLayerControlGUI();
+
+				if (!current_level) {
+					new_object->setID(set->newObjectID());
+				}
+			}
+
+			// Create
+			ObjectNode* new_object_node = object_node_manager->createObjectNode(new_object);
+			copyObjectNodeReferences((*it), new_object_node);
+
+			// Push to History
+			HistoryActionCreateObjectNode* action = new HistoryActionCreateObjectNode(new_object, object_node_manager);
+			wrapper->push(action);
+
+			// Add to current selection
+			HistoryActionSelectNode* action_select = new HistoryActionSelectNode(new_object_node, false, true, &selected_nodes);
+			new_object_node->setSelect(true);
+			selected_nodes.push_back(new_object_node);
+			wrapper->push(action_select);
+		}
+	}
+	pushHistory(wrapper);
+	updateSelection();
+	clearObjectsPalettePreviewGUI();
+}
 
 void EditorApplication::clearObjectsPalettePreview() {
 	for (list<ObjectNode *>::iterator it=current_palette_nodes.begin(); it!=current_palette_nodes.end(); it++) {
@@ -653,6 +718,18 @@ INT_PTR CALLBACK LeftBarCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lPar
 				// select all objects in selected layer
 				selection_index = SendMessage(GetDlgItem(hDlg, IDL_LAYER_LIST), LVM_GETNEXTITEM, -1, LVNI_SELECTED);
 				editor_application->selectAll(selection_index);
+				return true;
+			}
+			}
+			break;
+		}
+		case IDL_PALETTE_LIST:
+		{
+			switch (((LPNMHDR)lParam)->code)
+			{
+			case NM_DBLCLK:
+			{
+				editor_application->doubleClickedObjectPalettePreview();
 				return true;
 			}
 			}

@@ -572,6 +572,7 @@ class EditorApplication : public BaseApplication {
 		void overrideObjectsPalettePreview(list<LibGens::Object *> override_objects);
 		void mouseMovedObjectsPalettePreview(const OIS::MouseEvent &arg);
 		void mousePressedObjectsPalettePreview(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
+		void doubleClickedObjectPalettePreview();
 		void clearObjectsPalettePreview();
 		void clearObjectsPalettePreviewGUI();
 		bool isPalettePreviewActive();
