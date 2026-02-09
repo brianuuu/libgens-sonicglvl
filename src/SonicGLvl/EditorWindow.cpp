@@ -257,6 +257,7 @@ LRESULT APIENTRY SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 						"  Ctrl+D: Clear Selection\n"
 						"  Ctrl+A: Select All\n"
 						"  Ctrl+G: Focus on Selected Objects\n"
+						"  Ctrl+Q: Snap to Closest Path\n"
 						"  Del: Delete Object\n"
 						"  Ctrl+Drag: Clone Object\n"
 						"  Shift+Drag: Clone or Instance Object\n\n"

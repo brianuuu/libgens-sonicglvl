@@ -1071,6 +1071,10 @@ bool EditorApplication::keyPressed(const OIS::KeyEvent &arg) {
 				showSelectionNames();
 			}
 
+			if(arg.key == OIS::KC_Q) {
+				snapToClosestPath();
+			}
+
 			if(arg.key == OIS::KC_G) {
 				if (selected_nodes.size())
 				{

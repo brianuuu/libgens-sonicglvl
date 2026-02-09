@@ -46,7 +46,7 @@ IDR_TOOLMENU MENUEX
         }
         MENUITEM "Look at...", IMD_LOOK_AT_POINT, 0, 0
         MENUITEM "", 0, MFT_SEPARATOR, 0
-        MENUITEM "Snap objects to closest path", IMD_SNAP_OBJECTS_TO_CLOSEST_PATH, 0, 0
+        MENUITEM "Snap objects to closest path\tCtrl+Q", IMD_SNAP_OBJECTS_TO_CLOSEST_PATH, 0, 0
         MENUITEM "Move selected objects to layer...", IMD_MOVE_LAYER, 0, 0
         MENUITEM "", 0, MFT_SEPARATOR, 0
         MENUITEM "Find\tCtrl+F", IMD_FIND, 0, 0
