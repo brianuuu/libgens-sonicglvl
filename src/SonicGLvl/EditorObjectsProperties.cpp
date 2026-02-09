@@ -2189,26 +2189,10 @@ void EditorApplication::addVectorToList(LibGens::Vector3 v3)
 	char v[256];
 	strcpy(v, v3_combined.c_str());
 
-	int index = current_vector_list_selection;
-	if (index < 0)
-	{
-		temp_property_vector_list.push_back(v3);
-	}
-	else
-	{
-		temp_property_vector_list.insert(temp_property_vector_list.begin() + index, v3);
-	}
-
+	temp_property_vector_list.push_back(v3);
 	VectorNode* vector_node = new VectorNode(scene_manager);
 	vector_node->setPosition(Ogre::Vector3(x, y, z));
-	if (index < 0)
-	{
-		property_vector_nodes.push_back(vector_node);
-	}
-	else
-	{
-		property_vector_nodes.insert(property_vector_nodes.begin() + index, vector_node);
-	}
+	property_vector_nodes.push_back(vector_node);
 
 	char c[32];
 	strcpy(c, (ToString(temp_property_vector_list.size()) + ")").c_str());
