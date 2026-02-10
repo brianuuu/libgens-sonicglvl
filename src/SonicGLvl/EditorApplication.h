@@ -181,6 +181,8 @@ class EditorApplication : public BaseApplication {
 		// Viewport
 		EditorViewport *viewport;
 		EditorAxis *axis;
+		float current_mouse_x = 0.0f;
+		float current_mouse_y = 0.0f;
 
 		// Node
 		History *history;
@@ -368,6 +370,7 @@ class EditorApplication : public BaseApplication {
 		void lookAtPoint(int, Ogre::Vector3);
 		void lookAtEachOther(int);
 		void snapToClosestPath();
+		void snapToTerrain();
 		void updateNodeVisibility();
 		void toggleNodeVisibility(unsigned int flag);
 		void updateVisibilityGUI();

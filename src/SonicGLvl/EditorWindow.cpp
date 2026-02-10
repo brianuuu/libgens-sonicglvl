@@ -246,7 +246,6 @@ LRESULT APIENTRY SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 						"  Ctrl+O: Open Level\n"
 						"  Ctrl+S: Save Stage Data\n"
 						"  Ctrl+F: Find\n"
-						"  Ctrl+T: Toggle Terrain/Object Selection\n"
 						"  Ctrl+I: Display Selected Terrain Names\n\n"
 
 						"Editing Hotkeys:\n"
@@ -258,6 +257,7 @@ LRESULT APIENTRY SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 						"  Ctrl+A: Select All\n"
 						"  Ctrl+G: Focus on Selected Objects\n"
 						"  Ctrl+Q: Snap to Closest Path\n"
+						"  Ctrl+T: Snap to Terrain Under Cursor\n"
 						"  Del: Delete Object\n"
 						"  Ctrl+Drag: Clone Object\n"
 						"  Shift+Drag: Clone or Instance Object\n\n"

@@ -728,6 +728,44 @@ void EditorApplication::snapToClosestPath() {
 	updateSelection();
 }
 
+void EditorApplication::snapToTerrain() {
+	if (!current_level || selected_nodes.empty()) {
+		return;
+	}
+
+	if (current_mouse_x < 0.0f || current_mouse_x > 1.0f || current_mouse_y < 0.0f || current_mouse_y > 1.0f) {
+		return;
+	}
+
+	// Raycast from camera to viewport
+	Ogre::Vector3 raycast_point(0.0f);
+	if (!viewport->raycastPlacement(current_mouse_x, current_mouse_y, 0.0f, &raycast_point, EDITOR_NODE_QUERY_TERRAIN | EDITOR_NODE_QUERY_HAVOK)) {
+		return;
+	}
+	
+	Ogre::Vector3 center = Ogre::Vector3::ZERO;
+	for (EditorNode* node : selected_nodes) {
+		center += node->getPosition();
+	}
+	center /= selected_nodes.size();
+
+	HistoryActionWrapper* wrapper = new HistoryActionWrapper();
+
+	Ogre::Vector3 translate = raycast_point - center;
+	for (EditorNode* node : selected_nodes) {
+		Ogre::Vector3 previous_position = node->getPosition();
+		Ogre::Vector3 new_position = previous_position + translate;
+
+		node->setPosition(new_position);
+
+		HistoryActionMoveNode* action_move = new HistoryActionMoveNode(node, previous_position, new_position);
+		wrapper->push(action_move);
+	}
+
+	pushHistory(wrapper);
+	updateSelection();
+}
+
 void EditorApplication::createScene(void) {
 	// Initialize LibGens Managers
 	havok_enviroment = new LibGens::HavokEnviroment(100 * 1024 * 1024);
@@ -1062,9 +1100,10 @@ bool EditorApplication::keyPressed(const OIS::KeyEvent &arg) {
 			}
 
 			if(arg.key == OIS::KC_T) {
-				clearSelection();
-				updateSelection();
-				editor_mode = (editor_mode == EDITOR_NODE_QUERY_TERRAIN ? EDITOR_NODE_QUERY_OBJECT : EDITOR_NODE_QUERY_TERRAIN);
+				snapToTerrain();
+				//clearSelection();
+				//updateSelection();
+				//editor_mode = (editor_mode == EDITOR_NODE_QUERY_TERRAIN ? EDITOR_NODE_QUERY_OBJECT : EDITOR_NODE_QUERY_TERRAIN);
 			}
 
 			if(arg.key == OIS::KC_I) {
@@ -1195,6 +1234,10 @@ bool EditorApplication::mouseMoved(const OIS::MouseEvent &arg) {
 	if (!axis->isHolding()) {
 		viewport->mouseMoved(arg);
 	}
+
+	current_mouse_x = arg.state.X.abs / float(arg.state.width);
+	current_mouse_y = arg.state.Y.abs / float(arg.state.height);
+	viewport->convertMouseToLocalScreen(current_mouse_x, current_mouse_y);
 
 	if (editor_mode == EDITOR_NODE_QUERY_NODE) {
 		if (viewport->isMouseInLocalScreen(arg)) {
