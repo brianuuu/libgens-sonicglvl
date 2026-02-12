@@ -576,6 +576,7 @@ class EditorApplication : public BaseApplication {
 		void mouseMovedObjectsPalettePreview(const OIS::MouseEvent &arg);
 		void mousePressedObjectsPalettePreview(const OIS::MouseEvent &arg, OIS::MouseButtonID id);
 		void doubleClickedObjectPalettePreview();
+		void commitObjectPalettePreview();
 		void clearObjectsPalettePreview();
 		void clearObjectsPalettePreviewGUI();
 		bool isPalettePreviewActive();

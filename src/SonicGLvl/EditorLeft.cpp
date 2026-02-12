@@ -208,6 +208,9 @@ void EditorApplication::overrideObjectsPalettePreview(list<LibGens::Object *> ov
 		ObjectNode *palette_node=new ObjectNode((*it), scene_manager, model_library, material_library, object_production, object_node_manager->getSlotIDName());
 		current_palette_nodes.push_back(palette_node);
 	}
+
+	commitObjectPalettePreview();
+	clearObjectsPalettePreviewGUI();
 }
 
 
@@ -255,53 +258,7 @@ void EditorApplication::mousePressedObjectsPalettePreview(const OIS::MouseEvent 
 	if (id == OIS::MB_Left) {
 		// Update nodes to be under the mouse
 		mouseMovedObjectsPalettePreview(arg);
-		clearSelection();
-
-		HistoryActionWrapper *wrapper = new HistoryActionWrapper();
-		for (list<ObjectNode *>::iterator it=current_palette_nodes.begin(); it!=current_palette_nodes.end(); it++) {
-			LibGens::Object *object_from_preview = (*it)->getObject();
-
-			if (object_from_preview) {
-				LibGens::Object *new_object = new LibGens::Object(object_from_preview);
-
-				if (current_level) {
-					if (current_level->getLevel()) {
-						new_object->setID(current_level->getLevel()->newObjectID());
-					}
-				}
-				else
-				{
-					new_object->setID(no_level_id++);
-				}
-
-				LibGens::ObjectSet* set = getCurrentSet();
-				if (set) {
-					set->addObject(new_object);
-					updateLayerControlGUI();
-
-					if (!current_level) {
-						new_object->setID(set->newObjectID());
-					}
-				}
-
-				// Create
-				ObjectNode *new_object_node = object_node_manager->createObjectNode(new_object);
-				copyObjectNodeReferences((*it), new_object_node);
-
-				// Push to History
-				HistoryActionCreateObjectNode *action = new HistoryActionCreateObjectNode(new_object, object_node_manager);
-				wrapper->push(action);
-
-				// Add to current selection
-				HistoryActionSelectNode *action_select = new HistoryActionSelectNode(new_object_node, false, true, &selected_nodes);
-				new_object_node->setSelect(true);
-				selected_nodes.push_back(new_object_node);
-				wrapper->push(action_select);
-			}
-		}
-		pushHistory(wrapper);
-
-		updateSelection();
+		commitObjectPalettePreview();
 
 		if (!keyboard->isModifierDown(OIS::Keyboard::Ctrl) && !keyboard->isModifierDown(OIS::Keyboard::Shift)) {
 			clearObjectsPalettePreviewGUI();
@@ -329,7 +286,12 @@ void EditorApplication::doubleClickedObjectPalettePreview()
 		node->setPosition(target_point);
 	}
 
-	// copied from mousePressedObjectsPalettePreview
+	commitObjectPalettePreview();
+	clearObjectsPalettePreviewGUI();
+}
+
+void EditorApplication::commitObjectPalettePreview()
+{
 	clearSelection();
 
 	HistoryActionWrapper* wrapper = new HistoryActionWrapper();
@@ -376,7 +338,6 @@ void EditorApplication::doubleClickedObjectPalettePreview()
 	}
 	pushHistory(wrapper);
 	updateSelection();
-	clearObjectsPalettePreviewGUI();
 }
 
 void EditorApplication::clearObjectsPalettePreview() {
