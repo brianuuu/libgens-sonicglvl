@@ -34,7 +34,7 @@ void EditorApplication::copySelection() {
 				LibGens::Object *object = object_node->getObject();
 
 				if (object) {
-					object->writeXML(root);
+					object->writeXML(root, true);
 				}
 			}
 		}

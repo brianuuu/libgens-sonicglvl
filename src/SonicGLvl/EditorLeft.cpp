@@ -312,6 +312,21 @@ void EditorApplication::commitObjectPalettePreview()
 			}
 
 			LibGens::ObjectSet* set = getCurrentSet();
+			string layerCopyFrom = object_from_preview->getParentSetCopyFrom();
+			if (!layerCopyFrom.empty())
+			{
+				// try to paste into the same layer it copied from
+				for (auto const& iter : set_mapping)
+				{
+					LibGens::ObjectSet* s = iter.second;
+					if (s->getName() == layerCopyFrom)
+					{
+						set = s;
+						break;
+					}
+				}
+			}
+
 			if (set) {
 				set->addObject(new_object);
 				updateLayerControlGUI();

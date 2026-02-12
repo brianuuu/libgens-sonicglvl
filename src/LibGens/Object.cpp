@@ -21,6 +21,7 @@
 #include "ObjectExtra.h"
 #include "ObjectElement.h"
 #include "ObjectLibrary.h"
+#include "ObjectSet.h"
 #include "Level.h"
 #include "StringTable.h"
 
@@ -435,6 +436,11 @@ namespace LibGens {
 			else if (element_name == LIBGENS_OBJECT_ELEMENT_MULTI_SET_PARAM) {
 				multi_set_param.readXML(pElem);
 			}
+			else if (element_name == LIBGENS_OBJECT_ELEMENT_LAYER) {
+				if (text_ptr) {
+					parent_set_copy_from = ToString(text_ptr);
+				}
+			}
 			else {
 				if (text_ptr) {
 					string text=ToString(text_ptr);
@@ -685,11 +691,19 @@ namespace LibGens {
 	}
 
 
-	void Object::writeXML(TiXmlElement *root) {
+	void Object::writeXML(TiXmlElement *root, bool save_layer) {
 		TiXmlElement* objRoot=new TiXmlElement(name);
 
 		for (list<ObjectElement *>::iterator it=elements.begin(); it!=elements.end(); it++) {
 			(*it)->writeXML(objRoot);
+		}
+
+		if (save_layer && parent_set)
+		{
+			TiXmlElement* layerRoot = new TiXmlElement(LIBGENS_OBJECT_ELEMENT_LAYER);
+			TiXmlText* layerValue = new TiXmlText(parent_set->getName());
+			layerRoot->LinkEndChild(layerValue);
+			objRoot->LinkEndChild(layerRoot);
 		}
 
 		TiXmlElement* positionRoot=new TiXmlElement(LIBGENS_OBJECT_ELEMENT_POSITION);
@@ -1251,6 +1265,10 @@ namespace LibGens {
 
 	ObjectSet *Object::getParentSet() {
 		return parent_set;
+	}
+
+	string Object::getParentSetCopyFrom() {
+		return parent_set_copy_from;
 	}
 
 	MultiSetParam *Object::getMultiSetParam() {

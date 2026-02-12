@@ -50,6 +50,7 @@
 #define LIBGENS_OBJECT_ELEMENT_VECTOR3_TEMPLATE       "vector3"
 #define LIBGENS_OBJECT_ELEMENT_UINT32ARRAY_TEMPLATE   "uint32array"
 
+#define LIBGENS_OBJECT_ELEMENT_LAYER                  "LayerCopyFrom"
 #define LIBGENS_OBJECT_ELEMENT_POSITION               "Position"
 #define LIBGENS_OBJECT_ELEMENT_POSITION_STR_SIZE      8
 #define LIBGENS_OBJECT_ELEMENT_ROTATION               "Rotation"
@@ -212,6 +213,7 @@ namespace LibGens {
 			Quaternion rotation;
 			size_t id;
 			ObjectSet *parent_set;
+			string parent_set_copy_from;
 			
 			// Local Transform is used for Lost World levels - only preent so that in the event that
 			// two objects are parented to each other, the generated world position can fall back to
@@ -245,12 +247,13 @@ namespace LibGens {
 			void readXML(TiXmlElement *root);
 			void readXMLTemplate(string filename);
 			void readXMLTemplateElement(TiXmlElement *root);
-			void writeXML(TiXmlElement *root);
+			void writeXML(TiXmlElement *root, bool save_layer = false);
 			void saveXMLTemplate(string filename);
 			void learnFromObject(Object *object);
 			void learnFromLibrary(ObjectLibrary *library);
 			void setParentSet(ObjectSet *v);
 			ObjectSet *getParentSet();
+			string getParentSetCopyFrom();
 			MultiSetParam *getMultiSetParam();
 
 			void readORC(File *file);
