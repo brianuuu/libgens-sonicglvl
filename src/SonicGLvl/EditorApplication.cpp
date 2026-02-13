@@ -127,7 +127,10 @@ void EditorApplication::deleteSelection() {
 	if (editor_mode == EDITOR_NODE_QUERY_OBJECT) {
 		HistoryActionWrapper *wrapper = new HistoryActionWrapper();
 
+		set<EditorNode*> skip_nodes;
 		for (list<EditorNode *>::iterator it=selected_nodes.begin(); it!=selected_nodes.end(); it++) {
+			if (skip_nodes.count(*it)) continue;
+			
 			// Cast to appropiate types depending on the type of editor node
 			if ((*it)->getType() == EDITOR_NODE_OBJECT) {
 				ObjectNode *object_node=static_cast<ObjectNode *>(*it);
@@ -230,10 +233,64 @@ void EditorApplication::deleteSelection() {
 			}
 			else if ((*it)->getType() == EDITOR_NODE_OBJECT_MSP) {
 				ObjectMultiSetNode* object_msp_node = static_cast<ObjectMultiSetNode*>(*it);
-				HistoryActionSelectNode* action_select = new HistoryActionSelectNode((*it), true, false, &selected_nodes);
-				object_msp_node->setSelect(false);
-				wrapper->push(action_select);
+
+				vector<LibGens::Vector3> previous_positions;
+				vector<LibGens::Quaternion> previous_rotations;
+				vector<LibGens::Vector3> new_positions;
+				vector<LibGens::Quaternion> new_rotations;
+
+				ObjectNode* obj_node = object_msp_node->getObjectNode();
+				for (ObjectMultiSetNode* msp_node : obj_node->getMultiSetNodes())
+				{
+					LibGens::MultiSetNode* msn = msp_node->getMultiSetNode();
+					previous_positions.push_back(msn->position);
+					previous_rotations.push_back(msn->rotation);
+
+					bool skip = false;
+					for (EditorNode* en : selected_nodes)
+					{
+						if (msp_node == en)
+						{
+							// deleting node in the same multi set
+							skip = true;
+							skip_nodes.insert(en);
+						}
+					}
+
+					if (!skip)
+					{
+						new_positions.push_back(msn->position);
+						new_rotations.push_back(msn->rotation);
+					}
+				}
+
+				// remove old instances
+				LibGens::Object* obj = obj_node->getObject();
+				obj->getMultiSetParam()->removeAllNodes();
+
+				for (int i = 0; i < new_positions.size(); ++i)
+				{
+					LibGens::MultiSetNode* msp_node = new LibGens::MultiSetNode();
+
+					msp_node->position = new_positions.at(i);
+					msp_node->rotation = new_rotations.at(i);
+
+					obj->getMultiSetParam()->addNode(msp_node);
+				}
+
+				obj_node->createObjectMultiSetNodes(obj, scene_manager);
+				obj_node->clearNames();
+				object_node_manager->reloadObjectNode(obj);
+
+				HistoryActionObjectMultiSetNodeChanged* action = new HistoryActionObjectMultiSetNodeChanged(obj, object_node_manager, previous_positions, previous_rotations, new_positions, new_rotations);
+				wrapper->push(action);
 			}
+		}
+
+		// HACK: prevent crash when trying to redo selecting deleted multi set node
+		if (skip_nodes.size())
+		{
+			history->clear();
 		}
 
 		selected_nodes.clear();
