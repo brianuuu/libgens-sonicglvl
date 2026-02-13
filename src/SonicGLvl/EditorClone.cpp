@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "EditorApplication.h"
+#include "ObjectNodeHistory.h"
 
 INT_PTR CALLBACK MultiSetParamCallback(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -101,6 +102,10 @@ void EditorApplication::createMultiSetParamObjects()
 
 					ObjectNode* new_object_node = object_node_manager->createObjectNode(new_obj);
 					copyObjectNodeReferences(obj_node, new_object_node);
+
+					// Push to History
+					HistoryActionCreateObjectNode* action = new HistoryActionCreateObjectNode(new_obj, object_node_manager);
+					pushHistory(action);
 				}
 			}
 			else if (cloning_mode == SONICGLVL_MULTISETPARAM_MODE_MSP)
