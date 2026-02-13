@@ -206,6 +206,10 @@ class ObjectNode : public EditorNode {
 			current_type_name = "";
 		}
 
+		list<ObjectMultiSetNode*>& getMultiSetNodes() {
+			return object_msp_nodes;
+		}
+
 		void addReference(ObjectNode* n) {
 			referenced_by_nodes.insert(n);
 		}

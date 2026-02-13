@@ -62,6 +62,38 @@ class HistoryActionDeleteObjectNode : public HistoryAction {
 		~HistoryActionDeleteObjectNode();
 };
 
+class HistoryActionObjectMultiSetNodeChanged : public HistoryAction {
+	protected:
+		LibGens::Object* object;
+		ObjectNodeManager* object_node_manager;
+		vector<LibGens::Vector3> previous_positions;
+		vector<LibGens::Quaternion> previous_rotations;
+		vector<LibGens::Vector3> new_positions;
+		vector<LibGens::Quaternion> new_rotations;
+		
+	public:
+		HistoryActionObjectMultiSetNodeChanged
+		(
+			LibGens::Object* object_p, 
+			ObjectNodeManager* object_node_manager_p,
+			vector<LibGens::Vector3> previous_positions_p,
+			vector<LibGens::Quaternion> previous_rotations_p,
+			vector<LibGens::Vector3> new_positions_p,
+			vector<LibGens::Quaternion> new_rotations_p
+		) 
+		{
+			object = object_p;
+			object_node_manager = object_node_manager_p;
+			previous_positions = previous_positions_p;
+			previous_rotations = previous_rotations_p;
+			new_positions = new_positions_p;
+			new_rotations = new_rotations_p;
+		}
+
+		void undo();
+		void redo();
+};
+
 class HistoryActionMoveObjectToLayer : public HistoryAction {
 	protected:
 		LibGens::Object* object;

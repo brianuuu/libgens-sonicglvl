@@ -128,6 +128,53 @@ void HistoryActionMoveObjectToLayer::redo() {
 	editor_application->updateLayerControlGUI();
 }
 
+// multi set changed
+void HistoryActionObjectMultiSetNodeChanged::undo() {
+	if (!object) return;
+	if (!object_node_manager) return;
+
+	// remove old instances
+	object->getMultiSetParam()->removeAllNodes();
+
+	for (int i = 0; i < previous_positions.size(); ++i)
+	{
+		LibGens::MultiSetNode* msp_node = new LibGens::MultiSetNode();
+
+		msp_node->position = previous_positions.at(i);
+		msp_node->rotation = previous_rotations.at(i);
+
+		object->getMultiSetParam()->addNode(msp_node);
+	}
+
+	ObjectNode* obj_node = object_node_manager->findObjectNode(object);
+	obj_node->createObjectMultiSetNodes(object, editor_application->getSceneManager());
+	obj_node->clearNames();
+	object_node_manager->reloadObjectNode(object);
+}
+
+void HistoryActionObjectMultiSetNodeChanged::redo() {
+	if (!object) return;
+	if (!object_node_manager) return;
+
+	// remove old instances
+	object->getMultiSetParam()->removeAllNodes();
+
+	for (int i = 0; i < new_positions.size(); ++i)
+	{
+		LibGens::MultiSetNode* msp_node = new LibGens::MultiSetNode();
+
+		msp_node->position = new_positions.at(i);
+		msp_node->rotation = new_rotations.at(i);
+
+		object->getMultiSetParam()->addNode(msp_node);
+	}
+
+	ObjectNode* obj_node = object_node_manager->findObjectNode(object);
+	obj_node->createObjectMultiSetNodes(object, editor_application->getSceneManager());
+	obj_node->clearNames();
+	object_node_manager->reloadObjectNode(object);
+}
+
 // Edit Bool
 void HistoryActionEditObjectElementBool::undo() {
 	if (!object) return;

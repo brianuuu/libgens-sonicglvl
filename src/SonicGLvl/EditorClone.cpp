@@ -110,6 +110,17 @@ void EditorApplication::createMultiSetParamObjects()
 			}
 			else if (cloning_mode == SONICGLVL_MULTISETPARAM_MODE_MSP)
 			{
+				vector<LibGens::Vector3> previous_positions;
+				vector<LibGens::Quaternion> previous_rotations;
+				vector<LibGens::Vector3> new_positions;
+				vector<LibGens::Quaternion> new_rotations;
+
+				for (LibGens::MultiSetNode* msp_node : obj->getMultiSetParam()->getNodes())
+				{
+					previous_positions.push_back(msp_node->position);
+					previous_rotations.push_back(msp_node->rotation);
+				}
+
 				// remove old instances
 				obj->getMultiSetParam()->removeAllNodes();
 
@@ -121,12 +132,19 @@ void EditorApplication::createMultiSetParamObjects()
 					msp_node->position = new_pos;
 					msp_node->rotation = base_rot;
 
+					new_positions.push_back(msp_node->position);
+					new_rotations.push_back(msp_node->rotation);
+
 					obj->getMultiSetParam()->addNode(msp_node);
 				}
 
 				obj_node->createObjectMultiSetNodes(obj, scene_manager);
 				obj_node->clearNames();
 				object_node_manager->reloadObjectNode(obj);
+
+				// Push to History
+				HistoryActionObjectMultiSetNodeChanged* action = new HistoryActionObjectMultiSetNodeChanged(obj, object_node_manager, previous_positions, previous_rotations, new_positions, new_rotations);
+				pushHistory(action);
 			}
 		}
 	}
