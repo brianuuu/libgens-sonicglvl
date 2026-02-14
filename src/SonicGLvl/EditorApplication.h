@@ -507,6 +507,9 @@ class EditorApplication : public BaseApplication {
 		void updateHelpWithObjectGUI(LibGens::Object *object);
 		void updateHelpWithPropertyGUI(LibGens::ObjectElement *element);
 		void updateObjectReferenceGUI();
+		string getCurrentPropertyName() { 
+			return (current_property_index >= 0 && current_property_index < current_properties_names.size()) ? current_properties_names.at(current_property_index) : string();
+		}
 		int getCurrentPropertyIndex() { return current_property_index; }
 
 		void openMultiSetParamDlg();

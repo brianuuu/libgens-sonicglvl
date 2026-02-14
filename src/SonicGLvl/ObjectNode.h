@@ -189,7 +189,7 @@ class ObjectNode : public EditorNode {
 		void hide();
 
 		void setSelect(bool v);
-		void setPreviewVisible();
+		void setPreviewVisible(bool hasRange = false);
 
 		void setForceHide(bool v) {
 			force_hide = v;

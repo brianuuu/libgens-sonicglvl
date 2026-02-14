@@ -159,7 +159,42 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 	string preview_box_y_scale = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_Y_SCALE, "");
 	string preview_box_z_scale = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_Z_SCALE, "");
 
-	if ((preview_box_x.size()) || (preview_box_y.size()) || (preview_box_z.size())) {
+	// check if there are any "Range" properties
+	bool hasRange = false;
+	for (LibGens::ObjectElement* element : object->getElements())
+	{
+		if (element->getType() == LibGens::OBJECT_ELEMENT_FLOAT && element->getName().find("Range") != string::npos)
+		{
+			hasRange = true;
+		}
+	}
+
+	bool show_preview = hasRange || preview_box_x.size() || preview_box_y.size() || preview_box_z.size();
+
+	// check if current selected property has "Range"
+	LibGens::ObjectElementFloat* range = NULL;
+	string property_name = editor_application->getCurrentPropertyName();
+	if (property_name.find("Range") != string::npos)
+	{
+		LibGens::ObjectElement* element = object->getElement(property_name);
+		if (element->getType() == LibGens::OBJECT_ELEMENT_FLOAT)
+		{
+			range = (LibGens::ObjectElementFloat*)element;
+		}
+	}
+
+	if (range)
+	{
+		Ogre::Vector3 new_scale = preview_sphere_node->getScale();
+
+		// Compensate scale of parent node
+		new_scale.x = range->value * 2 * (1 / scale_x_f);
+		new_scale.y = range->value * 2 * (1 / scale_y_f);
+		new_scale.z = range->value * 2 * (1 / scale_z_f);
+
+		preview_sphere_node->setScale(new_scale);
+	}
+	else if ((preview_box_x.size()) || (preview_box_y.size()) || (preview_box_z.size())) {
 		LibGens::ObjectElementFloat *p_x = (LibGens::ObjectElementFloat *) object->getElement(preview_box_x);
 		LibGens::ObjectElementFloat *p_y = (LibGens::ObjectElementFloat *) object->getElement(preview_box_y);
 		LibGens::ObjectElementFloat *p_z = (LibGens::ObjectElementFloat *) object->getElement(preview_box_z);
@@ -229,8 +264,6 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 		{
 			preview_box_node->setScale(new_scale);
 		}
-
-		setPreviewVisible();
 	}
 
 	if ((object->getName() == OBJECT_NODE_OBJECT_PHYSICS) && object_production) {
@@ -294,6 +327,7 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 		destroyAllAttachedMovableObjects(target_node);
 	}
 	else {
+		setPreviewVisible(range);
 		return;
 	}
 
@@ -334,7 +368,7 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 	createAnimationState(animation_id);
 
 	// Create PreviewBox if necessary
-	if ((preview_box_x.size()) || (preview_box_y.size()) || (preview_box_z.size())) {
+	if (show_preview) {
 		preview_box_entity = scene_manager->createEntity("preview_box.mesh");
 		preview_box_entity->setRenderQueueGroup(Ogre::RENDER_QUEUE_MAX);
 		preview_box_entity->setQueryFlags(EDITOR_NODE_QUERY_PREVIEW_BOX);
@@ -349,6 +383,8 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 		preview_cylinder_entity->setRenderQueueGroup(Ogre::RENDER_QUEUE_MAX);
 		preview_cylinder_entity->setQueryFlags(EDITOR_NODE_QUERY_PREVIEW_BOX);
 		preview_cylinder_node->attachObject(preview_cylinder_entity);
+
+		setPreviewVisible(range);
 	}
 }
 
@@ -461,10 +497,14 @@ void ObjectNode::setSelect(bool v) {
 	setPreviewVisible();
 }
 
-void ObjectNode::setPreviewVisible()
+void ObjectNode::setPreviewVisible(bool hasRange)
 {
+	string preview_box_x = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_X, "");
+	string preview_box_y = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_Y, "");
+	string preview_box_z = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_Z, "");
+
 	LibGens::ObjectElementInteger* shape_type = (LibGens::ObjectElementInteger*)object->getElement("Shape_Type");
-	if (shape_type && shape_type->value == 1)
+	if ((shape_type && shape_type->value == 1) || hasRange)
 	{
 		preview_box_node->setVisible(false);
 		preview_sphere_node->setVisible(true);
@@ -476,9 +516,15 @@ void ObjectNode::setPreviewVisible()
 		preview_sphere_node->setVisible(false);
 		preview_cylinder_node->setVisible(true);
 	}
-	else
+	else if ((shape_type && shape_type->value == 0) || preview_box_x.size() || preview_box_y.size() || preview_box_z.size())
 	{
 		preview_box_node->setVisible(true);
+		preview_sphere_node->setVisible(false);
+		preview_cylinder_node->setVisible(false);
+	}
+	else
+	{
+		preview_box_node->setVisible(false);
 		preview_sphere_node->setVisible(false);
 		preview_cylinder_node->setVisible(false);
 	}
