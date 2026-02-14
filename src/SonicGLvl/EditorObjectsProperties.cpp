@@ -296,6 +296,10 @@ void EditorApplication::updateObjectsPropertiesGUI() {
 
 	updateObjectsPropertiesValuesGUI(selected_objects);
 	updateObjectReferenceGUI();
+
+	for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
+		object_node_manager->reloadObjectNode(*it);
+	}
 }
 
 
@@ -416,6 +420,10 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 	if (selection_index < 0 || selection_index >= current_properties_names.size() || current_object_list_properties.empty()) {
 		updateHelpWithPropertyGUI(NULL);
 		updateObjectReferenceGUI();
+
+		for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
+			object_node_manager->reloadObjectNode(*it);
+		}
 		return;
 	}
 
@@ -834,6 +842,10 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 		if (focus) {
 			SetFocus(hwnd);
 		}
+	}
+
+	for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
+		object_node_manager->reloadObjectNode(*it);
 	}
 }
 
