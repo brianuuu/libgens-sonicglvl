@@ -60,6 +60,7 @@ void EditorApplication::moveObjectsToLayer(int index) {
 		LibGens::ObjectSet* prev_set = object->getParentSet();
 		prev_set->eraseObject(object);
 		new_set->addObject(object);
+		object_node_manager->updateSetVisibility(new_set, set_visibility.at(new_set));
 
 		// Push to History
 		HistoryActionMoveObjectToLayer* action = new HistoryActionMoveObjectToLayer(object, prev_set, new_set);
