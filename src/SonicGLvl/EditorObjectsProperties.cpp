@@ -665,6 +665,12 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 		if (hasValue)
 		{
 			SetDlgItemText(hEditPropertyDlg, IDE_EDIT_ID_VALUE, ToString(value).c_str());
+			if (highlight_property)
+			{
+				SendDlgItemMessage(hEditPropertyDlg, IDE_EDIT_ID_VALUE, (UINT)EM_SETSEL, (WPARAM)0, MAKELPARAM(0, -1));
+				SetFocus(GetDlgItem(hEditPropertyDlg, IDE_EDIT_ID_VALUE));
+				focus = false;
+			}
 		}
 
 		break;
