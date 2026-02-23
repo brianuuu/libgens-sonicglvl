@@ -177,7 +177,7 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 	if (property_name.find("Range") != string::npos)
 	{
 		LibGens::ObjectElement* element = object->getElement(property_name);
-		if (element->getType() == LibGens::OBJECT_ELEMENT_FLOAT)
+		if (element && element->getType() == LibGens::OBJECT_ELEMENT_FLOAT)
 		{
 			range = (LibGens::ObjectElementFloat*)element;
 		}
