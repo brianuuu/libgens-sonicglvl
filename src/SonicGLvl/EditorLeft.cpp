@@ -585,7 +585,7 @@ void EditorApplication::deleteLayer() {
 			SendDlgItemMessage(hLeftDlg, IDC_LAYER_CURRENT, CB_DELETESTRING, index, 0);
 			if (selected_index >= index)
 			{
-				SendDlgItemMessage(hLeftDlg, IDC_LAYER_CURRENT, CB_SETCURSEL, selected_index - 1, 0);
+				SendDlgItemMessage(hLeftDlg, IDC_LAYER_CURRENT, CB_SETCURSEL, max(0, selected_index - 1), 0);
 			}
 		}
 	}
