@@ -20,7 +20,7 @@ bool matchesQuery(string str1, string str2, bool exactly)
 }
 
 
-bool valueMatches(LibGens::Object *object, string element_name, string value_string)
+bool valueMatches(LibGens::Object *object, string element_name, string value_string, bool exact)
 {
 	LibGens::ObjectElement *element = object->getElement(element_name);
 	
@@ -115,7 +115,7 @@ bool valueMatches(LibGens::Object *object, string element_name, string value_str
 
 		for (size_t count = 0; count < vector_list_str.size(); ++count)
 		{
-			if (matchesQuery(vector_list_str[count], value_string, true))
+			if (matchesQuery(vector_list_str[count], value_string, exact))
 				return true;
 		}
 
@@ -126,7 +126,7 @@ bool valueMatches(LibGens::Object *object, string element_name, string value_str
 		break;
 	}
 
-	return matchesQuery(element_value, value_string, true);
+	return matchesQuery(element_value, value_string, exact);
 }
 
 void EditorApplication::openFindGUI()
@@ -170,7 +170,7 @@ void EditorApplication::findNext(string obj_name, string param, string value)
 		if (matchesQuery(object->getName(), obj_name, exact))
 		{
 			if (param != "" && value != "")
-				if (!valueMatches(object, param, value))
+				if (!valueMatches(object, param, value, exact))
 					continue;
 
 			selectNode(object_node);
@@ -215,7 +215,7 @@ void EditorApplication::findAll(string obj_name, string param, string value)
 		if (matchesQuery(object->getName(), obj_name, exact))
 		{
 			if (param != "" && value != "")
-				if (!valueMatches(object, param, value))
+				if (!valueMatches(object, param, value, exact))
 					continue;
 
 			object_node->setSelect(true);
