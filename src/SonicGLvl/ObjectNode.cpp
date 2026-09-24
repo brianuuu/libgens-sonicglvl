@@ -485,8 +485,12 @@ void ObjectNode::addTime(float time_s) {
 
 void ObjectNode::setSelect(bool v) {
 	EditorNode::setSelect(v);
+	setPreviewVisible();
+}
 
-	if (!v)
+void ObjectNode::setPreviewVisible(bool hasRange)
+{
+	if (!selected)
 	{
 		preview_box_node->setVisible(false);
 		preview_sphere_node->setVisible(false);
@@ -494,11 +498,6 @@ void ObjectNode::setSelect(bool v) {
 		return;
 	}
 
-	setPreviewVisible();
-}
-
-void ObjectNode::setPreviewVisible(bool hasRange)
-{
 	string preview_box_x = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_X, "");
 	string preview_box_y = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_Y, "");
 	string preview_box_z = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_Z, "");
