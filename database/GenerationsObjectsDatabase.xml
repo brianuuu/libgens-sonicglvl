@@ -1,6 +1,7 @@
 <?xml version="1.0" ?>
 <LevelDatabase>
   <Entry name="SonicGLvl Helpers" folder="helpers" />
+  <Entry name="STH2006 Project" folder="sth2006" />
   <Entry name="Common (Mobility Gimmicks)" folder="generations/common_movement" />
   <Entry name="Common (Damage Gimmicks)" folder="generations/common_hazard" />
   <Entry name="Common (Items/Goals)" folder="generations/common_item" />
