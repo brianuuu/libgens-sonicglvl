@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" ?>
+<Template>
+  <AutoStart type="bool" default="false" description="" />
+  <LaunchSpeed type="float" default="40" description="" />
+  <SquatEndSpeed type="float" default="0" description="" />
+  <TargetList type="id_list" description="" />
+  <GroundOffset type="float" default="0" description="" />
+  <IsCastShadow type="bool" default="false" description="" />
+  <Range type="float" default="10000" description="" />
+  <Extra type="model" name="chr_Sonic_HD.model" />
+  <Extra type="skeleton" name="chr_Sonic_HD.skl.hkx" />
+  <Extra type="animation" name="sn_squat_loop.anm.hkx" />
+</Template>

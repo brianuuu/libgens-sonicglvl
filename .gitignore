@@ -199,4 +199,4 @@ FakesAssemblies/
 qrc_*.cpp
 *.exp
 *.lib
-/database
+/database/resources

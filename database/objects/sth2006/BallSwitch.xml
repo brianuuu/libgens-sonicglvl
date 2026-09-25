@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" ?>
+<Template>
+  <EventOFF type="float" default="0" description="" />
+  <EventON type="float" default="0" description="" />
+  <OffBeep type="bool" default="true" description="" />
+  <OffTimer type="float" default="5" description="" />
+  <TargetListOFF type="id_list" description="" />
+  <TargetListON type="id_list" description="" />
+  <TimerOFF type="float" default="0" description="" />
+  <TimerON type="float" default="0" description="" />
+  <Type type="integer" default="0" description="" preset0="0 (OnOnly)" preset1="1 (OnWhileStanding)" preset2="2 (OffByTimer)"/>
+  <GroundOffset type="float" default="0" description="" />
+  <IsCastShadow type="bool" default="false" description="" />
+  <Range type="float" default="200" description="" />
+  <Extra type="model" name="cmn_switch.model" />
+</Template>
