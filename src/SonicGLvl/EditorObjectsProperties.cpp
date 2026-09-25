@@ -338,14 +338,42 @@ void EditorApplication::updateObjectsPropertiesValuesGUI(list<LibGens::Object*> 
 					element_cast_bool=static_cast<LibGens::ObjectElementBool *>(element);
 					value = (element_cast_bool->value ? "true" : "false");
 					break;
-				case LibGens::OBJECT_ELEMENT_INTEGER :
-					element_cast_int=static_cast<LibGens::ObjectElementInteger *>(element);
+				case LibGens::OBJECT_ELEMENT_INTEGER:
+				{
+					element_cast_int=static_cast<LibGens::ObjectElementInteger*>(element);
 					value = ToString(element_cast_int->value);
+
+					// check if there are any matching preset, display full text instead
+					for (string const& preset : element->getPresets())
+					{
+						unsigned int valueInt = 0;
+						FromString<unsigned int>(valueInt, preset, std::dec);
+						if (valueInt == element_cast_int->value)
+						{
+							value = preset;
+							break;
+						}
+					}
 					break;
+				}
 				case LibGens::OBJECT_ELEMENT_FLOAT :
+				{
 					element_cast_float=static_cast<LibGens::ObjectElementFloat *>(element);
 					value = ToString(element_cast_float->value);
+
+					// check if there are any matching preset, display full text instead
+					for (string const& preset : element->getPresets())
+					{
+						float valueFloat = 0;
+						FromString<float>(valueFloat, preset, std::dec);
+						if (valueFloat == element_cast_float->value)
+						{
+							value = preset;
+							break;
+						}
+					}
 					break;
+				}
 				case LibGens::OBJECT_ELEMENT_STRING :
 					element_cast_string=static_cast<LibGens::ObjectElementString *>(element);
 					value = element_cast_string->value;
@@ -488,6 +516,8 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 		hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_NUMBER_NEW), hEditGroup, EditIntCallback);
 		
 		unsigned int value = 0;
+		vector<string> presets;
+
 		for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
 			LibGens::Object* object = *it;
 			if (!object) continue;
@@ -502,7 +532,7 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 				value = element_int->value;
 
 				// load presets
-				vector<string> const& presets = element->getPresets();
+				presets = element->getPresets();
 				for (string const& preset : presets) {
 					SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)preset.c_str());
 				}
@@ -520,6 +550,18 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 		if (hasValue)
 		{
 			SetDlgItemText(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE, ToString(value).c_str());
+
+			// check for matching presets
+			for (string const& preset : presets) 
+			{
+				unsigned int valueInt = 0;
+				FromString<unsigned int>(valueInt, preset, std::dec);
+				if (valueInt == value)
+				{
+					SetDlgItemText(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE, preset.c_str());
+					break;
+				}
+			}
 		}
 
 		if (highlight_property)
@@ -535,6 +577,8 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 		hEditPropertyDlg = CreateDialog(NULL, MAKEINTRESOURCE(IDD_EDIT_NUMBER_NEW), hEditGroup, EditFloatCallback);
 		
 		float value = 0.0f;
+		vector<string> presets;
+
 		for (auto it = current_object_list_properties.begin(); it != current_object_list_properties.end(); it++) {
 			LibGens::Object* object = *it;
 			if (!object) continue;
@@ -549,7 +593,7 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 				value = element_float->value;
 
 				// load presets
-				vector<string> const& presets = element->getPresets();
+				presets = element->getPresets();
 				for (string const& preset : presets) {
 					SendDlgItemMessage(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE, (UINT)CB_ADDSTRING, (WPARAM)0, (LPARAM)preset.c_str());
 				}
@@ -567,6 +611,18 @@ void EditorApplication::updateObjectPropertyIndex(int selection_index, bool high
 		if (hasValue)
 		{
 			SetDlgItemText(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE, ToString(value).c_str());
+
+			// check for matching presets
+			for (string const& preset : presets)
+			{
+				float valueFloat = 0;
+				FromString<float>(valueFloat, preset, std::dec);
+				if (valueFloat == value)
+				{
+					SetDlgItemText(hEditPropertyDlg, IDC_EDIT_NUMBER_VALUE, preset.c_str());
+					break;
+				}
+			}
 		}
 
 		if (highlight_property)
