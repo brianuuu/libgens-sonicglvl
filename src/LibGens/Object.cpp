@@ -1190,6 +1190,37 @@ namespace LibGens {
 		return queryEditorValue(LIBGENS_OBJECT_EXTRA_TYPE_MODEL, slot_id, default_value);
 	}
 
+	vector<string> Object::queryEditorModels(string slot_id, string default_value) {
+		// if "model" exist, only return that, otherwise look for "model0", "model1" etc.
+		string name = queryEditorValue(LIBGENS_OBJECT_EXTRA_TYPE_MODEL, slot_id, "");
+		if (!name.empty())
+		{
+			return { name };
+		}
+		
+		vector<string> names;
+		int i = 0;
+		while (true)
+		{
+			name = queryEditorValue(LIBGENS_OBJECT_EXTRA_TYPE_MODEL + to_string(i), slot_id, "");
+			if (name.empty())
+			{
+				if (names.empty())
+				{
+					// always at least have default
+					names.push_back(default_value);
+				}
+				break;
+			}
+			else
+			{
+				names.push_back(name);
+				i++;
+			}
+		}
+		return names;
+	}
+
 	string Object::queryEditorSkeleton(string slot_id, string default_value) {
 		return queryEditorValue(LIBGENS_OBJECT_EXTRA_TYPE_SKELETON, slot_id, default_value);
 	}

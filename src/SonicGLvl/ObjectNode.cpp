@@ -36,7 +36,7 @@ ObjectNode::ObjectNode(LibGens::Object *object_p, Ogre::SceneManager *scene_mana
 	force_hide = false;
 	offset_rotation_animation_enabled = false;
 
-	current_model_name = "";
+	current_model_names = {};
 	current_animation_name = "";
 	current_skeleton_name = "";
 	current_type_name = "";
@@ -100,7 +100,7 @@ ObjectNode::ObjectNode(LibGens::Object *object_p, Ogre::SceneManager *scene_mana
 
 
 void ObjectNode::reloadEntities(Ogre::SceneManager *scene_manager, LibGens::ModelLibrary *model_library, LibGens::MaterialLibrary *material_library, LibGens::ObjectProduction *object_production, string slot_id_name) {
-	string temp_model_name     = current_model_name;
+	vector<string> temp_model_names = current_model_names;
 	string temp_skeleton_name  = current_skeleton_name;
 	string temp_animation_name = current_animation_name;
 	string temp_type_name      = current_type_name;
@@ -111,7 +111,7 @@ void ObjectNode::reloadEntities(Ogre::SceneManager *scene_manager, LibGens::Mode
 
 	list<LibGens::MultiSetNode *> msp_nodes = object->getMultiSetParam()->getNodes();
 	for (list<ObjectMultiSetNode *>::iterator it = object_msp_nodes.begin(); it != object_msp_nodes.end(); it++) {
-		current_model_name = temp_model_name;
+		current_model_names = temp_model_names;
 		current_skeleton_name = temp_skeleton_name;
 		current_animation_name = temp_animation_name;
 		current_type_name = temp_type_name;
@@ -123,7 +123,7 @@ void ObjectNode::reloadEntities(Ogre::SceneManager *scene_manager, LibGens::Mode
 
 void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager *scene_manager, LibGens::ModelLibrary *model_library, LibGens::MaterialLibrary *material_library, LibGens::ObjectProduction *object_production, string slot_id_name) {
 
-	string model_name=object->queryEditorModel(slot_id_name, OBJECT_NODE_UNKNOWN_MESH);
+	vector<string> model_names=object->queryEditorModels(slot_id_name, OBJECT_NODE_UNKNOWN_MESH);
 	string skeleton_name=object->queryEditorSkeleton(slot_id_name, "");
 	string animation_name=object->queryEditorAnimation(slot_id_name, "");
 
@@ -315,12 +315,12 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 			return;
 		}
 		else {
-			current_model_name = "";
+			current_model_names = {};
 		}
 	}
 
-	if ((model_name != current_model_name) || (skeleton_name != current_skeleton_name) || (animation_name != current_animation_name)) {
-		current_model_name = model_name;
+	if ((model_names != current_model_names) || (skeleton_name != current_skeleton_name) || (animation_name != current_animation_name)) {
+		current_model_names = model_names;
 		current_skeleton_name = skeleton_name;
 		current_animation_name = animation_name;
 
@@ -330,9 +330,6 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 		setPreviewVisible(range);
 		return;
 	}
-
-	string model_id=model_name;
-	model_id.resize(model_id.size() - ((string)OBJECT_NODE_MODEL_EXTENSION).size());
 
 	string skeleton_id="";
 	if (skeleton_name.size()) {
@@ -346,23 +343,29 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 		animation_id.resize(animation_id.size() - ((string)OBJECT_NODE_ANIMATION_EXTENSION).size());
 	}
 
-	if (model_name.find(OBJECT_NODE_MODEL_EXTENSION) != string::npos) {
-		LibGens::Model *model=model_library->getModel(model_id);
+	for (string const& model_name : model_names)
+	{
+		string model_id = model_name;
+		model_id.resize(model_id.size() - ((string)OBJECT_NODE_MODEL_EXTENSION).size());
 
-		if (model) {
-			prepareSkeletonAndAnimation(skeleton_id, animation_id);
-			buildModel(target_node, model, model->getName(), skeleton_id, scene_manager, material_library, EDITOR_NODE_QUERY_OBJECT, GENERAL_MESH_GROUP, false, SONICGLVL_SHADER_LIBRARY);
+		if (model_name.find(OBJECT_NODE_MODEL_EXTENSION) != string::npos) {
+			LibGens::Model* model = model_library->getModel(model_id);
+
+			if (model) {
+				prepareSkeletonAndAnimation(skeleton_id, animation_id);
+				buildModel(target_node, model, model->getName(), skeleton_id, scene_manager, material_library, EDITOR_NODE_QUERY_OBJECT, GENERAL_MESH_GROUP, false, SONICGLVL_SHADER_LIBRARY);
+			}
+			else {
+				Ogre::Entity* entity = scene_manager->createEntity(OBJECT_NODE_UNKNOWN_MESH);
+				entity->setQueryFlags(EDITOR_NODE_QUERY_OBJECT);
+				target_node->attachObject(entity);
+			}
 		}
-		else {
-			Ogre::Entity *entity = scene_manager->createEntity(OBJECT_NODE_UNKNOWN_MESH);
+		else if (model_name.find(OBJECT_NODE_MESH_EXTENSION) != string::npos) {
+			Ogre::Entity* entity = scene_manager->createEntity(model_name);
 			entity->setQueryFlags(EDITOR_NODE_QUERY_OBJECT);
 			target_node->attachObject(entity);
 		}
-	}
-	else if (model_name.find(OBJECT_NODE_MESH_EXTENSION) != string::npos) {
-		Ogre::Entity *entity = scene_manager->createEntity(model_name);
-		entity->setQueryFlags(EDITOR_NODE_QUERY_OBJECT);
-		target_node->attachObject(entity);
 	}
 
 	createAnimationState(animation_id);

@@ -240,6 +240,7 @@ namespace LibGens {
 			string queryExtraName(string type, string def="");
 			string queryEditorValue(string value_type, string slot_id, string default_value);
 			string queryEditorModel(string slot_id, string default_value);
+			vector<string> queryEditorModels(string slot_id, string default_value);
 			string queryEditorSkeleton(string slot_id, string default_value);
 			string queryEditorAnimation(string slot_id, string default_value);
 			ObjectElement *cloneElement(ObjectElement *element);
