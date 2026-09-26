@@ -158,6 +158,10 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 	string preview_box_y_add = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_Y_ADD, "");
 	string preview_box_z_add = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_Z_ADD, "");
 
+	string preview_box_x_offset = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_X_OFFSET, "");
+	string preview_box_y_offset = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_Y_OFFSET, "");
+	string preview_box_z_offset = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_Z_OFFSET, "");
+
 	// check if there are any "Range" properties
 	bool hasRange = false;
 	for (LibGens::ObjectElement* element : object->getElements())
@@ -198,68 +202,54 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 		LibGens::ObjectElementFloat *p_y = (LibGens::ObjectElementFloat *) object->getElement(preview_box_y);
 		LibGens::ObjectElementFloat *p_z = (LibGens::ObjectElementFloat *) object->getElement(preview_box_z);
 
+		Ogre::Vector3 new_pos = preview_box_node->getPosition();
 		Ogre::Vector3 new_scale = preview_box_node->getScale();
+		
+		string tempStr;
 		float temp = 0.0f;
 
 		// Check if elements were found. If not, try reading the float value from the string
-		if (p_x) {
-			new_scale.x = p_x->value;
-
-			string add = object->queryExtraParameter(OBJECT_NODE_EXTRA_PREVIEW_BOX_X, "add");
-			if (add.size())
-			{
-				FromString<float>(temp, add, std::dec);
-				new_scale.x += temp;
-			}
-		}
+		if (p_x) new_scale.x = p_x->value;
 		else {
 			FromString<float>(temp, preview_box_x, std::dec);
 			new_scale.x = temp;
 		}
 
-		if (p_y) {
-			new_scale.y = p_y->value;
-
-			string add = object->queryExtraParameter(OBJECT_NODE_EXTRA_PREVIEW_BOX_Y, "add");
-			if (add.size())
-			{
-				FromString<float>(temp, add, std::dec);
-				new_scale.y += temp;
-			}
-		}
+		if (p_y) new_scale.y = p_y->value;
 		else {
 			FromString<float>(temp, preview_box_y, std::dec);
 			new_scale.y = temp;
 		}
 
-		if (p_z) {
-			new_scale.z = p_z->value;
-
-			string add = object->queryExtraParameter(OBJECT_NODE_EXTRA_PREVIEW_BOX_Z, "add");
-			if (add.size())
-			{
-				FromString<float>(temp, add, std::dec);
-				new_scale.z += temp;
-			}
-		}
+		if (p_z) new_scale.z = p_z->value;
 		else {
 			FromString<float>(temp, preview_box_z, std::dec);
 			new_scale.z = temp;
 		}
 
-		LibGens::ObjectElementInteger* shape_type = (LibGens::ObjectElementInteger*)object->getElement("Shape_Type");
-		if (shape_type && shape_type->value == 1)
+		// Modify preview_box value
+		tempStr = object->queryExtraParameter(OBJECT_NODE_EXTRA_PREVIEW_BOX_X, "add");
+		if (tempStr.size())
 		{
-			// sphere only use width
-			new_scale.y = new_scale.x;
-			new_scale.z = new_scale.x;
-		}
-		else if (shape_type && shape_type->value == 2)
-		{
-			// cylinder doesn't use length
-			new_scale.z = new_scale.x;
+			FromString<float>(temp, tempStr, std::dec);
+			new_scale.x += temp;
 		}
 
+		tempStr = object->queryExtraParameter(OBJECT_NODE_EXTRA_PREVIEW_BOX_Y, "add");
+		if (tempStr.size())
+		{
+			FromString<float>(temp, tempStr, std::dec);
+			new_scale.y += temp;
+		}
+
+		tempStr = object->queryExtraParameter(OBJECT_NODE_EXTRA_PREVIEW_BOX_Z, "add");
+		if (tempStr.size())
+		{
+			FromString<float>(temp, tempStr, std::dec);
+			new_scale.z += temp;
+		}
+
+		// Scale preview_box
 		LibGens::ObjectElementFloat* p_x_scale = (LibGens::ObjectElementFloat*)object->getElement(preview_box_x_scale);
 		LibGens::ObjectElementFloat* p_y_scale = (LibGens::ObjectElementFloat*)object->getElement(preview_box_y_scale);
 		LibGens::ObjectElementFloat* p_z_scale = (LibGens::ObjectElementFloat*)object->getElement(preview_box_z_scale);
@@ -272,6 +262,7 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 		if (p_y_scale) scale_y = p_y_scale->value; else FromString<float>(scale_y, preview_box_y_scale, std::dec);
 		if (p_z_scale) scale_z = p_z_scale->value; else FromString<float>(scale_z, preview_box_z_scale, std::dec);
 
+		// Add after scaling
 		LibGens::ObjectElementFloat* p_x_add = (LibGens::ObjectElementFloat*)object->getElement(preview_box_x_add);
 		LibGens::ObjectElementFloat* p_y_add = (LibGens::ObjectElementFloat*)object->getElement(preview_box_y_add);
 		LibGens::ObjectElementFloat* p_z_add = (LibGens::ObjectElementFloat*)object->getElement(preview_box_z_add);
@@ -289,6 +280,20 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 		new_scale.y = (new_scale.y * scale_y + add_y) * (1 / scale_y_f);
 		new_scale.z = (new_scale.z * scale_z + add_z) * (1 / scale_z_f);
 
+		// Fix for Shape_Type
+		LibGens::ObjectElementInteger* shape_type = (LibGens::ObjectElementInteger*)object->getElement("Shape_Type");
+		if (shape_type && shape_type->value == 1)
+		{
+			// sphere only use width
+			new_scale.y = new_scale.x;
+			new_scale.z = new_scale.x;
+		}
+		else if (shape_type && shape_type->value == 2)
+		{
+			// cylinder doesn't use length
+			new_scale.z = new_scale.x;
+		}
+
 		// Check for valid scaling values
 		if (new_scale.x <= 0.0) new_scale.x = 0.1;
 		if (new_scale.y <= 0.0) new_scale.y = 0.1;
@@ -304,6 +309,46 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 		}
 		else
 		{
+			// Check for one sided preview
+			tempStr = object->queryExtraParameter(OBJECT_NODE_EXTRA_PREVIEW_BOX_X, "positive");
+			if (tempStr == "true") {
+				new_pos.x = new_scale.x * 0.5f;
+			} else if (tempStr == "false") {
+				new_pos.x = -new_scale.x * 0.5f;
+			}
+
+			tempStr = object->queryExtraParameter(OBJECT_NODE_EXTRA_PREVIEW_BOX_Y, "positive");
+			if (tempStr == "true") {
+				new_pos.y = new_scale.y * 0.5f;
+			} else if (tempStr == "false") {
+				new_pos.y = -new_scale.y * 0.5f;
+			}
+
+			tempStr = object->queryExtraParameter(OBJECT_NODE_EXTRA_PREVIEW_BOX_Z, "positive");
+			if (tempStr == "true") {
+				new_pos.z = new_scale.z * 0.5f;
+			} else if (tempStr == "false") {
+				new_pos.z = -new_scale.z * 0.5f;
+			}
+
+			// Check for offsets
+			LibGens::ObjectElementFloat* p_x_offset = (LibGens::ObjectElementFloat*)object->getElement(preview_box_x_offset);
+			LibGens::ObjectElementFloat* p_y_offset = (LibGens::ObjectElementFloat*)object->getElement(preview_box_y_offset);
+			LibGens::ObjectElementFloat* p_z_offset = (LibGens::ObjectElementFloat*)object->getElement(preview_box_z_offset);
+
+			float offset_x = 0.0f;
+			float offset_y = 0.0f;
+			float offset_z = 0.0f;
+
+			if (p_x_offset) offset_x = p_x_offset->value; else FromString<float>(offset_x, preview_box_x_offset, std::dec);
+			if (p_y_offset) offset_y = p_y_offset->value; else FromString<float>(offset_y, preview_box_y_offset, std::dec);
+			if (p_z_offset) offset_z = p_z_offset->value; else FromString<float>(offset_z, preview_box_z_offset, std::dec);
+
+			new_pos.x += offset_x;
+			new_pos.y += offset_y;
+			new_pos.z += offset_z;
+
+			preview_box_node->setPosition(new_pos);
 			preview_box_node->setScale(new_scale);
 		}
 	}

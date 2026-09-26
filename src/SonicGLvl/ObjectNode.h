@@ -59,6 +59,10 @@
 #define OBJECT_NODE_EXTRA_PREVIEW_BOX_Y_ADD      "preview_box_y_add"
 #define OBJECT_NODE_EXTRA_PREVIEW_BOX_Z_ADD      "preview_box_z_add"
 
+#define OBJECT_NODE_EXTRA_PREVIEW_BOX_X_OFFSET      "preview_box_x_offset"
+#define OBJECT_NODE_EXTRA_PREVIEW_BOX_Y_OFFSET      "preview_box_y_offset"
+#define OBJECT_NODE_EXTRA_PREVIEW_BOX_Z_OFFSET      "preview_box_z_offset"
+
 #define VECTOR_NODE_MESH                           "vector_node.mesh"
 
 class ObjectNode;
