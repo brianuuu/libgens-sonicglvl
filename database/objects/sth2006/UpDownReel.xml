@@ -9,4 +9,7 @@
   <Range type="float" default="100" description="" />
   <Extra type="model0" name="cmn_updownreel01.model" />
   <Extra type="model1" name="cmn_updownreel02.model" offset_y="-1" />
+  <Extra type="preview_box_x" name="0.1" />
+  <Extra type="preview_box_y" name="HeightStart" positive="false"/>
+  <Extra type="preview_box_z" name="0.1" />
 </Template>

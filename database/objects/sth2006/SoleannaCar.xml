@@ -1,11 +1,14 @@
 ﻿<?xml version="1.0" ?>
 <Template>
-  <Type type="integer" default="0" description="" />
-  <Color type="integer" default="0" description="" />
+  <Type type="integer" default="0" description="" preset0="0 (Compact)" preset1="1 (Sedan)" preset2="2 (Wagon)"/>
+  <Color type="integer" default="0" description="" preset0="0 (White)" preset1="1 (Silver)" preset2="2 (Grey)" preset3="3 (Black)" preset4="4 (Red)" preset5="5 (Brown)" preset6="6 (Blue)" preset7="7 (Green)"/>
   <PathName type="string" default="" description="" />
   <PathStartProp type="float" default="0" description="" />
   <Speed type="float" default="40" description="" />
   <GroundOffset type="float" default="0" description="" />
   <IsCastShadow type="bool" default="true" description="" />
   <Range type="float" default="10000" description="" />
+  <Extra type="model" name="twn_car_compact.model" condition="Type == 0"/>
+  <Extra type="model" name="twn_car_sedan.model" condition="Type == 1"/>
+  <Extra type="model" name="twn_car_wagon.model" condition="Type == 2"/>
 </Template>
