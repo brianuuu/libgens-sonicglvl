@@ -1,12 +1,16 @@
 <?xml version="1.0" ?>
 <Template>
   <Active type="bool" default="false" description="Set to True to set as the current start point on next save, changes will be applied to Stage.stg.xml" />
-  <Mode type="string" default="Stand" description="Affects the animation and camera." />
+  <Mode type="string" default="None" description="Affects the animation and camera." preset0="None" preset1="Stand" preset2="CrouchingStartFront" preset3="CrouchingStartBack" preset4="Dash" preset5="Board"/>
   <CameraView type="string" default="Forward" description="Forward for 3D Mode. Side for 2D Mode." preset0="Forward" preset1="Side" />
   <Speed type="float" default="0" description="" />
   <Time type="float" default="0" description="" />
   <Extra type="model" name="chr_Sonic_HD.model" />
   <Extra type="skeleton" name="chr_Sonic_HD.skl.hkx" />
-  <Extra type="animation" name="sn_idle00.anm.hkx" />
-  <Extra type="animation" name="sn_start_normal.anm.hkx" condition_1="Mode == CrouchingStartFront" condition_2="Active == true" />
+  <Extra type="animation" name="sn_idle_loop.anm.hkx" />
+  <Extra type="animation" name="sn_start_wait_a.anm.hkx" condition="Mode == Stand"/>
+  <Extra type="animation" name="sn_start_normal.anm.hkx" condition="Mode == CrouchingStartFront"/>
+  <Extra type="animation" name="sn_start_normal.anm.hkx" condition="Mode == CrouchingStartBack"/>
+  <Extra type="animation" name="sn_dash_loop.anm.hkx" condition="Mode == Dash"/>
+  <Extra type="animation" name="sn_grind_long_r_loop.anm.hkx" condition="Mode == Board"/>
 </Template>
