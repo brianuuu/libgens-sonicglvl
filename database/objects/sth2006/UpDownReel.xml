@@ -7,4 +7,6 @@
   <GroundOffset type="float" default="0" description="" />
   <IsCastShadow type="bool" default="false" description="" />
   <Range type="float" default="100" description="" />
+  <Extra type="model0" name="cmn_updownreel01.model" />
+  <Extra type="model1" name="cmn_updownreel02.model" offset_y="-1" />
 </Template>

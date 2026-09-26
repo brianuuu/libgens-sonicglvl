@@ -55,7 +55,7 @@ enum EditorNodeQueryFlags {
 void buildHavokMesh(Ogre::SceneNode *scene_node, string name, hkGeometry* geometry, Ogre::SceneManager *scene_manager, Ogre::uint32 query_flags, string resource_group);
 void updateMaterialShaderParameters(Ogre::Material *ogre_material, LibGens::Material *material, bool no_gi=true, LibGens::UVAnimation *uv_animation=NULL, LibGens::ShaderLibrary *shader_library=NULL);
 void buildMaterial(LibGens::Material *material, string material_name, string resource_group, size_t mesh_slot, bool no_gi=true, LibGens::ShaderLibrary *shader_library=NULL);
-void buildModel(Ogre::SceneNode *scene_node, LibGens::Model *model, string model_name, string skeleton_name, Ogre::SceneManager *scene_manager, LibGens::MaterialLibrary *material_library, Ogre::uint32 query_flags, string resource_group, bool global_illumination=false, LibGens::ShaderLibrary *shader_library=NULL);
+void buildModel(Ogre::SceneNode *scene_node, LibGens::Model *model, string model_name, string skeleton_name, Ogre::SceneManager *scene_manager, LibGens::MaterialLibrary *material_library, Ogre::uint32 query_flags, string resource_group, bool global_illumination=false, LibGens::ShaderLibrary *shader_library=NULL, LibGens::Vector3 offset= LibGens::Vector3());
 Ogre::Skeleton *buildSkeleton(hkaSkeleton *havok_skeleton, string skel_name, string resource_group);
 void prepareSkeletonAndAnimation(string skeleton_id, string animation_id, string resource_group=GENERAL_MESH_GROUP);
 void cleanModelResource(LibGens::Model *model, string resource_group);

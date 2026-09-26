@@ -845,7 +845,7 @@ namespace LibGens {
 	}
 
 
-	string Object::queryEditorValue(string const& value_type, string const& slot_id, string const& default_value) {
+	string Object::queryEditorValue(string const& value_type, string const& slot_id, string const& default_value, ObjectExtra** o_ppExtra) {
 		string model_name=default_value;
 
 		for (list<ObjectExtra *>::iterator it=extras.begin(); it!=extras.end(); it++) {
@@ -1179,6 +1179,10 @@ namespace LibGens {
 
 				if (conditions_met) {
 					model_name = (*it)->getName();
+					if (o_ppExtra)
+					{
+						*o_ppExtra = *it;
+					}
 				}
 			}
 		}
@@ -1186,15 +1190,42 @@ namespace LibGens {
 		return model_name;
 	}
 
-	string Object::queryEditorModel(string const& slot_id, string const& default_value) {
-		return queryEditorValue(LIBGENS_OBJECT_EXTRA_TYPE_MODEL, slot_id, default_value);
+	string Object::queryEditorModel(string const& slot_id, string const& default_value, Vector3* o_offset) {
+		ObjectExtra* extra = nullptr;
+		string model_name = queryEditorValue(LIBGENS_OBJECT_EXTRA_TYPE_MODEL, slot_id, default_value, &extra);
+		if (o_offset && extra)
+		{
+			string temp;
+			temp = extra->getParameter("offset_x");
+			if (temp.size()) FromString<float>((*o_offset).x, temp, std::dec);
+			temp = extra->getParameter("offset_y");
+			if (temp.size()) FromString<float>((*o_offset).y, temp, std::dec);
+			temp = extra->getParameter("offset_z");
+			if (temp.size()) FromString<float>((*o_offset).z, temp, std::dec);
+		}
+
+		return model_name;
 	}
 
-	vector<string> Object::queryEditorModels(string const& slot_id, string const& default_value) {
+	vector<string> Object::queryEditorModels(string const& slot_id, string const& default_value, vector<Vector3>* o_offsets) {
 		// if "model" exist, only return that, otherwise look for "model0", "model1" etc.
-		string name = queryEditorValue(LIBGENS_OBJECT_EXTRA_TYPE_MODEL, slot_id, "");
+		ObjectExtra* extra = nullptr;
+		string name = queryEditorValue(LIBGENS_OBJECT_EXTRA_TYPE_MODEL, slot_id, "", &extra);
 		if (!name.empty())
 		{
+			if (o_offsets && extra)
+			{
+				string temp;
+				Vector3 offset;
+				temp = extra->getParameter("offset_x");
+				if (temp.size()) FromString<float>(offset.x, temp, std::dec);
+				temp = extra->getParameter("offset_y");
+				if (temp.size()) FromString<float>(offset.y, temp, std::dec);
+				temp = extra->getParameter("offset_z");
+				if (temp.size()) FromString<float>(offset.z, temp, std::dec);
+				o_offsets->push_back(offset);
+			}
+
 			return { name };
 		}
 		
@@ -1202,19 +1233,38 @@ namespace LibGens {
 		int i = 0;
 		while (true)
 		{
-			name = queryEditorValue(LIBGENS_OBJECT_EXTRA_TYPE_MODEL + to_string(i), slot_id, "");
+			extra = nullptr;
+			name = queryEditorValue(LIBGENS_OBJECT_EXTRA_TYPE_MODEL + to_string(i), slot_id, "", &extra);
 			if (name.empty())
 			{
 				if (names.empty())
 				{
 					// always at least have default
 					names.push_back(default_value);
+					if (o_offsets)
+					{
+						o_offsets->push_back(Vector3());
+					}
 				}
 				break;
 			}
 			else
 			{
 				names.push_back(name);
+				
+				if (o_offsets && extra)
+				{
+					string temp;
+					Vector3 offset;
+					temp = extra->getParameter("offset_x");
+					if (temp.size()) FromString<float>(offset.x, temp, std::dec);
+					temp = extra->getParameter("offset_y");
+					if (temp.size()) FromString<float>(offset.y, temp, std::dec);
+					temp = extra->getParameter("offset_z");
+					if (temp.size()) FromString<float>(offset.z, temp, std::dec);
+					o_offsets->push_back(offset);
+				}
+
 				i++;
 			}
 		}

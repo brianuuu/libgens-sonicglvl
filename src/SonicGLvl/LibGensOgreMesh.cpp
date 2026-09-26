@@ -839,7 +839,7 @@ void buildMaterial(LibGens::Material *material, string material_name, string res
 }
 
 
-void buildMesh(Ogre::SceneNode *scene_node, LibGens::Mesh *mesh, Ogre::SceneManager *scene_manager, LibGens::MaterialLibrary *material_library, string root_name, Ogre::uint32 query_flags, string resource_group, bool global_illumination, string skeleton_name, Ogre::Entity *&shared_entity, vector<LibGens::Bone *> model_bones, LibGens::ShaderLibrary *shader_library) {
+void buildMesh(Ogre::SceneNode *scene_node, LibGens::Mesh *mesh, Ogre::SceneManager *scene_manager, LibGens::MaterialLibrary *material_library, string root_name, Ogre::uint32 query_flags, string resource_group, bool global_illumination, string skeleton_name, Ogre::Entity *&shared_entity, vector<LibGens::Bone *> model_bones, LibGens::ShaderLibrary *shader_library, LibGens::Vector3 offset) {
 	vector<LibGens::Submesh *> *submeshes=mesh->getSubmeshSlots();
 	unsigned int i=0;
 	bool create_resource = true;
@@ -877,11 +877,11 @@ void buildMesh(Ogre::SceneNode *scene_node, LibGens::Mesh *mesh, Ogre::SceneMana
 				float *vertices = (float *) malloc(sizeof(float)*vbufCount);
 
 				for (size_t i=0; i<submesh_vertices.size(); i++) {
-					vertices[i*nVertCount]   = submesh_vertices[i]->getPosition().x;
-					vertices[i*nVertCount+1] = submesh_vertices[i]->getPosition().y;
-					vertices[i*nVertCount+2] = submesh_vertices[i]->getPosition().z;
+					vertices[i*nVertCount]   = submesh_vertices[i]->getPosition().x + offset.x;
+					vertices[i*nVertCount+1] = submesh_vertices[i]->getPosition().y + offset.y;
+					vertices[i*nVertCount+2] = submesh_vertices[i]->getPosition().z + offset.z;
 
-					mesh_aabb.addPoint(submesh_vertices[i]->getPosition());
+					mesh_aabb.addPoint(submesh_vertices[i]->getPosition() + offset);
 
 					vertices[i*nVertCount+3] = submesh_vertices[i]->getNormal().x;
 					vertices[i*nVertCount+4] = submesh_vertices[i]->getNormal().y;
@@ -1117,7 +1117,7 @@ void cleanModelResource(LibGens::Model *model, string resource_group) {
 }
 
 
-void buildModel(Ogre::SceneNode *scene_node, LibGens::Model *model, string model_name, string skeleton_name, Ogre::SceneManager *scene_manager, LibGens::MaterialLibrary *material_library, Ogre::uint32 query_flags, string resource_group, bool global_illumination, LibGens::ShaderLibrary *shader_library) {
+void buildModel(Ogre::SceneNode *scene_node, LibGens::Model *model, string model_name, string skeleton_name, Ogre::SceneManager *scene_manager, LibGens::MaterialLibrary *material_library, Ogre::uint32 query_flags, string resource_group, bool global_illumination, LibGens::ShaderLibrary *shader_library, LibGens::Vector3 offset) {
 	if (!model) return;
 	if (!scene_manager) return;
 	if (!material_library) return;
@@ -1126,7 +1126,7 @@ void buildModel(Ogre::SceneNode *scene_node, LibGens::Model *model, string model
 	vector<LibGens::Mesh *> meshes=model->getMeshes();
 	unsigned int i=0;
 	for (vector<LibGens::Mesh *>::iterator it=meshes.begin(); it!=meshes.end(); it++) {
-		buildMesh(scene_node, (*it), scene_manager, material_library, model_name + "_" + ToString(i), query_flags, resource_group, global_illumination, skeleton_name, shared_entity, model->getBones(), shader_library);
+		buildMesh(scene_node, (*it), scene_manager, material_library, model_name + "_" + ToString(i), query_flags, resource_group, global_illumination, skeleton_name, shared_entity, model->getBones(), shader_library, offset);
 		i++;
 	}
 }

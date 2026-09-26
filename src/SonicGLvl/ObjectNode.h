@@ -157,6 +157,7 @@ class ObjectNode : public EditorNode {
 		Ogre::SceneNode *preview_cylinder_node;
 		Ogre::Entity *preview_cylinder_entity;
 
+		vector<LibGens::Vector3> current_model_offsets;
 		vector<string> current_model_names;
 		string current_animation_name;
 		string current_skeleton_name;
@@ -208,6 +209,7 @@ class ObjectNode : public EditorNode {
 		}
 
 		void clearNames() {
+			current_model_offsets = {};
 			current_model_names = {};
 			current_animation_name = "";
 			current_skeleton_name = "";

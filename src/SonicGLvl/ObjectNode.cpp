@@ -36,6 +36,7 @@ ObjectNode::ObjectNode(LibGens::Object *object_p, Ogre::SceneManager *scene_mana
 	force_hide = false;
 	offset_rotation_animation_enabled = false;
 
+	current_model_offsets = {};
 	current_model_names = {};
 	current_animation_name = "";
 	current_skeleton_name = "";
@@ -100,6 +101,7 @@ ObjectNode::ObjectNode(LibGens::Object *object_p, Ogre::SceneManager *scene_mana
 
 
 void ObjectNode::reloadEntities(Ogre::SceneManager *scene_manager, LibGens::ModelLibrary *model_library, LibGens::MaterialLibrary *material_library, LibGens::ObjectProduction *object_production, string slot_id_name) {
+	vector<LibGens::Vector3> temp_model_offsets = current_model_offsets;
 	vector<string> temp_model_names = current_model_names;
 	string temp_skeleton_name  = current_skeleton_name;
 	string temp_animation_name = current_animation_name;
@@ -111,6 +113,7 @@ void ObjectNode::reloadEntities(Ogre::SceneManager *scene_manager, LibGens::Mode
 
 	list<LibGens::MultiSetNode *> msp_nodes = object->getMultiSetParam()->getNodes();
 	for (list<ObjectMultiSetNode *>::iterator it = object_msp_nodes.begin(); it != object_msp_nodes.end(); it++) {
+		current_model_offsets = temp_model_offsets;
 		current_model_names = temp_model_names;
 		current_skeleton_name = temp_skeleton_name;
 		current_animation_name = temp_animation_name;
@@ -123,7 +126,8 @@ void ObjectNode::reloadEntities(Ogre::SceneManager *scene_manager, LibGens::Mode
 
 void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager *scene_manager, LibGens::ModelLibrary *model_library, LibGens::MaterialLibrary *material_library, LibGens::ObjectProduction *object_production, string slot_id_name) {
 
-	vector<string> model_names=object->queryEditorModels(slot_id_name, OBJECT_NODE_UNKNOWN_MESH);
+	vector<LibGens::Vector3> model_offsets;
+	vector<string> model_names=object->queryEditorModels(slot_id_name, OBJECT_NODE_UNKNOWN_MESH, &model_offsets);
 	string skeleton_name=object->queryEditorSkeleton(slot_id_name, "");
 	string animation_name=object->queryEditorAnimation(slot_id_name, "");
 
@@ -402,11 +406,13 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 			return;
 		}
 		else {
+			current_model_offsets = {};
 			current_model_names = {};
 		}
 	}
 
 	if ((model_names != current_model_names) || (skeleton_name != current_skeleton_name) || (animation_name != current_animation_name)) {
+		current_model_offsets = model_offsets;
 		current_model_names = model_names;
 		current_skeleton_name = skeleton_name;
 		current_animation_name = animation_name;
@@ -430,8 +436,9 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 		animation_id.resize(animation_id.size() - ((string)OBJECT_NODE_ANIMATION_EXTENSION).size());
 	}
 
-	for (string const& model_name : model_names)
+	for (int i = 0; i < model_names.size(); i++)
 	{
+		string const& model_name = model_names[i];
 		string model_id = model_name;
 		model_id.resize(model_id.size() - ((string)OBJECT_NODE_MODEL_EXTENSION).size());
 
@@ -439,8 +446,9 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 			LibGens::Model* model = model_library->getModel(model_id);
 
 			if (model) {
+				Ogre::SceneNode* node = scene_node->createChildSceneNode();
 				prepareSkeletonAndAnimation(skeleton_id, animation_id);
-				buildModel(target_node, model, model->getName(), skeleton_id, scene_manager, material_library, EDITOR_NODE_QUERY_OBJECT, GENERAL_MESH_GROUP, false, SONICGLVL_SHADER_LIBRARY);
+				buildModel(target_node, model, model->getName(), skeleton_id, scene_manager, material_library, EDITOR_NODE_QUERY_OBJECT, GENERAL_MESH_GROUP, false, SONICGLVL_SHADER_LIBRARY, model_offsets[i]);
 			}
 			else {
 				Ogre::Entity* entity = scene_manager->createEntity(OBJECT_NODE_UNKNOWN_MESH);

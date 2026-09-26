@@ -240,9 +240,9 @@ namespace LibGens {
 			void deleteExtras();
 			string queryExtraName(string const& type, string const& def="");
 			string queryExtraParameter(string const& type, string const& parameter, string const& def="");
-			string queryEditorValue(string const& value_type, string const& slot_id, string const& default_value);
-			string queryEditorModel(string const& slot_id, string const& default_value);
-			vector<string> queryEditorModels(string const& slot_id, string const& default_value);
+			string queryEditorValue(string const& value_type, string const& slot_id, string const& default_value, ObjectExtra** o_ppExtra = nullptr);
+			string queryEditorModel(string const& slot_id, string const& default_value, Vector3* o_offset = nullptr);
+			vector<string> queryEditorModels(string const& slot_id, string const& default_value, vector<Vector3>* o_offsets = nullptr);
 			string queryEditorSkeleton(string const& slot_id, string const& default_value);
 			string queryEditorAnimation(string const& slot_id, string const& default_value);
 			ObjectElement *cloneElement(ObjectElement *element);
