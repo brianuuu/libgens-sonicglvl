@@ -667,7 +667,7 @@ namespace LibGens {
 	}
 
 
-	void Object::readXMLTemplate(string filename) {
+	void Object::readXMLTemplate(string const& filename) {
 		TiXmlDocument doc(filename);
 		if (!doc.LoadFile()) {
 			Error::addMessage(Error::FILE_NOT_FOUND, LIBGENS_FILE_H_ERROR_READ_FILE_BEFORE + filename + LIBGENS_FILE_H_ERROR_READ_FILE_AFTER);
@@ -724,7 +724,7 @@ namespace LibGens {
 		root->LinkEndChild(objRoot);
 	}
 
-	void Object::saveXMLTemplate(string filename) {
+	void Object::saveXMLTemplate(string const& filename) {
 		TiXmlDocument doc;
 		TiXmlDeclaration *decl = new TiXmlDeclaration( "1.0", "", "" );
 		doc.LinkEndChild( decl );
@@ -845,7 +845,7 @@ namespace LibGens {
 	}
 
 
-	string Object::queryEditorValue(string value_type, string slot_id, string default_value) {
+	string Object::queryEditorValue(string const& value_type, string const& slot_id, string const& default_value) {
 		string model_name=default_value;
 
 		for (list<ObjectExtra *>::iterator it=extras.begin(); it!=extras.end(); it++) {
@@ -1186,11 +1186,11 @@ namespace LibGens {
 		return model_name;
 	}
 
-	string Object::queryEditorModel(string slot_id, string default_value) {
+	string Object::queryEditorModel(string const& slot_id, string const& default_value) {
 		return queryEditorValue(LIBGENS_OBJECT_EXTRA_TYPE_MODEL, slot_id, default_value);
 	}
 
-	vector<string> Object::queryEditorModels(string slot_id, string default_value) {
+	vector<string> Object::queryEditorModels(string const& slot_id, string const& default_value) {
 		// if "model" exist, only return that, otherwise look for "model0", "model1" etc.
 		string name = queryEditorValue(LIBGENS_OBJECT_EXTRA_TYPE_MODEL, slot_id, "");
 		if (!name.empty())
@@ -1221,11 +1221,11 @@ namespace LibGens {
 		return names;
 	}
 
-	string Object::queryEditorSkeleton(string slot_id, string default_value) {
+	string Object::queryEditorSkeleton(string const& slot_id, string const& default_value) {
 		return queryEditorValue(LIBGENS_OBJECT_EXTRA_TYPE_SKELETON, slot_id, default_value);
 	}
 
-	string Object::queryEditorAnimation(string slot_id, string default_value) {
+	string Object::queryEditorAnimation(string const& slot_id, string const& default_value) {
 		return queryEditorValue(LIBGENS_OBJECT_EXTRA_TYPE_ANIMATION, slot_id, default_value);
 	}
 
@@ -1261,13 +1261,22 @@ namespace LibGens {
 		return elements;
 	}
 
-	ObjectElement *Object::getElement(string nm) {
+	ObjectElement *Object::getElement(string const& nm) {
 		for (list<ObjectElement *>::iterator it=elements.begin(); it!=elements.end(); it++) {
 			if ((*it)->getName() == nm) {
 				return (*it);
 			}
 		}
 		return NULL;
+	}
+
+	ObjectExtra* Object::getExtra(string const& type) {
+		for (ObjectExtra* extra : extras){
+			if (extra->getType() == type) {
+				return extra;
+			}
+		}
+		return nullptr;
 	}
 
 	list<ObjectExtra *> Object::getExtras() {
@@ -1281,10 +1290,22 @@ namespace LibGens {
 		extras.clear();
 	}
 
-	string Object::queryExtraName(string type, string def) {
+	string Object::queryExtraName(string const& type, string const& def) {
 		for (list<ObjectExtra *>::iterator it=extras.begin(); it!=extras.end(); it++) {
 			if ((*it)->getType() == type) {
 				return (*it)->getName();
+			}
+		}
+		return def;
+	}
+
+	string Object::queryExtraParameter(string const& type, string const& parameter, string const& def)
+	{
+		ObjectExtra* extra = getExtra(type);
+		if (extra) {
+			string value = extra->getParameter(parameter);
+			if (value.size()) {
+				return value;
 			}
 		}
 		return def;

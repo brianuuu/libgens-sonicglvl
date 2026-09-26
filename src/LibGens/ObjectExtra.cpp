@@ -34,7 +34,7 @@ namespace LibGens {
 		return true;
 	}
 
-	void ObjectExtra::setName(string nm) {
+	void ObjectExtra::setName(string const& nm) {
 		name=nm;
 	}
 
@@ -42,7 +42,7 @@ namespace LibGens {
 		return name;
 	}
 
-	void ObjectExtra::setType(string nm) {
+	void ObjectExtra::setType(string const& nm) {
 		type=nm;
 	}
 
@@ -50,24 +50,24 @@ namespace LibGens {
 		return type;
 	}
 
-	void ObjectExtra::addParameter(string p, string v) {
+	void ObjectExtra::addParameter(string const& p, string const& v) {
 		parameter_names.push_back(p);
 		parameters.push_back(v);
 	}
 
-	void ObjectExtra::setParameterNames(vector<string> v) {
+	void ObjectExtra::setParameterNames(vector<string> const& v) {
 		parameter_names = v;
 	}
 
-	vector<string> ObjectExtra::getParameterNames() {
+	vector<string> const& ObjectExtra::getParameterNames() {
 		return parameter_names;
 	}
 
-	void ObjectExtra::setParameters(vector<string> v) {
+	void ObjectExtra::setParameters(vector<string> const& v) {
 		parameters = v;
 	}
 
-	vector<string> ObjectExtra::getParameters() {
+	vector<string> const& ObjectExtra::getParameters() {
 		return parameters;
 	}
 
@@ -82,6 +82,15 @@ namespace LibGens {
 	string ObjectExtra::getParameter(size_t index) {
 		if (index >= parameters.size()) return "";
 		return parameters[index];
+	}
+
+	string ObjectExtra::getParameter(string const& name){
+		for (int i = 0; i < parameter_names.size(); i++) {
+			if (parameter_names[i] == name) {
+				return parameters[i];
+			}
+		}
+		return "";
 	}
 
 	string ObjectExtra::getParameterName(size_t index) {
