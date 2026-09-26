@@ -55,6 +55,10 @@
 #define OBJECT_NODE_EXTRA_PREVIEW_BOX_Y_SCALE      "preview_box_y_scale"
 #define OBJECT_NODE_EXTRA_PREVIEW_BOX_Z_SCALE      "preview_box_z_scale"
 
+#define OBJECT_NODE_EXTRA_PREVIEW_BOX_X_ADD      "preview_box_x_add"
+#define OBJECT_NODE_EXTRA_PREVIEW_BOX_Y_ADD      "preview_box_y_add"
+#define OBJECT_NODE_EXTRA_PREVIEW_BOX_Z_ADD      "preview_box_z_add"
+
 #define VECTOR_NODE_MESH                           "vector_node.mesh"
 
 class ObjectNode;

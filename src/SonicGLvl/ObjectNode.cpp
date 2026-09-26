@@ -140,14 +140,9 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 	float scale_z_f = 1;
 
 	// Try reading the scale from an existing element. If not found, use the written value
-	if (s_x) scale_x_f = s_x->value;
-	else FromString<float>(scale_x_f, scale_x_str, std::dec);
-
-	if (s_y) scale_y_f = s_y->value;
-	else FromString<float>(scale_y_f, scale_y_str, std::dec);
-
-	if (s_z) scale_z_f = s_z->value;
-	else FromString<float>(scale_z_f, scale_z_str, std::dec);
+	if (s_x) scale_x_f = s_x->value; else FromString<float>(scale_x_f, scale_x_str, std::dec);
+	if (s_y) scale_y_f = s_y->value; else FromString<float>(scale_y_f, scale_y_str, std::dec);
+	if (s_z) scale_z_f = s_z->value; else FromString<float>(scale_z_f, scale_z_str, std::dec);
 
 	setScale(Ogre::Vector3(scale_x_f, scale_y_f, scale_z_f));
 
@@ -158,6 +153,10 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 	string preview_box_x_scale = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_X_SCALE, "");
 	string preview_box_y_scale = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_Y_SCALE, "");
 	string preview_box_z_scale = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_Z_SCALE, "");
+
+	string preview_box_x_add = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_X_ADD, "");
+	string preview_box_y_add = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_Y_ADD, "");
+	string preview_box_z_add = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_Z_ADD, "");
 
 	// check if there are any "Range" properties
 	bool hasRange = false;
@@ -200,33 +199,52 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 		LibGens::ObjectElementFloat *p_z = (LibGens::ObjectElementFloat *) object->getElement(preview_box_z);
 
 		Ogre::Vector3 new_scale = preview_box_node->getScale();
-		float scale_f=0.0f;
-
-		float scale_x = 1.0f;
-		float scale_y = 1.0f;
-		float scale_z = 1.0f;
-
-		if (preview_box_x_scale.size()) FromString<float>(scale_x, preview_box_x_scale, std::dec);
-		if (preview_box_y_scale.size()) FromString<float>(scale_y, preview_box_y_scale, std::dec);
-		if (preview_box_z_scale.size()) FromString<float>(scale_z, preview_box_z_scale, std::dec);
+		float temp = 0.0f;
 
 		// Check if elements were found. If not, try reading the float value from the string
-		if (p_x) new_scale.x = p_x->value;
+		if (p_x) {
+			new_scale.x = p_x->value;
+
+			string add = object->queryExtraParameter(OBJECT_NODE_EXTRA_PREVIEW_BOX_X, "add");
+			if (add.size())
+			{
+				FromString<float>(temp, add, std::dec);
+				new_scale.x += temp;
+			}
+		}
 		else {
-			FromString<float>(scale_f, preview_box_x, std::dec);
-			new_scale.x = scale_f;
+			FromString<float>(temp, preview_box_x, std::dec);
+			new_scale.x = temp;
 		}
 
-		if (p_y) new_scale.y = p_y->value;
+		if (p_y) {
+			new_scale.y = p_y->value;
+
+			string add = object->queryExtraParameter(OBJECT_NODE_EXTRA_PREVIEW_BOX_Y, "add");
+			if (add.size())
+			{
+				FromString<float>(temp, add, std::dec);
+				new_scale.y += temp;
+			}
+		}
 		else {
-			FromString<float>(scale_f, preview_box_y, std::dec);
-			new_scale.y = scale_f;
+			FromString<float>(temp, preview_box_y, std::dec);
+			new_scale.y = temp;
 		}
 
-		if (p_z) new_scale.z = p_z->value;
+		if (p_z) {
+			new_scale.z = p_z->value;
+
+			string add = object->queryExtraParameter(OBJECT_NODE_EXTRA_PREVIEW_BOX_Z, "add");
+			if (add.size())
+			{
+				FromString<float>(temp, add, std::dec);
+				new_scale.z += temp;
+			}
+		}
 		else {
-			FromString<float>(scale_f, preview_box_z, std::dec);
-			new_scale.z = scale_f;
+			FromString<float>(temp, preview_box_z, std::dec);
+			new_scale.z = temp;
 		}
 
 		LibGens::ObjectElementInteger* shape_type = (LibGens::ObjectElementInteger*)object->getElement("Shape_Type");
@@ -242,10 +260,34 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 			new_scale.z = new_scale.x;
 		}
 
+		LibGens::ObjectElementFloat* p_x_scale = (LibGens::ObjectElementFloat*)object->getElement(preview_box_x_scale);
+		LibGens::ObjectElementFloat* p_y_scale = (LibGens::ObjectElementFloat*)object->getElement(preview_box_y_scale);
+		LibGens::ObjectElementFloat* p_z_scale = (LibGens::ObjectElementFloat*)object->getElement(preview_box_z_scale);
+
+		float scale_x = 1.0f;
+		float scale_y = 1.0f;
+		float scale_z = 1.0f;
+
+		if (p_x_scale) scale_x = p_x_scale->value; else FromString<float>(scale_x, preview_box_x_scale, std::dec);
+		if (p_y_scale) scale_y = p_y_scale->value; else FromString<float>(scale_y, preview_box_y_scale, std::dec);
+		if (p_z_scale) scale_z = p_z_scale->value; else FromString<float>(scale_z, preview_box_z_scale, std::dec);
+
+		LibGens::ObjectElementFloat* p_x_add = (LibGens::ObjectElementFloat*)object->getElement(preview_box_x_add);
+		LibGens::ObjectElementFloat* p_y_add = (LibGens::ObjectElementFloat*)object->getElement(preview_box_y_add);
+		LibGens::ObjectElementFloat* p_z_add = (LibGens::ObjectElementFloat*)object->getElement(preview_box_z_add);
+
+		float add_x = 0.0f;
+		float add_y = 0.0f;
+		float add_z = 0.0f;
+
+		if (p_x_add) add_x = p_x_add->value; else FromString<float>(add_x, preview_box_x_add, std::dec);
+		if (p_y_add) add_y = p_y_add->value; else FromString<float>(add_y, preview_box_y_add, std::dec);
+		if (p_z_add) add_z = p_z_add->value; else FromString<float>(add_z, preview_box_z_add, std::dec);
+
 		// Compensate scale of parent node
-		new_scale.x = new_scale.x * scale_x * (1 / scale_x_f);
-		new_scale.y = new_scale.y * scale_y * (1 / scale_y_f);
-		new_scale.z = new_scale.z * scale_z * (1 / scale_z_f);
+		new_scale.x = (new_scale.x * scale_x + add_x) * (1 / scale_x_f);
+		new_scale.y = (new_scale.y * scale_y + add_y) * (1 / scale_y_f);
+		new_scale.z = (new_scale.z * scale_z + add_z) * (1 / scale_z_f);
 
 		// Check for valid scaling values
 		if (new_scale.x <= 0.0) new_scale.x = 0.1;
