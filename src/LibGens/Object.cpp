@@ -773,6 +773,10 @@ namespace LibGens {
 						(*it_e)->setDescription((*it)->getDescription());
 					}
 
+					if ((!(*it_e)->getPresets().size()) && (*it)->getPresets().size()) {
+						(*it_e)->setPresets((*it)->getPresets());
+					}
+
 					if ((type_current == OBJECT_ELEMENT_UNDEFINED) && (type_template != OBJECT_ELEMENT_UNDEFINED)) {
 						ObjectElement *new_element=cloneElement(*it);
 						delete (*it_e);
