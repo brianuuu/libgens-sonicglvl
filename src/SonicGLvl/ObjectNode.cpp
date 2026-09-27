@@ -166,11 +166,11 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 	string preview_box_y_offset = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_Y_OFFSET, "");
 	string preview_box_z_offset = object->queryExtraName(OBJECT_NODE_EXTRA_PREVIEW_BOX_Z_OFFSET, "");
 
-	// check if there are any "Range" properties
+	// check if there are any "Range/Radius" properties
 	bool hasRange = false;
 	for (LibGens::ObjectElement* element : object->getElements())
 	{
-		if (element->getType() == LibGens::OBJECT_ELEMENT_FLOAT && element->getName().find("Range") != string::npos)
+		if (element->getType() == LibGens::OBJECT_ELEMENT_FLOAT && (element->getName().find("Range") != string::npos || element->getName().find("Radius") != string::npos))
 		{
 			hasRange = true;
 		}
@@ -181,7 +181,7 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 	// check if current selected property has "Range"
 	LibGens::ObjectElementFloat* range = NULL;
 	string property_name = editor_application->getCurrentPropertyName();
-	if (property_name.find("Range") != string::npos)
+	if (property_name.find("Range") != string::npos || property_name.find("Radius") != string::npos)
 	{
 		LibGens::ObjectElement* element = object->getElement(property_name);
 		if (element && element->getType() == LibGens::OBJECT_ELEMENT_FLOAT)
