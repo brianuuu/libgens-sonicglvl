@@ -15,6 +15,4 @@
   <WayPointA type="vector" description="" />
   <WayPointB type="vector" description="" />
   <Extra type="model" name="enm_spina_HD.model" />
-  <Extra type="skeleton" name="enm_spina_HD.skl.hkx" />
-  <Extra type="animation" name="spn_idle_loop.anm.hkx" />
 </Template>

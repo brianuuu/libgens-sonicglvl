@@ -12,10 +12,11 @@
   <IsWaitElec type="bool" default="false" description="" />
   <MovePattern type="float" default="0" description="" />
   <MoveVel type="float" default="0.5" description="" />
-  <Range type="float" default="70" description="" />
+  <Range type="float" default="150" description="" />
   <RebirthPattern type="float" default="0" description="" />
   <RebirthPoint type="vector" description="" />
   <RebirthTime type="float" default="5" description="" />
   <WayPointA type="vector" description="" />
   <WayPointB type="vector" description="" />
+  <Extra type="model" name="enm_spana_HD.model" />
 </Template>
