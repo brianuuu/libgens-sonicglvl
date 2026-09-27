@@ -5,13 +5,13 @@
   <Collision_Width type="float" default="15" description="" />
   <DefaultStatus type="float" default="0" description="" />
   <Durability type="float" default="0" description="" />
-  <Event0 type="float" default="0" description="" />
+  <Event0 type="float" default="6" description="" />
   <Event1 type="float" default="0" description="" />
   <Event2 type="float" default="0" description="" />
   <Event3 type="float" default="0" description="" />
   <GroundOffset type="float" default="0" description="" />
-  <IsCastShadow type="bool" default="true" description="" />
-  <Range type="float" default="100100" description="" />
+  <IsCastShadow type="bool" default="false" description="" />
+  <Range type="float" default="10030" description="" />
   <Shape_Type type="integer" default="0" description="" preset0="0 (Box)" preset1="1 (Sphere)" preset2="2 (Cylinder)"/>
   <TargetList0 type="id_list" description="" />
   <TargetList1 type="id_list" description="" />
@@ -22,8 +22,9 @@
   <Timer2 type="float" default="0" description="" />
   <Timer3 type="float" default="0" description="" />
   <Trigger type="id" description="" />
-  <TriggerType type="float" default="0" description="" />
+  <TriggerType type="integer" default="0" description=""  preset0="0 (Inactive)" preset1="1 (Active)"/>
   <Extra type="preview_box_x" name="Collision_Width" />
   <Extra type="preview_box_y" name="Collision_Height" />
   <Extra type="preview_box_z" name="Collision_Length" />
+  <Extra type="model" name="collision.mesh" />
 </Template>

@@ -10,4 +10,5 @@
   <Extra type="preview_box_x" name="Width" />
   <Extra type="preview_box_y" name="Height" />
   <Extra type="preview_box_z" name="Depth" />
+  <Extra type="model" name="collision.mesh" />
 </Template>
