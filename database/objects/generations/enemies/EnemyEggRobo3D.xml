@@ -1,35 +1,35 @@
 <?xml version="1.0" ?>
 <Template>
-  <ActionRange type="float" default="1000" description="" />
-  <AppearType type="float" default="3" description="" />
-  <AttackRange type="float" default="10" description="" />
-  <BeamCoolDownTime type="float" default="1" description="" />
+  <ActionRange type="float" default="40" description="" />
+  <AppearType type="integer" default="2" description="" preset0="0 (Air)" preset1="1 (FlyIn)" preset2="2 (Landing)" preset3="3 (FlyToPath)" />
+  <AttackRange type="float" default="35" description="" />
+  <BeamCoolDownTime type="float" default="2" description="" />
   <BeamCount type="float" default="1" description="" />
-  <BeamSeparateTime type="float" default="0.8" description="" />
+  <BeamSeparateTime type="float" default="0.5" description="" />
   <BeamSpeed type="float" default="5" description="" />
-  <BeamType type="float" default="0" description="" />
+  <BeamType type="float" default="1" description="" />
   <BeamVolleyAngle type="float" default="30" description="" />
-  <BeamWaitTime type="float" default="0.8" description="" />
+  <BeamWaitTime type="float" default="2" description="" />
   <DebugPointClear type="bool" default="false" description="" />
-  <DepthMoveDistance type="float" default="400" description="" />
-  <DepthMoveSpeed type="float" default="100" description="" />
+  <DepthMoveDistance type="float" default="30" description="" />
+  <DepthMoveSpeed type="float" default="30" description="" />
   <GroundOffset type="float" default="0" description="" />
-  <IsAimTarget type="bool" default="false" description="" />
-  <IsAppearOnly type="bool" default="true" description="" />
-  <IsArrivalEffect type="bool" default="false" description="" />
+  <IsAimTarget type="bool" default="true" description="" />
+  <IsAppearOnly type="bool" default="false" description="" />
+  <IsArrivalEffect type="bool" default="true" description="" />
   <IsCastShadow type="bool" default="true" description="" />
   <IsDamageFromOnlyPlayer type="bool" default="false" description="" />
-  <IsMessageOn type="bool" default="true" description="" />
+  <IsMessageOn type="bool" default="false" description="" />
   <IsPlayFindMotion type="bool" default="false" description="" />
   <IsSwicthable type="bool" default="false" description="" />
   <IsTurnToPlayer type="bool" default="true" description="" />
-  <LandingAngle type="float" default="15" description="" />
+  <LandingAngle type="float" default="0" description="" />
   <LandingSpeed type="float" default="10" description="" />
-  <MissileCoolDownTime type="float" default="1" description="" />
-  <MissileHomingStartTime type="float" default="1" description="" />
-  <MissileHomingTime type="float" default="10" description="" />
+  <MissileCoolDownTime type="float" default="2" description="" />
+  <MissileHomingStartTime type="float" default="0.2" description="" />
+  <MissileHomingTime type="float" default="30" description="" />
   <MissileHomingVelocity type="float" default="120" description="" />
-  <MissileLifeTime type="float" default="10" description="" />
+  <MissileLifeTime type="float" default="30" description="" />
   <MissileVelocity type="float" default="120" description="" />
   <MoveSpeed type="float" default="5" description="" />
   <MoveType type="float" default="0" description="" />
@@ -38,18 +38,20 @@
   <PathPointMoveRelative type="bool" default="true" description="" />
   <Path_IsLoop type="bool" default="false" description="" />
   <PositionList type="vector_list" description="" />
-  <Range type="float" default="1000" description="" />
+  <Range type="float" default="50" description="" />
   <RevivePosition type="vector" description="" />
   <ReviveTime type="float" default="5" description="" />
-  <ReviveType type="float" default="0" description="" />
+  <ReviveType type="integer" default="0" description="" preset0="0 (Disabled)" preset1="1 (Enabled)"/>
   <Target type="vector" description="" />
   <TurnToPlayerAccel type="float" default="4" description="" />
   <UpDownAngle type="float" default="15" description="" />
   <UpDownLength type="float" default="3" description="" />
   <UpDownSpeed type="float" default="10" description="" />
   <UpDownType type="float" default="0" description="" />
-  <Vel1D type="float" default="55" description="" />
+  <Vel1D type="float" default="10" description="" />
   <WayPointA type="vector" description="" />
   <WayPointB type="vector" description="" />
-  <WeaponType type="float" default="0" description="" />
+  <WeaponType type="float" default="0" description="" preset0="0 (Laser)" preset1="1 (Missile)"/>
+  <Extra type="model" name="enm_eggroboA_HD.model" condition="WeaponType==0"/>
+  <Extra type="model" name="enm_eggroboB_HD.model" condition="WeaponType==1" />
 </Template>

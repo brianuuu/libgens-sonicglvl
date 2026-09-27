@@ -1,25 +1,26 @@
 <?xml version="1.0" ?>
 <Template>
   <ActionRange type="float" default="100" description="" />
-  <AppearType type="float" default="0" description="0 Appears instantly. 1 follows the path defined in PositionList before standing in the final position." />
+  <AppearType type="integer" default="0" description="0 Appears instantly. 1 follows the path defined in PositionList before standing in the final position." preset0="0 (PopIn)" preset1="1 (PositionList)"/>
   <AttackInterval type="float" default="4" description="" />
-  <AttackRange type="float" default="10" description="" />
+  <AttackRange type="float" default="20" description="" />
   <DebugPointClear type="bool" default="false" description="" />
   <DebugPointClearMove type="bool" default="false" description="" />
   <GroundOffset type="float" default="0" description="" />
   <IsAimTarget type="bool" default="false" description="" />
-  <IsArrivalEffect type="bool" default="false" description="" />
-  <IsAttack type="bool" default="false" description="" />
+  <IsArrivalEffect type="bool" default="true" description="" />
+  <IsAttack type="bool" default="true" description="" />
   <IsCastShadow type="bool" default="true" description="" />
   <IsDamageFromOnlyPlayer type="bool" default="true" description="" />
-  <IsMessageOn type="bool" default="true" description="" />
+  <IsDark type="bool" default="false" description="" />
+  <IsMessageOn type="bool" default="false" description="" />
   <IsPlayFindMotion type="bool" default="true" description="" />
   <IsReturn type="bool" default="false" description="" />
-  <IsShotAim type="bool" default="false" description="" />
+  <IsShotAim type="bool" default="true" description="" />
   <IsThrowDown type="bool" default="false" description="" />
   <IsTurnToPlayer type="bool" default="true" description="" />
   <MoveSpeed type="float" default="5" description="" />
-  <MoveType type="float" default="2" description="Set to 2 to follow the path defined in PositionListMove" />
+  <MoveType type="integer" default="0" description="Note: Path following stops if it detects within attack range" preset0="0 (Static)" preset1="2 (PositionListMove)"/>
   <PathIsAccel type="float" default="0" description="" />
   <PathIsAccelMove type="float" default="0" description="" />
   <PathIsBezier type="float" default="1" description="" />
@@ -27,13 +28,13 @@
   <PathPointMoveRelative type="bool" default="true" description="" />
   <PathPointMoveRelativeMove type="bool" default="true" description="" />
   <Path_IsLoop type="bool" default="false" description="" />
-  <Path_IsLoopMove type="bool" default="true" description="" />
+  <Path_IsLoopMove type="bool" default="false" description="" />
   <PositionList type="vector_list" description="" />
   <PositionListMove type="vector_list" description="" />
-  <Range type="float" default="300" description="" />
+  <Range type="float" default="50" description="" />
   <ReadyTime type="float" default="2.5" description="" />
   <ReviveTime type="float" default="5" description="" />
-  <ReviveType type="float" default="0" description="" />
+  <ReviveType type="integer" default="0" description="" preset0="0 (Disabled)" preset1="1 (Enabled)"/>
   <ShotLength type="float" default="3" description="" />
   <ShotSpeed type="float" default="20" description="" />
   <Target type="vector" description="" />
@@ -44,5 +45,6 @@
   <Vel1DMove type="float" default="10" description="Velocity while moving" />
   <WayPointA type="vector" description="" />
   <WayPointB type="vector" description="" />
-  <Extra type="model" name="enm_taker_HD.model" />
+  <Extra type="model" name="enm_taker_HD.model" condition="IsDark==false" />
+  <Extra type="model" name="enm_daker_HD.model" condition="IsDark==true" />
 </Template>

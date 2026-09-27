@@ -5,7 +5,7 @@
   <DebugPointClear type="bool" default="false" description="" />
   <GroundOffset type="float" default="0" description="" />
   <IsAimTarget type="bool" default="false" description="" />
-  <IsArrivalEffect type="bool" default="false" description="" />
+  <IsArrivalEffect type="bool" default="true" description="" />
   <IsCastShadow type="bool" default="true" description="" />
   <IsDamageFromOnlyPlayer type="bool" default="false" description="" />
   <IsPatrol type="bool" default="true" description="" />

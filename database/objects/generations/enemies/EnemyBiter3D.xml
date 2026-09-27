@@ -4,18 +4,20 @@
   <AttackRange type="float" default="10" description="" />
   <GroundOffset type="float" default="0" description="" />
   <IsAimTarget type="bool" default="false" description="" />
-  <IsArrivalEffect type="bool" default="false" description="" />
+  <IsArrivalEffect type="bool" default="true" description="" />
   <IsCastShadow type="bool" default="true" description="" />
   <IsDamageFromOnlyPlayer type="bool" default="false" description="" />
+  <IsDark type="bool" default="false" description="" />
   <IsMessageOn type="bool" default="false" description="" />
   <IsPlayFindMotion type="bool" default="true" description="" />
   <MoveSpeed type="float" default="5" description="" />
-  <MoveType type="float" default="0" description="" />
-  <Range type="float" default="100" description="" />
+  <MoveType type="integer" default="1" description="" preset0="0 (JumpMove)" preset1="1 (JumpOnly)"/>
+  <Range type="float" default="50" description="" />
   <ReadyTime type="float" default="1" description="" />
-  <SearchType type="float" default="0" description="" />
+  <SearchType type="integer" default="1" description="" preset0="0 (PopIn)" preset1="1 (JumpAppear)"/>
   <Target type="vector" description="" />
   <WayPointA type="vector" description="" />
   <WayPointB type="vector" description="" />
-  <Extra type="model" name="enm_biter_HD.model" />
+  <Extra type="model" name="enm_biter_HD.model" condition="IsDark==false" />
+  <Extra type="model" name="enm_diter_HD.model" condition="IsDark==true" />
 </Template>

@@ -3,13 +3,13 @@
   <ActionRange type="float" default="100" description="" />
   <ActionType type="float" default="0" description="" />
   <AfterMoveLength type="float" default="1" description="" />
-  <AttackRange type="float" default="20" description="" />
-  <ChargeTime type="float" default="0" description="" />
+  <AttackRange type="float" default="30" description="" />
+  <ChargeTime type="float" default="0.7" description="" />
   <DashSpeed type="float" default="5" description="" />
   <GroundOffset type="float" default="0" description="" />
   <HoveringType type="float" default="0" description="" />
   <IsAimTarget type="bool" default="false" description="" />
-  <IsArrivalEffect type="bool" default="false" description="" />
+  <IsArrivalEffect type="bool" default="true" description="" />
   <IsCastShadow type="bool" default="true" description="" />
   <IsDamageFromOnlyPlayer type="bool" default="false" description="" />
   <IsMessageOn type="bool" default="false" description="" />
@@ -21,14 +21,13 @@
   <MoveWidth type="float" default="0" description="" />
   <Range type="float" default="100" description="" />
   <ReviveTime type="float" default="3" description="" />
-  <ShotSpeed type="float" default="2" description="" />
+  <ShotSpeed type="float" default="5" description="" />
   <Target type="vector" description="" />
   <TargetPosition type="vector" description="" />
   <TurnTime type="float" default="1" description="" />
   <WaitAfterShot type="float" default="0" description="" />
   <WayPointA type="vector" description="" />
   <WayPointB type="vector" description="" />
-  <Extra type="model" name="enm_beeton_HD.model" />
-  <Extra type="skeleton" name="enm_beeton_HD.skl.hkx" />
-  <Extra type="animation" name="bee_atk_ready_loop.anm.hkx" />
+  <Extra type="model" name="enm_beeton_HD.model" condition="IsShotEnable==false"/>
+  <Extra type="model" name="enm_stinger_HD.model" condition="IsShotEnable==true" />
 </Template>
