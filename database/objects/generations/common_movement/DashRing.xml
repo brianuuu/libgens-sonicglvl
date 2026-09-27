@@ -7,8 +7,8 @@
   <IsChangePath type="bool" default="false" description="" />
   <IsHeadToVelocity type="bool" default="false" description="" />
   <IsTo3D type="bool" default="false" description="" />
-  <KeepVelocityDistance type="float" default="5" description="" />
+  <KeepVelocityDistance type="float" default="0" description="" />
   <OutOfControl type="float" default="0.5" description="" />
-  <Range type="float" default="60" description="" />
+  <Range type="float" default="100" description="" />
   <Extra type="model" name="cmn_obj_dashring_HD.model" />
 </Template>

@@ -1,13 +1,14 @@
 <?xml version="1.0" ?>
 <Template>
-  <FirstSpeed type="float" default="17" description="" />
+  <FirstSpeed type="float" default="35" description="" />
   <GroundOffset type="float" default="0" description="" />
   <IsCastShadow type="bool" default="false" description="" />
   <IsChangeCameraWhenChangePath type="bool" default="false" description="" />
   <IsChangePath type="bool" default="false" description="" />
   <IsHeadToVelocity type="bool" default="false" description="" />
   <IsTo3D type="bool" default="false" description="" />
-  <KeepVelocityDistance type="float" default="10" description="" />
+  <KeepVelocityDistance type="float" default="0" description="" />
   <OutOfControl type="float" default="0.6" description="" />
-  <Range type="float" default="30" description="" />
+  <Range type="float" default="100" description="" />
+  <Extra type="model" name="cmn_dashring.model" />
 </Template>

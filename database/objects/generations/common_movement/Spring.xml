@@ -6,7 +6,7 @@
   <FirstSpeed type="float" default="30" description="" />
   <GroundOffset type="float" default="0" description="" />
   <IsBreak type="bool" default="false" description="" />
-  <IsCastShadow type="bool" default="true" description="" />
+  <IsCastShadow type="bool" default="false" description="" />
   <IsChangeCameraWhenPathChange type="bool" default="true" description="" />
   <IsHomingAttackEnable type="bool" default="false" description="" />
   <IsLongBase type="bool" default="false" description="" />
@@ -16,10 +16,10 @@
   <IsWallWalk type="bool" default="false" description="" />
   <IsWithBase type="bool" default="false" description="" />
   <IsYawUpdate type="bool" default="false" description="" />
-  <KeepVelocityDistance type="float" default="5" description="" />
-  <MotionType type="float" default="0" description="" />
+  <KeepVelocityDistance type="float" default="0" description="" />
+  <MotionType type="integer" default="0" description="" preset0="0 (Normal Animation)" preset1="2 (Instant Falling Animation)" preset2="3 (06 Style Animation)" preset3="4" preset4="5 (Frontflip Animation)" preset5="6 (Balloon Animation)"/>
   <OutOfControl type="float" default="0.4" description="" />
-  <Range type="float" default="30" description="" />
+  <Range type="float" default="100" description="" />
   <m_IsConstantFrame type="bool" default="false" description="" />
   <m_IsConstantPosition type="bool" default="true" description="" />
   <m_IsMonkeyHunting type="bool" default="false" description="" />
@@ -29,5 +29,5 @@
   <IsInvisible type="bool" default="false" description="" />
   <HasBase type="bool" default="false" description="" />
   <m_IsMonkeyHuntingLowAngle type="bool" default="true" description="" />
-  <Extra type="model" name="cmn_obj_springred_HD.model" />
+  <Extra type="model" name="cmn_spring.model" />
 </Template>

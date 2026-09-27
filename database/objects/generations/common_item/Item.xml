@@ -1,8 +1,18 @@
 <?xml version="1.0" ?>
 <Template>
   <GroundOffset type="float" default="0" description="" />
-  <IsCastShadow type="bool" default="true" description="" />
-  <ItemType type="float" default="0" description="" />
-  <Range type="float" default="200" description="" />
-  <Extra type="model" name="cmn_obj_oneup_HD.model" />
+  <IsCastShadow type="bool" default="false" description="" />
+  <ItemType type="float" default="0" description="" preset0="0 (1-up)" preset1="1 (Invincibility)" preset2="2 (Shield)" preset3="3 (Fire Shield)" preset4="4 (Speed Shoes)" preset5="5 (Gauge Up)" preset6="6 (5 Ring)" preset7="7 (10 Ring)" preset8="8 (20 Ring)"/>
+  <Range type="float" default="100" description="" />
+  <Extra type="model" name="cmn_itembox_oneup.model" condition="ItemType == 0"/>
+  <Extra type="model" name="cmn_itembox_muteki.model" condition="ItemType == 1"/>
+  <Extra type="model" name="cmn_itembox_shield.model" condition="ItemType == 2"/>
+  <Extra type="model" name="cmn_itembox_baria.model" condition="ItemType == 3"/>
+  <Extra type="model" name="cmn_itembox_speed.model" condition="ItemType == 4"/>
+  <Extra type="model" name="cmn_itembox_gaugeup.model" condition="ItemType == 5"/>
+  <Extra type="model" name="cmn_itembox_ring5.model" condition="ItemType == 6"/>
+  <Extra type="model" name="cmn_itembox_ring10.model" condition="ItemType == 7"/>
+  <Extra type="model" name="cmn_itembox_ring20.model" condition="ItemType == 8"/>
+  <Extra type="skeleton" name="cmn_itembox_oneup.skl.hkx"/>
+  <Extra type="animation" name="cmn_itembox_oneup.anm.hkx"/>
 </Template>

@@ -8,9 +8,10 @@
   <IsTo3D type="bool" default="false" description="" />
   <LookBack type="bool" default="false" description="" />
   <OutOfControl type="float" default="1.5" description="" />
-  <Range type="float" default="30" description="" />
+  <Range type="float" default="100" description="" />
   <RigidBody type="bool" default="true" description="" />
-  <Extra type="model" name="cmn_obj_jumppanel15S_HD.model" condition="AngleType == 0" />
-  <Extra type="model" name="cmn_obj_jumppanel30S_HD.model" condition="AngleType == 1" />
-  <Extra type="model" name="cmn_obj_jumppanel30S_HD.model" condition="AngleType == 2" />
+  <Extra type="model" name="cmn_jumppanel15S.model" condition="AngleType == 0" />
+  <Extra type="model" name="cmn_jumppanel30S.model" condition="AngleType == 1" />
+  <Extra type="model" name="cmn_jumppanel30M.model" condition="AngleType == 2" />
+  <Extra type="model" name="cmn_jumppanel30L.model" condition="AngleType == 3" />
 </Template>

@@ -13,10 +13,10 @@
   <IsStartVelocityConstant type="bool" default="true" description="" />
   <IsWallWalk type="bool" default="false" description="" />
   <IsYawUpdate type="bool" default="false" description="" />
-  <KeepVelocityDistance type="float" default="5" description="" />
-  <MotionType type="float" default="0" description="" />
+  <KeepVelocityDistance type="float" default="0" description="" />
+  <MotionType type="float" default="0" description="" preset0="0 (Normal Animation)" preset1="2 (Instant Falling Animation)" preset2="3 (06 Style Animation)" preset3="4" preset4="5 (Frontflip Animation)" preset5="6 (Balloon Animation)"/>
   <OutOfControl type="float" default="0.6" description="" />
-  <Range type="float" default="30" description="" />
+  <Range type="float" default="100" description="" />
   <m_IsConstantFrame type="bool" default="false" description="" />
   <m_IsConstantPosition type="bool" default="true" description="" />
   <m_IsMonkeyHunting type="bool" default="false" description="" />
@@ -25,5 +25,6 @@
   <m_MonkeyTarget type="vector" description="" />
   <HasBase type="bool" default="false" description="" />
   <m_IsMonkeyHuntingLowAngle type="bool" default="true" description="" />
-  <Extra type="model" name="cmn_obj_springair_top_HD.model" />
+  <Extra type="model0" name="cmn_springair_top.model" />
+  <Extra type="model1" name="cmn_obj_springair_btm_HD.model" />
 </Template>

@@ -8,9 +8,11 @@
   <OffTime type="float" default="1" description="" />
   <OnTime type="float" default="1" description="" />
   <Phase type="float" default="0" description="" />
-  <Range type="float" default="30" description="" />
-  <Type type="float" default="0" description="" />
+  <Range type="float" default="100" description="" />
+  <Type type="integer" default="0" description="" preset0="0 (On)" preset1="1 (OnOff)" preset2="2 (Off)"/>
   <UseRigidBody type="bool" default="true" description="" />
   <UsePanel type="bool" default="true" description="" />
-  <Extra type="model" name="cmn_obj_thorn_HD.model" />
+  <Extra type="model0" name="cmn_thorn.model" condition="Type!=2" />
+  <Extra type="model0" name="cmn_thornpanel.model" condition="Type==2" />
+  <Extra type="model1" name="cmn_thornpanel.model" condition="IsUsePanel==true"/>
 </Template>
