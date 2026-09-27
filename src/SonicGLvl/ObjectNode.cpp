@@ -411,6 +411,14 @@ void ObjectNode::createEntities(Ogre::SceneNode *target_node, Ogre::SceneManager
 		}
 	}
 
+	if ((object->getName() == "GenericObject")) {
+		LibGens::ObjectElementString* p_name = (LibGens::ObjectElementString*)object->getElement("Name");
+		if (p_name) {
+			model_offsets.resize(1);
+			model_names = { p_name->value + ".model"};
+		}
+	}
+
 	if ((model_names != current_model_names) || (skeleton_name != current_skeleton_name) || (animation_name != current_animation_name)) {
 		current_model_offsets = model_offsets;
 		current_model_names = model_names;
