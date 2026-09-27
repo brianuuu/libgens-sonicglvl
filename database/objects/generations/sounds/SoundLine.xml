@@ -5,10 +5,11 @@
   <FileName type="string" default="42AMB_GHZ" description="" />
   <GroundOffset type="float" default="0" description="" />
   <IntervalTime type="float" default="5" description="" />
-  <IsCastShadow type="bool" default="true" description="" />
+  <IsCastShadow type="bool" default="false" description="" />
   <IsRegularly type="bool" default="false" description="" />
   <PositionList type="vector_list" description="" />
   <Radius type="float" default="120" description="" />
   <Range type="float" default="120" description="" />
   <Extra type="model" name="sound.mesh" />
+  <Extra type="offset_rotation_x" name="90" />
 </Template>

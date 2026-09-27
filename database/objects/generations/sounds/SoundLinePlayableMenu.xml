@@ -12,4 +12,5 @@
   <Range type="float" default="120" description="" />
   <StageID type="float" default="0" description="" />
   <Extra type="model" name="sound.mesh" />
+  <Extra type="offset_rotation_x" name="90" />
 </Template>
