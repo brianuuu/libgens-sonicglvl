@@ -7,7 +7,7 @@
   <BeamCount type="float" default="1" description="" />
   <BeamSeparateTime type="float" default="0.5" description="" />
   <BeamSpeed type="float" default="5" description="" />
-  <BeamType type="float" default="1" description="" />
+  <BeamType type="integer" default="0" description="" preset0="0 (Single)" preset1="1 (Triple)"/>
   <BeamVolleyAngle type="float" default="30" description="" />
   <BeamWaitTime type="float" default="2" description="" />
   <DebugPointClear type="bool" default="false" description="" />
@@ -32,7 +32,7 @@
   <MissileLifeTime type="float" default="30" description="" />
   <MissileVelocity type="float" default="120" description="" />
   <MoveSpeed type="float" default="5" description="" />
-  <MoveType type="float" default="0" description="" />
+  <MoveType type="integer" default="0" description="" />
   <PathIsAccel type="float" default="0" description="" />
   <PathIsBezier type="float" default="1" description="" />
   <PathPointMoveRelative type="bool" default="true" description="" />
