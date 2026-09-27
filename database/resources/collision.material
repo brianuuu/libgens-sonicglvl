@@ -1,0 +1,17 @@
+
+material collision
+{
+	technique
+	{
+		pass
+		{
+			ambient 0.75 1 0.25 1
+			diffuse 0.75 1 0.25 1
+			specular 0 0 0 1 10
+		}
+
+	}
+
+}
+
+
